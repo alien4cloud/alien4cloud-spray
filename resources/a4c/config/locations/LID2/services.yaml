@@ -1,0 +1,182 @@
+services:
+
+  - nodeType: "artemis.mesos.dcos.pub.nodes.DcosService"
+    nodeTypeVersion: "a4c_version"
+    name: "[LID2] Dcos"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        dcos_endpoint:
+          properties:
+            port: "80"
+      attributeValues:
+        capabilities.dcos_endpoint.ip_address: "dcos.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.kafka.pub.nodes.KafkaService"
+    nodeTypeVersion: "a4c_version"
+    name: "[LID2] Kafka"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        kafka_endpoint:
+          properties:
+            port: "9092"
+      attributeValues:
+        capabilities.kafka_endpoint.ip_address: "kafka-1.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.zookeeper.pub.nodes.ZookeeperService"
+    nodeTypeVersion: "a4c_version"
+    name: "[LID2] Zookeeper"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        zookeeper_endpoint:
+          properties:
+            port: "2181"
+      attributeValues:
+        capabilities.zookeeper_endpoint.ip_address: "kafka-1.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HDFSService"
+    nodeTypeVersion: "a4c_version"
+    name: "[LID2] HDFS (HTTP)"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        http_endpoint:
+          properties:
+            port: "50070"
+      attributeValues:
+        capabilities.http_endpoint.ip_address: "hdfs-default.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HDFSService"
+    nodeTypeVersion: "a4c_version"
+    name: "[LID2] HDFS (HDFS)"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_endpoint:
+          properties:
+            port: "8020"
+      attributeValues:
+        capabilities.hdfs_endpoint.ip_address: "hdfs-default.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HdfsRepositoryService"
+    nodeTypeVersion: "a4c_version"
+    name: "[LID2] ExtractedLogs"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_repository:
+          properties:
+            path: "/lid2/extracted-data"
+      attributeValues:
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HdfsRepositoryService"
+    nodeTypeVersion: "a4c_version"
+    name: "[LID2] Code ExtractLogs"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_repository:
+          properties:
+            path: "/lid2/artefacts/extract-logs"
+      attributeValues:
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HdfsRepositoryService"
+    nodeTypeVersion: "a4c_version"
+    name: "[LID2] Code ML"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_repository:
+          properties:
+            path: "/spark_jar/lid2/machineLearning3.0"
+      attributeValues:
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HdfsRepositoryService"
+    nodeTypeVersion: "a4c_version"
+    name: "[LID2] Entrepot (smallset-1)"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_repository:
+          properties:
+            path: "/lid2/logs-smallset/smallset-1"
+      attributeValues:
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HdfsRepositoryService"
+    nodeTypeVersion: "a4c_version"
+    name: "[LID2] Models"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_repository:
+          properties:
+            path: "/lid2/models"
+      attributeValues:
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HdfsRepositoryService"
+    nodeTypeVersion: "a4c_version"
+    name: "[LID2] DetectedData"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_repository:
+          properties:
+            path: "/lid2/detected-data"
+      attributeValues:
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HdfsRepositoryService"
+    nodeTypeVersion: "a4c_version"
+    name: "[LID2] UnDetectedData"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_repository:
+          properties:
+            path: "/lid2/undetected-data"
+      attributeValues:
+        state: "started"
+
+  - nodeType: "artemis.elasticsearch.pub.nodes.ElasticSearchService"
+    nodeTypeVersion: "a4c_version"
+    name: "[LID2] ES extract_logs"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      properties:
+        index_basename: "uc_lid2_i1_extract_logs"
+      capabilities:
+        http:
+          properties:
+            port: "9200"
+            protocol: "http"
+      attributeValues:
+        capabilities.http.ip_address: "elastic-1.artemis.public,elastic-2.artemis.public,elastic-3.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.elasticsearch.pub.nodes.ElasticSearchService"
+    nodeTypeVersion: "a4c_version"
+    name: "[LID2] ES Kibana"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      properties:
+        index_basename: ".kibana_lid2"
+      capabilities:
+        http:
+          properties:
+            port: "9200"
+            protocol: "http"
+      attributeValues:
+        capabilities.http.ip_address: "elastic-1.artemis.public"
+        state: "started"

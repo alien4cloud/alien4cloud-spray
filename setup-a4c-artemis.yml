@@ -1,0 +1,116 @@
+---
+- hosts: all
+  name: Setup A4C with a Yorc orchestrator for Artemis.
+  become: false
+
+  roles:
+    # - { role: roles/git,
+    #     repositoryUrl: 'https://github.com/alien4cloud/samples',
+    #     repositoryUsername: '',
+    #     repositoryPassword: '',
+    #     branchId: 'master',
+    #     subPath: 'org/alien4cloud/mock'
+    #   }
+    - { role: roles/create_orchestrator,
+        orchestratorName: 'Yorc',
+        pluginId: 'alien4cloud-yorc-plugin',
+        pluginBean: 'yorc-orchestrator-factory'
+      }
+    - { role: 'roles/create_metaproperties',
+        resources_file_artifact: 'resources/metaproperties.yaml'
+      }
+    - { role: roles/git-ssl }
+    # - { role: roles/git,
+    #     repositoryUrl: 'https://34.242.16.28/artemis_use_cases/service_applicatif.git',
+    #     repositoryUsername: 'service_applicatif',
+    #     repositoryPassword: 'service_applicatif',
+    #     branchId: 'develop',
+    #     subPath: ''
+    #   }
+    - { role: roles/git,
+        repositoryUrl: 'https://git.artemis.public/artemis_use_cases/service_applicatif.git',
+        repositoryUsername: 'service_applicatif',
+        repositoryPassword: 'service_applicatif',
+        branchId: 'develop',
+        subPath: ''
+      }
+    - { role: 'roles/a4c/config/get_orchectrator',
+        orchestratorName: 'Yorc'
+      }
+    # ROEM
+    - { role: 'roles/create_location',
+        location_name: 'ROEM',
+        location_type: 'OpenStack'
+      }
+    - { role: 'roles/create_location_resources',
+        resources_file_artifact: 'resources/a4c/config/locations/ROEM/location_resources.yaml'
+      }
+    - { role: 'roles/add_location_modifiers',
+        resources_file_artifact: 'resources/location_modifiers.yaml'
+      }
+    - { role: 'roles/remove_services',
+        resources_file_artifact: 'resources/a4c/config/locations/ROEM/services.yaml'
+      }
+    - { role: 'roles/create_services',
+        resources_file_artifact: 'resources/a4c/config/locations/ROEM/services.yaml'
+      }
+    - { role: 'roles/create_location_policies',
+        resources_file_artifact: 'resources/a4c/config/locations/ROEM/policies.yaml'
+      }
+    # AIS
+    - { role: 'roles/create_location',
+        location_name: 'AIS',
+        location_type: 'OpenStack'
+      }
+    - { role: 'roles/create_location_resources',
+        resources_file_artifact: 'resources/a4c/config/locations/AIS/location_resources.yaml'
+      }
+    - { role: 'roles/add_location_modifiers',
+        resources_file_artifact: 'resources/location_modifiers.yaml'
+      }
+    - { role: 'roles/remove_services',
+        resources_file_artifact: 'resources/a4c/config/locations/AIS/services.yaml'
+      }
+    - { role: 'roles/create_services',
+        resources_file_artifact: 'resources/a4c/config/locations/AIS/services.yaml'
+      }
+    - { role: 'roles/create_location_policies',
+        resources_file_artifact: 'resources/a4c/config/locations/AIS/policies.yaml'
+      }
+    # LID2
+    - { role: 'roles/create_location',
+        location_name: 'LID2',
+        location_type: 'OpenStack'
+      }
+    - { role: 'roles/create_location_resources',
+        resources_file_artifact: 'resources/a4c/config/locations/LID2/location_resources.yaml'
+      }
+    - { role: 'roles/add_location_modifiers',
+        resources_file_artifact: 'resources/location_modifiers.yaml'
+      }
+    - { role: 'roles/remove_services',
+        resources_file_artifact: 'resources/a4c/config/locations/LID2/services.yaml'
+      }
+    - { role: 'roles/create_services',
+        resources_file_artifact: 'resources/a4c/config/locations/LID2/services.yaml'
+      }
+    # Similimages
+    - { role: 'roles/create_location',
+        location_name: 'Similimages',
+        location_type: 'OpenStack'
+      }
+    - { role: 'roles/create_location_resources',
+        resources_file_artifact: 'resources/a4c/config/locations/Similimages/location_resources.yaml'
+      }
+    - { role: 'roles/add_location_modifiers',
+        resources_file_artifact: 'resources/location_modifiers.yaml'
+      }
+    - { role: 'roles/remove_services',
+        resources_file_artifact: 'resources/a4c/config/locations/Similimages/services.yaml'
+      }
+    - { role: 'roles/create_services',
+        resources_file_artifact: 'resources/a4c/config/locations/Similimages/services.yaml'
+      }
+    - { role: 'roles/create_location_policies',
+        resources_file_artifact: 'resources/a4c/config/locations/Similimages/policies.yaml'
+      }

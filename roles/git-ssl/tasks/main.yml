@@ -1,0 +1,6 @@
+---
+- name: Disable SSL verifications
+  template:
+    src: gitconfig.j2
+    dest: ~/.gitconfig
+    force: yes

@@ -1,0 +1,652 @@
+services:
+
+  - nodeType: "artemis.mesos.dcos.pub.nodes.DcosService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] Dcos"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        dcos_endpoint:
+          properties:
+            port: "80"
+      attributeValues:
+        capabilities.dcos_endpoint.ip_address: "dcos.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.kafka.pub.nodes.KafkaService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] Kafka"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        kafka_endpoint:
+          properties:
+            port: "9092"
+      attributeValues:
+        capabilities.kafka_endpoint.ip_address: "kafka-1.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.zookeeper.pub.nodes.ZookeeperService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] Zookeeper"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        zookeeper_endpoint:
+          properties:
+            port: "2181"
+      attributeValues:
+        capabilities.zookeeper_endpoint.ip_address: "kafka-1.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HDFSService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] HDFS (HTTP)"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        http_endpoint:
+          properties:
+            port: "50070"
+      attributeValues:
+        capabilities.http_endpoint.ip_address: "hdfs-default.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HDFSService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] HDFS (HDFS)"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_endpoint:
+          properties:
+            port: "8020"
+      attributeValues:
+        capabilities.hdfs_endpoint.ip_address: "hdfs-default.artemis.public"
+        state: "started"
+
+  # ###########################################################################
+  # # ROEM
+  # ###########################################################################
+
+  - nodeType: "artemis.gitlab.pub.nodes.GitlabService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] Gitlab"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        gitlab_endpoint:
+          properties:
+            port: "443"
+            protocol: "https"
+      attributeValues:
+        capabilities.gitlab_endpoint.ip_address: "git.external.svc.cluster.local"
+        state: "started"
+
+  - nodeType: "artemis.graphdb.pub.nodes.GraphDbService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] GraphDB KM"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        graphdb_endpoint:
+          properties:
+            port: "7200"
+            protocol: "http"
+      attributeValues:
+        capabilities.graphdb_endpoint.ip_address: "graphdb.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HdfsRepositoryService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] HDFS Comint"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_repository:
+          properties:
+            port: "8020"
+            path: "/roem_1/Production-COMINT/"
+      attributeValues:
+        capabilities.hdfs_repository.ip_address: "hdfs-default.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HdfsRepositoryService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] HDFS DetAnolt"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_repository:
+          properties:
+            port: "8020"
+            path: "/roem_1/ROE-DetAnoLt-C-OUT/"
+      attributeValues:
+        capabilities.hdfs_repository.ip_address: "hdfs-default.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HdfsRepositoryService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] HDFS MesInt"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_repository:
+          properties:
+            port: "8020"
+            path: "/roem_1/ROE-MesInt-C-OUT/"
+      attributeValues:
+        capabilities.hdfs_repository.ip_address: "hdfs-default.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.mongodb.pub.nodes.MongoDbService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] MongoDB EM"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        mongodb_endpoint:
+          properties:
+            port: "27017"
+            protocol: "mongodb"
+            username: "ROE-ExchangeManager-1"
+            password: "ROE-ExchangeManager-1"
+            databasename: "ROE-ExchangeManager-1?replicaSet=rs0"
+      attributeValues:
+        capabilities.mongodb_endpoint.ip_address: "mongo.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.mongodb.pub.nodes.MongoDbService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] MongoDB KM"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        mongodb_endpoint:
+          properties:
+            port: "27017"
+            protocol: "mongodb"
+            username: "ROE-KnowledgeManager-1"
+            password: "ROE-KnowledgeManager-1"
+            databasename: "ROE-KnowledgeManager-1?replicaSet=rs0"
+      attributeValues:
+        capabilities.mongodb_endpoint.ip_address: "mongo.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.mongodb.pub.nodes.MongoDbService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] MongoDB PM"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        mongodb_endpoint:
+          properties:
+            port: "27017"
+            protocol: "mongodb"
+            username: "ROE-ProfileManager-1"
+            password: "ROE-ProfileManager-1"
+            databasename: "ROE-ProfileManager-1?replicaSet=rs0"
+      attributeValues:
+        capabilities.mongodb_endpoint.ip_address: "mongo.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.mongodb.pub.nodes.MongoDbService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] MongoDB PRD"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        mongodb_endpoint:
+          properties:
+            port: "27017"
+            protocol: "mongodb"
+            username: "ROE-ProfileDeployer-1"
+            password: "ROE-ProfileDeployer-1"
+            databasename: "ROE-ProfileDeployer-1?replicaSet=rs0"
+      attributeValues:
+        capabilities.mongodb_endpoint.ip_address: "mongo.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.mongodb.pub.nodes.MongoDbService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] MongoDB ResourceManager"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        mongodb_endpoint:
+          properties:
+            port: "27017"
+            protocol: "mongodb"
+            username: "ROE-ResourceManager-1"
+            password: "ROE-ResourceManager-1"
+            databasename: "ROE-ResourceManager-1?replicaSet=rs0"
+      attributeValues:
+        capabilities.mongodb_endpoint.ip_address: "mongo.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.mongodb.pub.nodes.MongoDbService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] MongoDB TextAnalysis"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        mongodb_endpoint:
+          properties:
+            port: "27017"
+            protocol: "mongodb"
+            username: "ROE-TextAnalysis-1"
+            password: "ROE-TextAnalysis-1"
+            databasename: "ROE-TextAnalysis-1?replicaSet=rs0"
+      attributeValues:
+        capabilities.mongodb_endpoint.ip_address: "mongo.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.rabbitmq.pub.nodes.RabbitMQService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] RabbitMQ AtosCogito"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        rabbitmq_endpoint:
+          properties:
+            port: "5672"
+            protocol: "amqp"
+            queue: "pm.apps.atos-cogito"
+            prefix: "ROEM1"
+            username: "ROEM1_atos-cogito"
+            password: "ROEM1_atos-cogito"
+      attributeValues:
+        capabilities.rabbitmq_endpoint.ip_address: "10.197.214.152"
+        state: "started"
+
+  - nodeType: "artemis.rabbitmq.pub.nodes.RabbitMQService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] RabbitMQ AtosRating"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        rabbitmq_endpoint:
+          properties:
+            port: "5672"
+            protocol: "amqp"
+            queue: "pm.apps.atos-rating"
+            prefix: "ROEM1"
+            username: "ROEM1_atos-rating"
+            password: "ROEM1_atos-rating"
+      attributeValues:
+        capabilities.rabbitmq_endpoint.ip_address: "10.197.214.152"
+        state: "started"
+
+  - nodeType: "artemis.rabbitmq.pub.nodes.RabbitMQService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] RabbitMQ EM"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        rabbitmq_endpoint:
+          properties:
+            port: "5672"
+            protocol: "amqp"
+            queue: "pm.apps.exchange-manager"
+            prefix: "ROEM1"
+            username: "ROEM1_exchange-manager"
+            password: "ROEM1_exchange-manager"
+      attributeValues:
+        capabilities.rabbitmq_endpoint.ip_address: "10.197.214.152"
+        state: "started"
+
+  - nodeType: "artemis.rabbitmq.pub.nodes.RabbitMQService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] RabbitMQ ExManAPI"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        rabbitmq_endpoint:
+          properties:
+            port: "5672"
+            protocol: "amqp"
+            queue: "pm.apps.exchange-manager-api"
+            prefix: "ROEM1"
+            username: "ROEM1_exchange-manager-api"
+            password: "ROEM1_exchange-manager-api"
+      attributeValues:
+        capabilities.rabbitmq_endpoint.ip_address: "10.197.214.152"
+        state: "started"
+
+  - nodeType: "artemis.rabbitmq.pub.nodes.RabbitMQService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] RabbitMQ KM"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        rabbitmq_endpoint:
+          properties:
+            port: "5672"
+            protocol: "amqp"
+            queue: "pm.apps.knowledge-manager"
+            prefix: "ROEM1"
+            username: "ROEM1_knowledge-manager"
+            password: "ROEM1_knowledge-manager"
+      attributeValues:
+        capabilities.rabbitmq_endpoint.ip_address: "10.197.214.152"
+        state: "started"
+
+  - nodeType: "artemis.rabbitmq.pub.nodes.RabbitMQService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] RabbitMQ MediaToolBox"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        rabbitmq_endpoint:
+          properties:
+            port: "5672"
+            protocol: "amqp"
+            queue: "pm.apps.media-toolbox"
+            prefix: "ROEM1"
+            username: "ROEM1_media-toolbox"
+            password: "ROEM1_media-toolbox"
+      attributeValues:
+        capabilities.rabbitmq_endpoint.ip_address: "10.197.214.152"
+        state: "started"
+
+  - nodeType: "artemis.rabbitmq.pub.nodes.RabbitMQService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] RabbitMQ PDAPI"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        rabbitmq_endpoint:
+          properties:
+            port: "5672"
+            protocol: "amqp"
+            queue: "pm.apps.profile-deployer-api"
+            prefix: "ROEM1"
+            username: "ROEM1_profile-deployer-api"
+            password: "ROEM1_profile-deployer-api"
+      attributeValues:
+        capabilities.rabbitmq_endpoint.ip_address: "10.197.214.152"
+        state: "started"
+
+  - nodeType: "artemis.rabbitmq.pub.nodes.RabbitMQService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] RabbitMQ PDWK"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        rabbitmq_endpoint:
+          properties:
+            port: "5672"
+            protocol: "amqp"
+            queue: "pm.apps.profile-deployer-worker"
+            prefix: "ROEM1"
+            username: "ROEM1_profile-deployer-worker"
+            password: "ROEM1_profile-deployer-worker"
+      attributeValues:
+        capabilities.rabbitmq_endpoint.ip_address: "10.197.214.152"
+        state: "started"
+
+  - nodeType: "artemis.rabbitmq.pub.nodes.RabbitMQService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] RabbitMQ ResourceDistribution"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        rabbitmq_endpoint:
+          properties:
+            port: "5672"
+            protocol: "amqp"
+            queue: "pm.apps.resource-distribution"
+            prefix: "ROEM1"
+            username: "ROEM1_resource-distribution"
+            password: "ROEM1_resource-distribution"
+      attributeValues:
+        capabilities.rabbitmq_endpoint.ip_address: "10.197.214.152"
+        state: "started"
+
+  - nodeType: "artemis.rabbitmq.pub.nodes.RabbitMQService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] RabbitMQ TextAnalysis"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        rabbitmq_endpoint:
+          properties:
+            port: "5672"
+            protocol: "amqp"
+            queue: "pm.apps.text-analysis"
+            prefix: "ROEM1"
+            username: "ROEM1_text-analysis"
+            password: "ROEM1_text-analysis"
+      attributeValues:
+        capabilities.rabbitmq_endpoint.ip_address: "10.197.214.152"
+        state: "started"
+
+  - nodeType: "artemis.rabbitmq.pub.nodes.RabbitMQService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] RabbitMQ Wisdom2"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        rabbitmq_endpoint:
+          properties:
+            port: "5672"
+            protocol: "amqp"
+            queue: "pm.apps.wisdom2"
+            prefix: "ROEM1"
+            username: "ROEM1_wisdom2"
+            password: "ROEM1_wisdom2"
+      attributeValues:
+        capabilities.rabbitmq_endpoint.ip_address: "10.197.214.152"
+        state: "started"
+
+  - nodeType: "artemis.rabbitmq.pub.nodes.RabbitMQService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] RabbitMQ Wisdom2Api"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        rabbitmq_endpoint:
+          properties:
+            port: "5672"
+            protocol: "amqp"
+            queue: "pm.apps.wisdom2-api"
+            prefix: "ROEM1"
+            username: "ROEM1_wisdom2"
+            password: "ROEM1_wisdom2"
+      attributeValues:
+        capabilities.rabbitmq_endpoint.ip_address: "10.197.214.152"
+        state: "started"
+
+  - nodeType: "artemis.rabbitmq.pub.nodes.RabbitMQService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] RabbitMQ Wisdom2Worker"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        rabbitmq_endpoint:
+          properties:
+            port: "5672"
+            protocol: "amqp"
+            queue: "pm.apps.wisdom2-worker"
+            prefix: "ROEM1"
+            username: "ROEM1_wisdom2-worker"
+            password: "ROEM1_wisdom2-worker"
+      attributeValues:
+        capabilities.rabbitmq_endpoint.ip_address: "10.197.214.152"
+        state: "started"
+
+  - nodeType: "artemis.rabbitmq.pub.nodes.RabbitMQService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] RabbitMQ AtosComint"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        rabbitmq_endpoint:
+          properties:
+            port: "5672"
+            protocol: "amqp"
+            queue: "pm.apps.atos-comint"
+            prefix: "ROEM1"
+            username: "ROEM1_atos-comint"
+            password: "ROEM1_atos-comint"
+      attributeValues:
+        capabilities.rabbitmq_endpoint.ip_address: "10.197.214.152"
+        state: "started"
+
+  - nodeType: "artemis.rabbitmq.pub.nodes.RabbitMQService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] RabbitMQ ML"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        rabbitmq_endpoint:
+          properties:
+            port: "5672"
+            protocol: "amqp"
+            queue: "pm.apps.atos-machine-learning-interaction"
+            prefix: "ROEM1"
+            username: "ROEM1_atos-machine-learning-interaction"
+            password: "ROEM1_atos-machine-learning-interaction"
+      attributeValues:
+        capabilities.rabbitmq_endpoint.ip_address: "10.197.214.152"
+        state: "started"
+
+  - nodeType: "artemis.redis.pub.nodes.RedisService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] Redis"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        redis_endpoint:
+          properties:
+            port: "7001"
+            protocol: "redis"
+            prefix: "/5"
+      attributeValues:
+        capabilities.redis_endpoint.ip_address: "redis.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.redis.pub.nodes.RedisService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] Redis RM"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        redis_endpoint:
+          properties:
+            port: "7002"
+            protocol: "redis"
+            prefix: "/5"
+      attributeValues:
+        capabilities.redis_endpoint.ip_address: "redis-cache.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.elasticsearch.pub.nodes.ElasticSearchService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] Se TextAnalysis"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      properties:
+        index_basename: "?prefix=uc_roem_1_wisdom"
+      capabilities:
+        elasticsearch:
+          properties:
+            port: "9300"
+        http:
+          properties:
+            port: "9200"
+      attributeValues:
+        capabilities.http.ip_address: "10.197.214.222"
+        state: "started"
+
+  - nodeType: "artemis.mariadb.pub.nodes.MariadbService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] MariaDB Wisdom"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        mariadb_endpoint:
+          properties:
+            port: "3306"
+            protocol: "mysql2"
+            username: "ROEPMWisdom2_1"
+            password: "ROEPMWisdom2_1"
+            prefix: "ROEPMWisdom2_1"
+      attributeValues:
+        capabilities.mariadb_endpoint.ip_address: "mariadb.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HdfsRepositoryService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] HDFS CODE"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_repository:
+          properties:
+            path: "/spark_jar/roem"
+      attributeValues:
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HdfsRepositoryService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] HDFS ComEvents"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_repository:
+          properties:
+            path: "/roem_1/ROE-ComEvents"
+            port: "50070"
+      attributeValues:
+        capabilities.hdfs_repository.ip_address: "hdfs-default.artemis.public"
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HdfsRepositoryService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] HDFS InputData"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_repository:
+          properties:
+            path: "/roem_1/ROE-ComEvents"
+      attributeValues:
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HdfsRepositoryService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] HDFS MODELS"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_repository:
+          properties:
+            path: "/roem_1/ROE-Models/Models"
+      attributeValues:
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HdfsRepositoryService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] HDFS OutputDatas"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_repository:
+          properties:
+            path: "/roem_1/ROE-Models/Interests"
+      attributeValues:
+        state: "started"
+
+  - nodeType: "artemis.hadoop.pub.nodes.HdfsRepositoryService"
+    nodeTypeVersion: "a4c_version"
+    name: "[ROEM] HDFS Productions"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_repository:
+          properties:
+            path: "/roem_1/ROE-Productions"
+      attributeValues:
+        capabilities.hdfs_repository.ip_address: "hdfs-default.artemis.public"
+        state: "started"

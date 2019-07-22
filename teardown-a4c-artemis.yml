@@ -1,0 +1,12 @@
+---
+- hosts: all
+  name: Teardown A4C, Yorc & Consul (stop processes and cleanup folders).
+  become: false
+
+  roles:
+    - { role: roles/stop-a4c }
+    - { role: roles/delete-a4c }
+    - { role: roles/stop-yorc }
+    - { role: roles/delete-yorc }
+    - { role: roles/stop-consul }
+    - { role: roles/delete-consul }

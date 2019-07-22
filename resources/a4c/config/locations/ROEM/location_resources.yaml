@@ -1,0 +1,391 @@
+resources:
+    # The default K8S container implementation
+    - resourceType: "org.alien4cloud.kubernetes.api.types.Container"
+      resourceName: "K8S Docker container"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+    - resourceType: "org.alien4cloud.kubernetes.api.types.Container"
+      resourceName: "K8S Docker container (preStop)"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:
+        container:
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - bin/api-pre-stop && sleep 15
+    # The default K8S deployment implementation
+    - resourceType: "org.alien4cloud.kubernetes.api.types.Deployment"
+      resourceName: "K8S Deployment"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:
+        spec:
+          template:
+            spec:
+              imagePullSecrets:
+                - name: service-applicatif-git-secret
+    # ROEM K8S specific deployment implementation
+    - resourceType: "org.alien4cloud.kubernetes.api.types.Deployment"
+      resourceName: "K8S [ROEM] Deployment"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:
+        spec:
+          template:
+            spec:
+              imagePullSecrets:
+                - name: service-applicatif-git-secret
+              hostname: profile-manager-worker
+              subdomain: roem
+    # The default K8S NodePort service implementation
+    - resourceType: "org.alien4cloud.kubernetes.api.types.Service"
+      resourceName: "K8S NodePort service"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+    # The K8S ClusterIP service
+    - resourceType: "org.alien4cloud.kubernetes.api.types.Service"
+      resourceName: "K8S ClusterIP service"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:
+        spec:
+          service_type: ClusterIP
+    # A K8S ClusterIP service with Ingress
+    - resourceType: "org.alien4cloud.kubernetes.api.types.IngressService"
+      resourceName: "K8S Ingress / ClusterIP service"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:
+        spec:
+          service_type: ClusterIP
+    # An empty dir
+    - resourceType: "org.alien4cloud.kubernetes.api.types.volume.EmptyDirVolumeSource"
+      resourceName: "K8S EmptyDir"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+    # A K8S Secret Volume
+    - resourceType: "org.alien4cloud.kubernetes.api.types.volume.SecretSource"
+      resourceName: "K8S Secret volume"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+    # A K8S persistent volume claim for ROEM
+    - resourceType: "org.alien4cloud.kubernetes.api.types.volume.PersistentVolumeClaimStorageClassSource"
+      resourceName: "K8S PersistentVolumeClaim"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:
+        spec:
+          claimName: roem-profilemanager
+    # A K8S ClusterIP service with Ingress with certificates
+    - resourceType: "org.alien4cloud.kubernetes.api.types.IngressService"
+      resourceName: "K8S Profile Deployer TLS Ingress / ClusterIP"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:
+        host: roem-profile-deployer-api.artemis.public
+        tls_crt: |
+          MIIDtjCCAp6gAwIBAgIJAKsAC5FkoomqMA0GCSqGSIb3DQEBCwUAMGMxCzAJBgNV
+          BAYTAkZSMQ0wCwYDVQQKEwRBdG9zMQ0wCwYDVQQLEwRCdWxsMRMwEQYDVQQDDAph
+          cnRlbWlzX3BmMSEwHwYJKoZIhvcNAQkBFhJhY3BmQGFydGVtaXMubG9jYWwwHhcN
+          MTgwOTI4MDY1ODAwWhcNMTkwOTI4MDY1ODAwWjBhMQswCQYDVQQGEwJGUjENMAsG
+          A1UEChMEQXRvczEQMA4GA1UECxMHQXJ0ZW1pczExMC8GA1UEAxMocm9lbS1wcm9m
+          aWxlLWRlcGxveWVyLWFwaS5hcnRlbWlzLnB1YmxpYzCCASIwDQYJKoZIhvcNAQEB
+          BQADggEPADCCAQoCggEBAK/llETydyhD9CdKbGjWUrz+PESQtsH3mMDIyJ0oNB2g
+          KcfmAfZCsuuZVij8BuSKOkVzNJrFGnh8lyPMtsvn/5T694To3hyrm9l5If4A55Gm
+          t9lNErQSqIsFcilI0rptDOOVjAdwR0t/22/dnvVtbqU3qWlLeazImustHHgzsFD9
+          mKyyKP1CHmxAxi4WUF6JPzpTFwOgknTlwIYmK21hXePG+B02Yp0w8tIdtXcSVp+9
+          aPITAn0qxxH3Uny9ZWa8b9tX4lBRFQ3Yry06/tUCY20VkdP1a0qlswx2eBiKXAKE
+          MCF+8gGAZvV5a1ZhaG0kTsyvsVPw7pm2ODKrrFEtoLUCAwEAAaNvMG0wDAYDVR0T
+          AQH/BAIwADAdBgNVHQ4EFgQUnpc+V8x4wkxd/v9BERpXpZSPT3EwCwYDVR0PBAQD
+          AgXgMBEGCWCGSAGG+EIBAQQEAwIGQDAeBglghkgBhvhCAQ0EERYPeGNhIGNlcnRp
+          ZmljYXRlMA0GCSqGSIb3DQEBCwUAA4IBAQAlLzxFZz5Ok9u5IRxhfEL+apUGadbn
+          OYxN4RJhGROtWMkcF8yqk+ZGIkCKSF7KdDkGwDxDJUCa5YdbpKR0XxCjWlhKIc0N
+          arGqJNAfMw4SmALMm3awYpBCRhho8aDz4Avq18pxWdB4UMWmQDXMkU/vllTAfFXN
+          caN0U4KbcUslYlPqsOeGXHrXJzJUhOI8nHKQUvIok4d4+MR0ssomnm8extrBCO+I
+          b5dQgf4aJsHRmBruuOTMbiIhbl5NnorpUlr/79n70g8c4EOr05hqCrYTZ5ujDFzw
+          xCZyGPp6+m8uhBpnNz4W3AXfr9FWgkydwaZ747prnG/Yq7GL0UAcDTTT
+        tls_key: |
+          MIIEpAIBAAKCAQEAr+WURPJ3KEP0J0psaNZSvP48RJC2wfeYwMjInSg0HaApx+YB
+          9kKy65lWKPwG5Io6RXM0msUaeHyXI8y2y+f/lPr3hOjeHKub2Xkh/gDnkaa32U0S
+          tBKoiwVyKUjSum0M45WMB3BHS3/bb92e9W1upTepaUt5rMia6y0ceDOwUP2YrLIo
+          /UIebEDGLhZQXok/OlMXA6CSdOXAhiYrbWFd48b4HTZinTDy0h21dxJWn71o8hMC
+          fSrHEfdSfL1lZrxv21fiUFEVDdivLTr+1QJjbRWR0/VrSqWzDHZ4GIpcAoQwIX7y
+          AYBm9XlrVmFobSROzK+xU/DumbY4MqusUS2gtQIDAQABAoIBAAFJzSw0GmtRFBi1
+          ktWxvClmM0rNRIlnJtdCoTWFddxBsAymwpzrICRZmyfxsJs75/FaRqhbiTYYs4Kv
+          nSchK94LeISgr//Fwf51xKn3l7qZXf9ZcSmgeVuLTqq+vcxfwBhqn/vt9pe2+AR5
+          uxBRHN5Y6gS7aMi7L2dJjUvUFRaCwd87y3MIt5g7FziCsTlC8snDhT8rF8wS5gOe
+          jfh5r2ApssZRAUHgN2I5oWUPhcJvTdlLZ1MEK966UvGbwjvgdTN+lj++8HPyz0mB
+          Kj8L8oxPJB0ySKMHLzAA8xhklWKWz+FRVUYYq+AXt6u6HCHZgtqvj3dreVmCEC+d
+          JP8BGoECgYEA2/5XhRMolisUHjjGytxKfk3lDBbfNOid5GCZMf7B0N7GglVZbBti
+          MbrXOo3xo8+fs2YKconPcU7sgMMkVfa4xl9FAeNt2ogp39xnMlPWKx15uMafxzx2
+          m2NbQdC417RwZxj4kpdEHkTPxs7b2x7WczK6DVW21q81pwaIKtJi0CsCgYEAzK+Z
+          NZsT3RUTWTzS3QAFIIsy1kpw2bnGvxIMIFl5OvehBtbp/YEFjJa8BCRfMcTh0xgq
+          XZfkdllWuktbRxk+0gsevy5jH2HPN65z7oZnGk61ON9Bdo5HgsKiF7KoCQNOM6F6
+          UutU1RUlgI8a9dxcam4BSu/b0P4D7iUHcnuKAp8CgYEAqv93DfRHXvpbJ+af9rzm
+          lmh7ujrpApoxaHwBeA/6nR0cleA7osFiQR9m/peolNjk3LBbPI6MFRnw0WFdlAgz
+          tdYFsKMUF4IxclVCTadG2LqPi6WwOlBwLPY8z9qqYthZannJdUBo7VI1YuYVlKvS
+          qzZp0cWnWhZUkOCN5SMlNYMCgYEAxaygTgDighSkhv4StpQaX3+PLRzfN6YOpuCL
+          DYLbbXNQ9AYCHGzKKyg3k9h8htgZL4CbCaBzZ0iIVYoJMPTUko1iuEfYOqp/MMst
+          8yGh2OpCYhZaZmCp90J4wGItneavU3WTaRkU6GRvv2R1KRQTvEVYwkI7C+8FZKwm
+          MQ3WDwkCgYBBh6ACe+HnhP/fCBlD00EhmTt0GPgQkwTEcIzLzkpfusDI9gp3uiv8
+          ax+bpWkp+x9Oj9jbtHsg2zJlz+bRMrvblLYzBGyCFd2mAqonHkDWSpRhEegLtOnU
+          281OhlY+R5dJ6bOv8pvwNm5PSP2BE8DIFCAAewcZScIf3pzXNoUoWw==
+    # A K8S ClusterIP service with Ingress with certificates for exchange-manager-api
+    - resourceType: "org.alien4cloud.kubernetes.api.types.IngressService"
+      resourceName: "K8S Exchange manager TLS Ingress / ClusterIP"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:
+        host: roem-exchange-manager-api.artemis.public
+        tls_crt: |
+          MIIDtTCCAp2gAwIBAgIIYBSCD7M7FSAwDQYJKoZIhvcNAQELBQAwYzELMAkGA1UE
+          BhMCRlIxDTALBgNVBAoTBEF0b3MxDTALBgNVBAsTBEJ1bGwxEzARBgNVBAMMCmFy
+          dGVtaXNfcGYxITAfBgkqhkiG9w0BCQEWEmFjcGZAYXJ0ZW1pcy5sb2NhbDAeFw0x
+          ODA5MjgwNjU5MDBaFw0xOTA5MjgwNjU5MDBaMGExCzAJBgNVBAYTAkZSMQ0wCwYD
+          VQQKEwRBdG9zMRAwDgYDVQQLEwdBcnRlbWlzMTEwLwYDVQQDEyhyb2VtLWV4Y2hh
+          bmdlLW1hbmFnZXItYXBpLmFydGVtaXMucHVibGljMIIBIjANBgkqhkiG9w0BAQEF
+          AAOCAQ8AMIIBCgKCAQEArBt1NYOXqT8AOFpVfHxTaQzRWWG8zWoTibd4b70Xy8Tq
+          C8tkagWuH5pQ1TjQH9rEJOnx6JrDux7VnyQnJVUfTeIiyh1FNLC3wrXt+4boORV4
+          jY/+t1KVFVczV6WJknmqbxP9Nv+EJX2h7aafEaUJXHdTSlY1IBET05+jR3t4bJn1
+          JAfw/1NRakyN4MZ5T0J7Orl71gC1pFMl6g3WppT1oOUgna7TNkk0tQJYl7VORXU7
+          KYafsbZyS/SWdFrHTHyCP9FZImoKkSQmGqmBRxgze9hmKNd+XcAjvdpvl/nOdRM0
+          1TfTjnpYaGzzemzcCE7opMUdqXYRW9Jc/1+EbAQkqwIDAQABo28wbTAMBgNVHRMB
+          Af8EAjAAMB0GA1UdDgQWBBSGUp+X9JWUlnSnHe7OwQdhemoyZzALBgNVHQ8EBAMC
+          BeAwEQYJYIZIAYb4QgEBBAQDAgZAMB4GCWCGSAGG+EIBDQQRFg94Y2EgY2VydGlm
+          aWNhdGUwDQYJKoZIhvcNAQELBQADggEBAMpBtgpDIEZEgBy5N/h40hSzz2MUpEM9
+          Ad9g3XqQKUIz/Z7Ev6T9GFt1W22y3duWeC8fw/sWHZEruWd/gzjLRFhdIyno+rpG
+          epW7flKSH90G8KQqggwoleeTenST8LgsBomBAg4qeo6q0JbebEqK4sIrZLoQ4rqc
+          wBcMkdXeGCeCZrA3dHys+fpeU8qUeGS5dvFjjcjteNSXLis58iWGnL7FWRzp9oKV
+          ip9gPmuPXboXfv2v/op/03Mf2mcCh8IWXyOmFX4sSrBvCgQHv8Z6NHh185TeNvth
+          C7Ihnr65PDHBGlYW7NtUhS6+A8uzZ6R7GEXzWkYy8Jso5H5l942AS3E=          
+        tls_key: | 
+          MIIEogIBAAKCAQEArBt1NYOXqT8AOFpVfHxTaQzRWWG8zWoTibd4b70Xy8TqC8tk
+          agWuH5pQ1TjQH9rEJOnx6JrDux7VnyQnJVUfTeIiyh1FNLC3wrXt+4boORV4jY/+
+          t1KVFVczV6WJknmqbxP9Nv+EJX2h7aafEaUJXHdTSlY1IBET05+jR3t4bJn1JAfw
+          /1NRakyN4MZ5T0J7Orl71gC1pFMl6g3WppT1oOUgna7TNkk0tQJYl7VORXU7KYaf
+          sbZyS/SWdFrHTHyCP9FZImoKkSQmGqmBRxgze9hmKNd+XcAjvdpvl/nOdRM01TfT
+          jnpYaGzzemzcCE7opMUdqXYRW9Jc/1+EbAQkqwIDAQABAoIBAD70qFJT+ZVCY205
+          tg2cWNKTirzcYLjvNYhp4ZdWHy89r7Nyyh9yRnhu9WSZrKAKYTdzkDba7gAzzkax
+          bdRdJ99QehNe06Lrhbym2g/pEGdZMEjwRGeAwOIWjMRh3EoFUU/iivykSQ2BwErz
+          aTqGGT+GsqP9lt9M/+ioe4y5YJqwuLGmw7P9Cpjxye7ERfZWriv7YYRNwQvR3YRa
+          Jm38124umRv+sQXYHLjmXXTfcMoz6Uqz+PvuSqNPWftSa7dVoQTEcwOgHyW/YPMK
+          UbKAmuosq2YgJU4Hwj6HRGLLY++fvj+qt7bE1cRciEE+4pnjwaT8XMg5fBcMUXKj
+          1urSzgECgYEA4ENAimHDD9MDNwjLGiT+zncaloCurROUIf19l0HYSI5XrTRLpgq4
+          xKZH6yhKSZ7mPFv3iGhGKf4dab4GujuIsA7UGymMhhCcB4OFqhHCHuCan4UgA6gc
+          rQaWVkg2ELWsR6SsASBAfuFsVSesKD4sItOZ1w3c2VICvPoEvETnP6sCgYEAxHau
+          a2xsRgMYJNRZVhpg1/PMB39scCc1rxRjSDOyl0brpPRUcI6/EMLH0JLUY2gHBLZf
+          afvNOT2epje9K+tnCk24dolLAi5M3eJAP64GAd4gVuDuiLUX3nz8q4t1+KPzWj8i
+          NK4OqM8iOnVnUA2Zk/jD+QVbeK5t4Lk2ajzFrwECgYBujVicnxLckyYLlD8jFUez
+          Gg22UZtKYNNuahrmXKQ1KE5aaOQ95x0se9gKOaNdZYKUELYWvWiRPN7dCLsiRUTd
+          nYG8HiBS2o9AOPrEWtq6A/jVWHfutYnlVdD4mcJlPFnAO5I7P93rbk7ML7FzaSqy
+          xGMbG49aZk5JQGrjMIha3wKBgGUMVfHStm3cMZLf1YM/1ge80XgZxgB5alc+uUHt
+          tTGxvIn/UV8DTKqmRHe2zZ7DZri5xKGSbZ+/XdZIXPg1/62BBBuTygy5G7gUIs+e
+          BmD3itKkpouR+VDqIFtrQ6Y7TXNhfYpy6/9Pal9++0BlflRpYwK2CrIrpUAsgxxp
+          XZQBAoGAedguJrG2LLSspLxg3+2UJeYw4wUNZdyDsp/33ICpTQB9cBd1YlYECY2f
+          UaYPjQ+I+zbLtu56E8/9ErcZKa6HIwiJL9CDxedUJbBAM7kCDQWzqyyuFS6cFw4z
+          8Q90EgerPvG4MNGlzMCWIhqAuTarsmhL+x8Ows1jUE88p43hRsE=
+    # A K8S ClusterIP service with Ingress with certificates for profile-manager-api
+    - resourceType: "org.alien4cloud.kubernetes.api.types.IngressService"
+      resourceName: "K8S Profile manager TLS Ingress / ClusterIP"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:        
+        host: roem-profile-manager-api.artemis.public
+        tls_crt: |
+          MIIDtDCCApygAwIBAgIISVN+U5rS+dUwDQYJKoZIhvcNAQELBQAwYzELMAkGA1UE
+          BhMCRlIxDTALBgNVBAoTBEF0b3MxDTALBgNVBAsTBEJ1bGwxEzARBgNVBAMMCmFy
+          dGVtaXNfcGYxITAfBgkqhkiG9w0BCQEWEmFjcGZAYXJ0ZW1pcy5sb2NhbDAeFw0x
+          ODA5MjgwNjU3MDBaFw0xOTA5MjgwNjU3MDBaMGAxCzAJBgNVBAYTAkZSMQ0wCwYD
+          VQQKEwRBdG9zMRAwDgYDVQQLEwdBcnRlbWlzMTAwLgYDVQQDEydyb2VtLXByb2Zp
+          bGUtbWFuYWdlci1hcGkuYXJ0ZW1pcy5wdWJsaWMwggEiMA0GCSqGSIb3DQEBAQUA
+          A4IBDwAwggEKAoIBAQDI/vL5860xyfKw1jlzDRh6GWhSoTjSFCCm2YCJViXxescx
+          KmnHja80ypkIYP/Pk+nGWuGKMcMNXkRnwNq0wxOhQYRw0KetB8FFojSNzC9eImvs
+          V5MOzkFHUYwtsKGy/zNO4kv63L7mgMy2VZIaYih4hMF7DsGHnCHopSZbwqbBSC06
+          t+KmDofFN233w5BLFApr+tIrswxsQDKJetCeccMPrWb8ic3SPalLUHpKF2t3JMMu
+          7ZinBOhS6PlufKctEPEjAtEYUG6KRjT+feLZi2wh6DiSBJwg7aMC/lFSa2RwUBvz
+          EJRvbrHKMh74v4dQHG1kHSq7n6y5Jk3qEA7DAeXRAgMBAAGjbzBtMAwGA1UdEwEB
+          /wQCMAAwHQYDVR0OBBYEFKs4lyJnz9DEKL+HbQ0nmdBRLiqlMAsGA1UdDwQEAwIF
+          4DARBglghkgBhvhCAQEEBAMCBkAwHgYJYIZIAYb4QgENBBEWD3hjYSBjZXJ0aWZp
+          Y2F0ZTANBgkqhkiG9w0BAQsFAAOCAQEAR9dgZtFufujy9YN1CpdThDIHc/4dJZCQ
+          HVQd/53aqx2fELAgdymV4dZEKOK1SB7+7ACUcfXUVW0boVA49jP9dANid6DlC2Cj
+          s5eho5zQzQUd8G0DgXgwzBkyod04eKK+p+D+5f8v3/ZwCXHFfLIXfqYXl2mch1HG
+          mg81WxRgM49/COEmNxxV8w5utz1rltszunaZkfXAI3NfF1jt5ZFKP3MQQp4Cyb2B
+          Z/4uWG+ap9QUzNNj7hlgC+HVfLz143rgL9wGGWDO/J5bRknqmrtMdrwiDrp70lpX
+          EDblEyLZQ+2kooO6ip9QBXlbTTo/keFKg3h7fTLqofmEPVcdoUJ+4g==  
+        tls_key: | 
+          MIIEpAIBAAKCAQEAyP7y+fOtMcnysNY5cw0YehloUqE40hQgptmAiVYl8XrHMSpp
+          x42vNMqZCGD/z5PpxlrhijHDDV5EZ8DatMMToUGEcNCnrQfBRaI0jcwvXiJr7FeT
+          Ds5BR1GMLbChsv8zTuJL+ty+5oDMtlWSGmIoeITBew7Bh5wh6KUmW8KmwUgtOrfi
+          pg6HxTdt98OQSxQKa/rSK7MMbEAyiXrQnnHDD61m/InN0j2pS1B6ShdrdyTDLu2Y
+          pwToUuj5bnynLRDxIwLRGFBuikY0/n3i2YtsIeg4kgScIO2jAv5RUmtkcFAb8xCU
+          b26xyjIe+L+HUBxtZB0qu5+suSZN6hAOwwHl0QIDAQABAoIBAHMUXeO0m/48xSJw
+          lVYFMnV+JJfizRijA4rkT07Sr0jSZkgFI6lout77/KCqgOzFoHy8PhQUp7v4tCu/
+          ZLlIU+3pCD5biRVtsj//Ph3NwXUhOi+IeJ9qgj+mNh9W2U4WBbdto9kPGJH7PrpK
+          xisq9kcCo5CkgzP0tglwvUSeb0GL4I0CAqGBSetuSKXTuXl3WoxCGtiJhj0T7rii
+          jKTyHYp+gWTVRxtV7pkPoFNTk8vp6Ri4jsLa005+NRxK9IqFoYnJZMtFbhKwhGEn
+          3uSu2LsBm4vdaGPPzOL+z7vApTPnj0wy6Wg6LjGVROmagWPbVKaL/aie9OFpxlmp
+          OPEBflECgYEA75qWL+c9D9jsewAwqDwB/U6PxBOzLfPx1iAp8a9xGLqwwE4gA41t
+          T1lO1ytF83JzFYBJRB3OhSbnscQA7imtfjab98SQxzvjQ+I6i7DoarMIL8s0nysM
+          Zdk6tdhml0GYaJEcIAANdlnUvb+2XNDnjCf6wqcTc3FTGEuz94eKNGUCgYEA1sAF
+          3W4dmr10fZsiLTJUjMQl+8jerB9r8BSEdeXqrFVo2z8IGXJD1gFh+00hQcT5XLjp
+          gAUJWCGFrERQ8Kd2D2voV66KbBRUeIu04v7REzMplywXrxESrTsKabPpaNcqkciX
+          ROwf+OafXQqeno06if1ltX2k1foQko0tQ5Huxv0CgYA4GfkKdFlOyZrtXekGqy5I
+          EkoFPhuZKeI5IcTQayTPBn92N5S1YDr09lNIfEBftS+PHD+LbHM7qBVeASe6nBWc
+          VMsGI4dGrxYSgfj1VlHFEfBbyHekwR6hBlEB3Q6AYgJ+kWOFdp2wVW5Dk4zuhJeC
+          sKW9SAN8507uhGM6FQleJQKBgQDHeUg5XU5cbLym65G8X7LPqmcJ0JSdVvaA494C
+          UVVBTHiAprTURiIix9gGgKdymw9xhEVIZ+U9Gq46zJ5OW467VmVUBMmJCP1Jl6Om
+          8kCsT+rDA+7f68Dobh4G/1nAy5Q8JBH2sEomfbnrx7B83/xPLrPp+FJDe+sm5cH0
+          sLoV1QKBgQCZe1t81oZNmm9PUHz5HW8U8EUe+ePvk6dwhnbNHkmQ+Au6iPICv+3H
+          5/o9L2T+K1eB4c21/3n9LRPdAlRJ7CL/Kw/z7pf8ZNVx9G9ovZP1tk4VNNgSCaan
+          Kk7l9NfVFqTSmK+Yr+eoT19eUejvynPh96DOWzONWn0JQRzQVpexxQ==
+    # A K8S ClusterIP service with Ingress with certificates for wisdom
+    - resourceType: "org.alien4cloud.kubernetes.api.types.IngressService"
+      resourceName: "K8S Wisdom TLS Ingress / ClusterIP"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:
+        host: roem-wisdom-api.artemis.public
+        tls_crt: |
+          MIIDqzCCApOgAwIBAgIIUyVK5Fnk+r8wDQYJKoZIhvcNAQELBQAwYzELMAkGA1UE
+          BhMCRlIxDTALBgNVBAoTBEF0b3MxDTALBgNVBAsTBEJ1bGwxEzARBgNVBAMMCmFy
+          dGVtaXNfcGYxITAfBgkqhkiG9w0BCQEWEmFjcGZAYXJ0ZW1pcy5sb2NhbDAeFw0x
+          ODA5MjgwNjU5MDBaFw0xOTA5MjgwNjU5MDBaMFcxCzAJBgNVBAYTAkZSMQ0wCwYD
+          VQQKEwRBdG9zMRAwDgYDVQQLEwdBcnRlbWlzMScwJQYDVQQDEx5yb2VtLXdpc2Rv
+          bS1hcGkuYXJ0ZW1pcy5wdWJsaWMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+          AoIBAQDJs30kGtl7jd+hReGY1YsgiUsAsO/y/GQaAZvBvAKkk59imIICRx5OaZWY
+          6VFxgi8JL0Q7ABXHS6q3KP4T6i/A0L4uThsifpWujX9MY90JJRVLAOQRwbflL8xL
+          rA0LAmRAU4Rv896f+OQSz+XYP7Z2NuDHklru9hFBLHPwUsEWu6xVuvxLlcQwyjYG
+          YxLeyNs13X7ZOYy87EDo3QKv+imjQaeysydy1IUjAtI8nsh5nfpRV3RWxbfrIgb7
+          7IpiplFDkdJ3l8MjgJTc3aOfnaOpqSZUvm2keJEnsRI2SmKcic868c7hPEZuJm7B
+          SECCWGNdD43bj/13+MyR+gIVquuNAgMBAAGjbzBtMAwGA1UdEwEB/wQCMAAwHQYD
+          VR0OBBYEFLlSrYgvaH7CVLnp4MSxwF6PUiylMAsGA1UdDwQEAwIF4DARBglghkgB
+          hvhCAQEEBAMCBkAwHgYJYIZIAYb4QgENBBEWD3hjYSBjZXJ0aWZpY2F0ZTANBgkq
+          hkiG9w0BAQsFAAOCAQEANnmRttGWQDiXEzz/C1NB1gANwFM60voi5I+zUuQb9CEu
+          BE2Yzji9pQ1Uoy4TSHkcv5sWZEOdXQMIiV2ef/Z0z63ejn0432u8YRhaB96Z3H+G
+          kv0CONgEsj39mjEGZn3X8VdBAeKdmNEDOkbghYpcFxDWRbDf3NbT+y1xYQ3Z23I5
+          8ZyH/ywicaP+9//wUV48rTsQYOSNuurKq7ZVHMC7aWAKpKnt1ejmCeegcbCMWBh+
+          SLkhcPbM/qyULeqFhskWTFt14ArWYbOAb3szDcYSOUXiqWu3lU+ZIquJnCph0fUB
+          8CcM7LGW0NeX7V3nvOuFj6afbks1TRWc5Lu71mVVGA==          
+        tls_key: | 
+          MIIEpAIBAAKCAQEAybN9JBrZe43foUXhmNWLIIlLALDv8vxkGgGbwbwCpJOfYpiC
+          AkceTmmVmOlRcYIvCS9EOwAVx0uqtyj+E+ovwNC+Lk4bIn6Vro1/TGPdCSUVSwDk
+          EcG35S/MS6wNCwJkQFOEb/Pen/jkEs/l2D+2djbgx5Ja7vYRQSxz8FLBFrusVbr8
+          S5XEMMo2BmMS3sjbNd1+2TmMvOxA6N0Cr/opo0GnsrMnctSFIwLSPJ7IeZ36UVd0
+          VsW36yIG++yKYqZRQ5HSd5fDI4CU3N2jn52jqakmVL5tpHiRJ7ESNkpinInPOvHO
+          4TxGbiZuwUhAglhjXQ+N24/9d/jMkfoCFarrjQIDAQABAoIBACXTFQqqRlKXPnK9
+          6hqBIUAOvxP4GmdU0WjXGGByY4R9coxI0UigEZzezAEK8Az7PtrYFFGEKJFhLTh/
+          5XXSmvXrr157ozcKygMb4d1vdMn8PEv+dManr1a5afRe5WtFHYu6ncFo2DzjrdGh
+          TxcIi60LiYejeI4Lcxznuy48Np2OaokE+bWX3c0nEBiJgWdzTyciPlCxpKPdfydt
+          UOzjhTR5W8zOMBGmhiaN2zhMCuFP6/D5SNLEwAFtsAdly3u2VPLJfiemILMXO3VK
+          5CeVVi6yR+yEUU6FIqZ5Sr8biMMITuw27TYjfIuTqA+TTiypsm0Uh2y7CSCnGTIW
+          c+RGAjkCgYEA/B7gvwtYPmuZNtY1NDHYnJJsk0xqNqKYLYUVC5sWUGEBbyohpFKw
+          CFfURd8jpE60UArBzEbafT6isRPYsyZaHGz7C6NSJ4Fnf9s+wia91Xjr+s8eEjQS
+          HC0+VgwnPLCLCd/MzJd4H75s3D1QARIuALrVZ1MivUvZ0RkjB+bNvvMCgYEAzM4B
+          N71v5uZgVo6sDxB9oDJY2iiJEep1VzwHHTzfzkK9Md1OC/CjTediq2YJYqEVzGsN
+          mXrpC/gofGtZ+kgiCGfOX30nuwT1U5GMWoah8gRnNnY/tb2A4vfzJaOcluREDWAF
+          m/2uQ/OAVtU4PhsOnfub/8NTAgW0tgq9cLC4S38CgYAgI0d+0tFi05BqPw/1IU19
+          V+TjOeBoKn2/f7FZE2HaySLHqtUy/x9VUOzMI0+FyEqP0W82vOlpAaz3aZI78+2U
+          pgeyShVU19f7olTzpsCYD5v1EqXAqEaOtO23RkFSKSbwEUkn4z76vOlfgalLGagn
+          i6lcTGqnOp3/W3btsOwVJQKBgQDK/GaykzxksvLK929LIwIQE7aCyuhH7IROaL14
+          WgxMR1NzJ6+iH+gLX4ko7eHhclzDlVsOQobWiSe/YTr12CZ7BD/D3qzRLLHmGPzu
+          AEBkOb7+eKbefytOSYghRw79ctKMGx6UJBNjX+VUqtGqpHCRXn6YOUR9XaBlSTHH
+          ji+rCwKBgQD5s+m4dJGjyfSrcopomQDbQv/DPYrb8EV5FYU+XMvkFa7oLmzysSKZ
+          Ip77i32uvwByygtVSv1F+/zdEtCSdvggSohojMQXNFNV7aIYHplThECjvbRtKXo7
+          XknQFshXNDW3XNLKK4zwIs+890I992UQtKDkF+w3g/a37UNVr2Q1Lw==
+    # A K8S ClusterIP service with Ingress with certificates for cogitoapi
+    - resourceType: "org.alien4cloud.kubernetes.api.types.IngressService"
+      resourceName: "K8S Cogitoapi TLS Ingress / ClusterIP"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:
+        host: roem-cogito-api.artemis.public
+        tls_crt: |
+          MIIDrDCCApSgAwIBAgIJAPOTzRGbbsEdMA0GCSqGSIb3DQEBCwUAMGMxCzAJBgNV
+          BAYTAkZSMQ0wCwYDVQQKEwRBdG9zMQ0wCwYDVQQLEwRCdWxsMRMwEQYDVQQDDAph
+          cnRlbWlzX3BmMSEwHwYJKoZIhvcNAQkBFhJhY3BmQGFydGVtaXMubG9jYWwwHhcN
+          MTgxMDEwMDYzMzAwWhcNMTkxMDEwMDYzMzAwWjBXMQswCQYDVQQGEwJGUjENMAsG
+          A1UEChMEQXRvczEQMA4GA1UECxMHQXJ0ZW1pczEnMCUGA1UEAxMecm9lbS1jb2dp
+          dG8tYXBpLmFydGVtaXMucHVibGljMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+          CgKCAQEA0bABmrk5PMNk5E1CprPr843riqjE1qYmeeGpQyUnH2BD1x8GKBYph2ro
+          MFer27pTbCK8TPPAiYDcy4QoE4UcceCthKlxWgIhMgMw7Bij+0BZ1FzJ9RHLZbN/
+          cZAs4sEo+gEaCyr0hA8nxRQBhpUXPc+BpTIIJpc/UUWZ2gPXIFrpGRH56Ap+Gwkn
+          s3CC4Ov/Nv68xGGIPNiVfl45GU1St0u6yNIFjmmvyOXWeVaHtDdLwYZi9Ym9n2Y5
+          Zy0FEEqUcK/hiw0AfHECQ2ZdZ5Tw7Rt1/Cm1itB+iKPdyzH/dc1JWn5DGtFGaCrx
+          FRw1rcaKI74Ni3ATYuvLB3FFc0yDXQIDAQABo28wbTAMBgNVHRMBAf8EAjAAMB0G
+          A1UdDgQWBBR9pcoGBhW5bbQjGRUpm4rtuA7hujALBgNVHQ8EBAMCBeAwEQYJYIZI
+          AYb4QgEBBAQDAgZAMB4GCWCGSAGG+EIBDQQRFg94Y2EgY2VydGlmaWNhdGUwDQYJ
+          KoZIhvcNAQELBQADggEBAFQLF/abfPYDX5b7Y1QSui00m6vX+sKwRs8/3iXKoCeG
+          nu51CSLCixfCP3vhfyXQtv3S3XyjqXk+e6OC8dVE+Qu57EWwsW+dY4o0963RxlA0
+          xxGYb3YvsAbop0crMdSkJ57ZthzVanLn6HuE7EwZextQ7ugizsR4bP3w+wXuVqjG
+          4Uw7TvzeoEKuhuvSx9k0HB6SEb1dar9Gdprhor98MjdUdJFGHkQboa1YrYhf6aD+
+          kZgZTn2x4gmC6SG1rlfiLC8ava6IhO8i50j5h5K+n0KEhhvv/YNoAHbXyTMrzSMP
+          kUyFqVLZViAWhCicpFzihZDYffyKIVSGuI+5j9+iQ5Q=          
+        tls_key: | 
+          MIIEowIBAAKCAQEA0bABmrk5PMNk5E1CprPr843riqjE1qYmeeGpQyUnH2BD1x8G
+          KBYph2roMFer27pTbCK8TPPAiYDcy4QoE4UcceCthKlxWgIhMgMw7Bij+0BZ1FzJ
+          9RHLZbN/cZAs4sEo+gEaCyr0hA8nxRQBhpUXPc+BpTIIJpc/UUWZ2gPXIFrpGRH5
+          6Ap+Gwkns3CC4Ov/Nv68xGGIPNiVfl45GU1St0u6yNIFjmmvyOXWeVaHtDdLwYZi
+          9Ym9n2Y5Zy0FEEqUcK/hiw0AfHECQ2ZdZ5Tw7Rt1/Cm1itB+iKPdyzH/dc1JWn5D
+          GtFGaCrxFRw1rcaKI74Ni3ATYuvLB3FFc0yDXQIDAQABAoIBAACmRer/xeCdTlOy
+          tZEkn4d6mg8s5Kcxjo70Fv0hQVTEjJE/BFrdbrV/rEZyDxM4KYf9N44ZdzA12Pk8
+          aI9e6y6jHoZ5q+M2fHnWLrGche2CToTs4KdErdebzbpBUxJEvObBWB5OvMEn9tyS
+          akrLbW4AlYs4c3QDJewPhiF5v5HXFNBDGQ2ggfdQewTH/dIgNI3CNXrbuaa/fVaM
+          2l6WRUg8HZsrjUqXvd+W0pwQr9Z89dT+MLTJzhEoGlatDNge2sdbL6l3dZ9Qyxzx
+          wTlJAR53SIFpV1WeNgeqzy39MmiDFdMPiZvD7f0y67IUMTw/xnmPOedxEBGPni6N
+          urGng2ECgYEA65SmautDjq32hfjSX9glxc10TcOCH+PqoQLRi9qLvuKlt5MYqFsg
+          ifnMVY7A3fwDmz0Mt0Q1iVr5EoNQjOOugYTWDlsr2mt21YLVfYzq3yEcAbGdAFZx
+          1/ReL3SM5wVl2aI5iLLWnhBahag9VMZLx2D+6R6sLNrw7wjA9m6HJmkCgYEA49zO
+          yVgg/ELk0A8Y9r+ZOrgG+uYhmjGofKEkG6pm8cZGXuiZQUYpCGMHmQSxh3MYzZTX
+          XssqxVcg3MPYB7j4QpOeh/W3a7Wnqe4hr+HxcQvOTtf8AOvMzxZd1a+0/Q/weF0D
+          katmKM+7HT0XOyVCXDDWhK+k/bSDYXQU4hTnXtUCgYAbNSrXNF60DtFm/arGWP9b
+          zfO9u3O+3SLO/7VV0qLLJAABqKJzZzrl1IzN4NPTj3SXLEDYta79Mx2LDtFxxCX2
+          XXIfbFYvPrQVyqt/eZPyuy8x3uKEFHfHejiagHp5f/0YWo0MhaMV1EuwHhMfRFui
+          JkiqgdlewNaMtNUcYP2I6QKBgQCmv/g0MGIzOWDpQaMrL5ua9QFmqvL8PEroqaQa
+          +uDLHiZxXhaJRibRFGeC+4RPc1M7XykdHeD2+YP7CvcU76/+SLlDFfZcxFsmaDYO
+          2HIwIEuiNz0cD3OaOOwCbMsuRnPcIXVzLNNeGmb8RrCxf9rITJUwFLnRUEC1GJYP
+          vOx04QKBgDnaBF9X7NYUo0/wwhXLGocsalfjTtE+hGtph8HgMpTiEdSUQij3htEW
+          W/QTDy+JZIfCbjfdY6x2yNHZp/L2f3pBSvUq7gbmg8x+PV1RBKw/S2Yi1ppUdk2a
+          MPg17HwOpJeZB7XCIV7HdPLviMe6kPu/KTzYCdf6bf3xwhIKX3xK
+# Prestop and readinessProbe Docker container          
+    - resourceType: "org.alien4cloud.kubernetes.api.types.Container"
+      resourceName: "K8S container PreStop Readiness"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:
+        container:
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - bin/api-pre-stop && sleep 15
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /ping
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1

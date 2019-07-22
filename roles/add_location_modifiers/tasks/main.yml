@@ -1,0 +1,96 @@
+---
+
+- set_fact:
+    alien_url: "{{ a4c_protocol }}://{{ a4c_ip }}:{{ a4c_port }}"
+
+- name: Create temporary folder
+  tempfile:
+    state: directory
+  register: temp_dir
+
+- set_fact:
+    file_dir: "{{ temp_dir.path }}"
+
+- name: "Ensure <{{ file_dir }}> exists"
+  file:
+    path: "{{ file_dir }}"
+    state: directory
+
+- name: "Upload artifact {{resources_file_artifact}} on remote in {{ file_dir }}/resources.yaml"
+  copy:
+    src: "{{resources_file_artifact}}"
+    dest: "{{ file_dir }}/resources.yaml"
+
+- name: "Stat {{ file_dir }}/resources.yaml"
+  stat: path="{{ file_dir }}/resources.yaml"
+  register: resources_file
+
+- name: Slurp resources files
+  slurp:
+    src: "{{ file_dir }}/resources.yaml"
+  register: resources_slurped
+  when: resources_file.stat.exists
+
+- set_fact:
+    resources_yaml: "{{resources_slurped['content'] | b64decode | from_yaml}}"
+# - debug:
+#     var: resources_yaml
+
+- set_fact:
+    modifiers: "{{resources_yaml['modifiers']}}"
+# - debug:
+#     var: resources
+
+- debug:
+    msg: "{{item}}"
+  with_items: "{{modifiers}}"
+
+- name: "Login onto A4C using {{ alien_url }}/login?username={{ a4c_admin_usr }}&password={{ a4c_admin_pwd }}&submit=Login"
+  uri:
+    url: "{{ alien_url }}/login?username={{ a4c_admin_usr }}&password={{ a4c_admin_pwd }}&submit=Login"
+    method: POST
+    return_content: yes
+    status_code: 302
+    validate_certs: no
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+  register: login
+
+- set_fact:
+    session_id: "{{ login.set_cookie.split(';')[0] }}"
+
+- name: "Create location modifier using {{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/modifiers"
+  uri:
+    url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/modifiers"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    HEADER_cookie: "{{ session_id }}"
+    body:
+      pluginId: "{{ item['pluginId'] }}"
+      beanName: "{{ item['beanName'] }}"
+      phase: "{{ item['phase'] }}"
+    body_format: json
+    status_code: 200
+  register: result
+  with_items: "{{modifiers}}"
+
+- set_fact:
+    orders: "{{resources_yaml['orders']}}"
+
+- debug:
+    msg: "{{item}}"
+  with_items: "{{orders}}"
+
+- name: "Change location modifiers orders"
+  uri:
+    url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/modifiers/from/{{ item['from'] }}/to/{{ item['to'] }}"
+    method: PUT
+    return_content: yes
+    validate_certs: no
+    HEADER_cookie: "{{ session_id }}"
+    status_code: 200
+  register: result
+  with_items: "{{orders}}"
+# - debug:
+#     var: result

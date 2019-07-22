@@ -1,0 +1,48 @@
+---
+- set_fact:
+    alien_url: "{{ a4c_protocol }}://{{ a4c_ip }}:{{ a4c_port }}"
+
+- set_fact:
+    url: "{{ alien_url }}/login?username={{ a4c_admin_usr }}&password={{ a4c_admin_pwd }}&submit=Login"
+
+- name: "Login onto A4C using {{url}}"
+  uri:
+    url: "{{url}}"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    status_code: 302
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+  register: login
+
+- set_fact:
+    session_id: "{{ login.set_cookie.split(';')[0] }}"
+
+- set_fact:
+    url: "{{ alien_url }}/rest/latest/orchestrators"
+
+- name: "Get Orchestrator {{ orchestratorName }}"
+  uri:
+    url: "{{ alien_url }}/rest/latest/orchestrators?query={{ orchestratorName }}&connectedOnly=true"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    HEADER_cookie: "{{ session_id }}"
+    status_code: 200
+  register: result
+
+- set_fact:
+    content: "{{ result.content }}"
+
+- set_fact:
+    request_result: "{{ content.data }}"
+
+- debug:
+    var: request_result
+
+- set_fact:
+    orchestratorId: "{{ request_result.data[0]['id'] }}"
+
+- debug:
+    var: orchestratorId

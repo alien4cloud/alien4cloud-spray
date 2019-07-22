@@ -1,0 +1,128 @@
+resources:
+    # The default K8S container implementation
+    - resourceType: "org.alien4cloud.kubernetes.api.types.Container"
+      resourceName: "K8S Docker container"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+    # The default K8S deployment implementation
+    - resourceType: "org.alien4cloud.kubernetes.api.types.Deployment"
+      resourceName: "K8S Deployment"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:
+        spec:
+          template:
+            spec:
+              imagePullSecrets:
+                - name: service-applicatif-git-secret
+    # The default K8S NodePort service implementation
+    - resourceType: "org.alien4cloud.kubernetes.api.types.Service"
+      resourceName: "K8S NodePort service"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+    # The K8S ClusterIP service
+    - resourceType: "org.alien4cloud.kubernetes.api.types.Service"
+      resourceName: "K8S ClusterIP service"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:
+        spec:
+          service_type: ClusterIP
+    # A K8S ClusterIP service with Ingress
+    - resourceType: "org.alien4cloud.kubernetes.api.types.IngressService"
+      resourceName: "K8S Ingress / ClusterIP service"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:
+        spec:
+          service_type: ClusterIP
+    # An empty dir
+    - resourceType: "org.alien4cloud.kubernetes.api.types.volume.EmptyDirVolumeSource"
+      resourceName: "K8S EmptyDir"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+    # A K8S Secret Volume
+    - resourceType: "org.alien4cloud.kubernetes.api.types.volume.SecretSource"
+      resourceName: "K8S Secret volume"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+    # A K8S persistent volume claim for AIS
+    - resourceType: "org.alien4cloud.kubernetes.api.types.volume.PersistentVolumeClaimStorageClassSource"
+      resourceName: "K8S PersistentVolumeClaim"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:
+        spec:
+          claimName: metoc-data-pvc
+    # A K8S persistent volume claim for AIS
+    - resourceType: "org.alien4cloud.kubernetes.api.types.volume.PersistentVolumeClaimStorageClassSource"
+      resourceName: "K8S PersistentVolumeClaimCache"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:
+        spec:
+          claimName: ais-carto-pvc          
+    # A K8S ClusterIP service with Ingress with certificates
+    - resourceType: "org.alien4cloud.kubernetes.api.types.IngressService"
+      resourceName: "K8S Ingress  mapCache/ ClusterIP service"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+      properties:
+        host: ais-mapcache.artemis.public
+        tls_crt: |
+          MIIDqDCCApCgAwIBAgIIMnflUnJbgjMwDQYJKoZIhvcNAQELBQAwYzELMAkGA1UE
+          BhMCRlIxDTALBgNVBAoTBEF0b3MxDTALBgNVBAsTBEJ1bGwxEzARBgNVBAMMCmFy
+          dGVtaXNfcGYxITAfBgkqhkiG9w0BCQEWEmFjcGZAYXJ0ZW1pcy5sb2NhbDAeFw0x
+          ODEwMTAxMTM1MDBaFw0xOTEwMTAxMTM1MDBaMFQxCzAJBgNVBAYTAkZSMQ0wCwYD
+          VQQKEwRBdG9zMRAwDgYDVQQLEwdBcnRlbWlzMSQwIgYDVQQDExthaXMtbWFwY2Fj
+          aGUuYXJ0ZW1pcy5wdWJsaWMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
+          AQDXw+fmbNneJGES/e8SgtOBCL9NmeaETigpKO8nvLcMBgiHrXU/Bolj3xR2S3/W
+          ePU3wg28mrxaDzHZdeknnwYujCE+mE3ThQh4WSEpq12ELMF3qlrXB8FSg2GFfd0W
+          7DmiCUhPFG9rb+NLai7GT0XVU3pm6f5h7L+wVEVg+ZScwZFx7NCWHapnHieCkuuq
+          9j6HhjSI2MTAbKsQyihKOfV8Vr1lSQJIhnL/BRYBIABMMqunb1FObTRyqF6g4FND
+          Z2dAE3bwCKoIh0NWK1LNyzJz7vvly+5dPajCVQVNJPDohDVjQ+8ZZ94Y5Ym4Vfjv
+          CcVafEC0GTq4zGxpAHof30crAgMBAAGjbzBtMAwGA1UdEwEB/wQCMAAwHQYDVR0O
+          BBYEFKv8KdZ4dsjoPMNVXsPwGgnhDvWeMAsGA1UdDwQEAwIF4DARBglghkgBhvhC
+          AQEEBAMCBkAwHgYJYIZIAYb4QgENBBEWD3hjYSBjZXJ0aWZpY2F0ZTANBgkqhkiG
+          9w0BAQsFAAOCAQEAQ9wBSzCqaB7opsssaIlmswiUkbwIDTIXa+tibfapOazgCFt2
+          sqU5/34lvcshz1WYe7nZ+rTMyCzTWqWu734uQT43doPXEIPf8rqMPcqsldVtcT3d
+          4eB9QSs8va1jdbCKLJfnISnNAQ+B4c+z/ZL97ng92lDep99I2W1RTOo1hz1g2Gvm
+          gxb+Zvr84zcS5yjmXfOGacqBk4Ah7QVueLYmy5gDswdjYzb27TJGX1vSSACY+Wz0
+          H2pKbJopen+vDt83GeqQ6E4psI4FTXs84XExqLfzx4fr29Ij/He/y+vC/twGTTp0
+          xAEKcsNVNrxCjTwSViDGmbo7yMm+PkM4GEWNAg==        
+        tls_key: |
+          MIIEpQIBAAKCAQEA18Pn5mzZ3iRhEv3vEoLTgQi/TZnmhE4oKSjvJ7y3DAYIh611
+          PwaJY98Udkt/1nj1N8INvJq8Wg8x2XXpJ58GLowhPphN04UIeFkhKatdhCzBd6pa
+          1wfBUoNhhX3dFuw5oglITxRva2/jS2ouxk9F1VN6Zun+Yey/sFRFYPmUnMGRcezQ
+          lh2qZx4ngpLrqvY+h4Y0iNjEwGyrEMooSjn1fFa9ZUkCSIZy/wUWASAATDKrp29R
+          Tm00cqheoOBTQ2dnQBN28AiqCIdDVitSzcsyc+775cvuXT2owlUFTSTw6IQ1Y0Pv
+          GWfeGOWJuFX47wnFWnxAtBk6uMxsaQB6H99HKwIDAQABAoIBAA4lmSnhjzNifT7q
+          iWdUTpvSQADNi3C3UyjHt06KsBHIv3xt4hcczZtPwB61eo9MZP+f6JiqKJlbD7Cr
+          a3sekSAyLefVwpyQx2pkpaj+xGXrLVA0Sjp5FrLbTGSdSQa8vFakdypAM8H+lw+V
+          ybVU80Y2b/sZcoVnKXZdQCNImfbhF0/q4stPniwkb/O1RWk4B/UPA+zfT6JwRucn
+          m2JBIylwoLjX/cKmiFZJxlRN+zaAgBR68meuPNYK3+zwx/ZNK1MEbH6dEdorFwDx
+          bgEkGC83rRfAOoHX6FjUW+DsANv0C0pxvNfyS4g2xXTikmVpmjE3yKYxBAUl9Nyy
+          AhcfxSkCgYEA+jowQRQWLlAzJOKYvofLYwaQ7HSL0ETfGC+mgfhMAqnkZaawbaXR
+          GGh1dzOinsmoHJs5e7CECI6WWSzFPTmG6tTvdgf/VXTQOB9BV1K2svWFnlyIx16a
+          mODOMwKNQcV/ozjjRfo6ZjnvcZDCk26Jh6flJ2aK3eNdhOoa3OBNlscCgYEA3L4w
+          VbUAi4i7dm7QOjcKI7R+Tu/x5FoyC0H67UiqAa6I2l4ZaJICck9rii88eKgIK7wj
+          UCDSUqiSHNGKBfKxnyP2N+SqorolML7mtXHHvoHQ1Mhk6rLzPZd9mr/Yk2+y0UmY
+          DLFetZ8TyHY3CUdOwauPx2MGCgM/uBf04OtWGH0CgYEA5fbwPf7925ZtSmrNwdz+
+          +IUiT41UqRWCirHQLwZIpPIKK7mjz0FjBzGJMwHLZG8kBxZJH/m7fjm8xzu0EW57
+          JfqIEEuNR7ZRXiKrZFtp+NJX+JBGTCQPpIyGNK8VruqZQSKZDMjJPwXjntVRXTlr
+          P7b3jNxap027ttmH0pJ5/CUCgYEAv3aHXg+c5Wo3j0YWfif3N3j6hWVBnhtNhM45
+          404/hy3nreAokbbzQEr6r+TAwracP7LzvjB5vRBRi4WD/hy/S5VZnqlMB9EFKP6s
+          BX0nD2pxw939CkUlDas0WuFD7L3ZkAYRSBEgYNAVzK4cloOvH/S6xOpy9oRS5E6D
+          LANzrdECgYEAlb9LCl91Jj35R/Jsqgn9SHVMYGfSPXewwbdiUH0p+9Ifev5ennnM
+          7IwtARCnako3zqBNPFoBsLUqSPlo5AX1yd5q49k/3hl9Iy3EpDiuvdPxQc7vALCy
+          l7PfobSMpkSN5g6cqdBtpuUlll5KERu7IEvwkH9Hpo9j0l0041BSrXQ=

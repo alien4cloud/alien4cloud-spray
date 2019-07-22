@@ -1,0 +1,13 @@
+resources:
+
+    # The default K8S deployment implementation
+    - resourceType: "org.alien4cloud.scheduling.policies.CronScheduleWorkflowPolicy"
+      resourceName: "[ROEM] Spark jobs scheduling"
+      archiveName: org.alien4cloud.scheduling
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.scheduling.policies.CronScheduleWorkflowPolicy:2.1.0-SNAPSHOT"
+      properties:
+        endpoint: https://localhost:8088
+        username: admin
+        password: 4dm1n
+        workflow_name: run

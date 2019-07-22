@@ -1,0 +1,17 @@
+resources:
+
+    # The default K8S deployment implementation
+    - resourceType: "org.alien4cloud.kubernetes.api.policies.AutoscalingPolicy"
+      resourceName: "EliseIndex Autoscaling Policy 1-10 (50%)"
+      archiveName: org.alien4cloud.kubernetes.api
+      archiveVersion: a4c_version
+      id: "org.alien4cloud.kubernetes.api.policies.AutoscalingPolicy:2.1.0-SNAPSHOT"
+      properties:
+        spec:
+          minReplicas: "1"
+          maxReplicas: "10"
+          metrics:
+            - type: Resource
+              resource:
+                name: cpu
+                targetAverageUtilization: "50"

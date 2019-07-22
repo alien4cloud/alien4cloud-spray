@@ -1,0 +1,48 @@
+- name: Install needed package
+  yum:
+    name: "{{ item }}"
+    state: latest
+  become: true
+  with_items:
+    - unzip
+    - wget
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Creates consul directory
+  file:
+    path: ~/consul
+    state: directory
+
+- name: Creates consul data directory
+  file:
+    path: ~/consul/data
+    state: directory
+
+- name: Extract archive from remote source
+  unarchive:
+    src: "{{ CONSUL_DIST_URL }}"
+    dest: ~/consul
+    remote_src: yes
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Consul config file
+  template:
+    src: server-config.json.j2
+    dest: ~/consul/server-config.json
+    mode: 0666
+    force: yes
+
+- name: Usage of consul jinja2 template for service creation
+  template:
+    src: consul-service.j2
+    dest: /etc/systemd/system/consul.service
+    mode: 0444
+    force: yes
+  become: true
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Reload the deamon before starting the service
+  systemd:
+    daemon_reload: yes
+  become: true
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

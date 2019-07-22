@@ -1,0 +1,14 @@
+[Unit]
+Description=Alien4Cloud Webapp
+After=yorc.service
+
+[Service]
+User=centos
+Restart=on-failure
+WorkingDirectory=/home/centos/alien4cloud
+ExecStart=/bin/bash -c './alien4cloud.sh >alien_start.log 2>&1'
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

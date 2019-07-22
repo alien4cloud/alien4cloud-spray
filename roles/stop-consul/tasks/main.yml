@@ -1,0 +1,19 @@
+
+- name: Stop consul
+  service:
+    name: consul
+    state: stopped
+    enabled: yes
+  become: true
+  ignore_errors: yes
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Get PID consul
+  command: ps -eo pid,command | grep consul | awk '{print $1}'
+  ignore_errors: yes
+  register: consul_pid
+  when: ansible_distribution != 'CentOS' and ansible_distribution != 'Red Hat Enterprise Linux'
+
+- name: Stop process consul
+  command: kill -9 {{ consul_pid }}
+  when: ansible_distribution != 'CentOS' and ansible_distribution != 'Red Hat Enterprise Linux'

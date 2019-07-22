@@ -1,0 +1,14 @@
+[Unit]
+Description=Yorc server
+After=consul.service
+
+[Service]
+User=centos
+Restart=on-failure
+WorkingDirectory=/home/centos/yorc
+ExecStart=/bin/bash -c './yorc server >logs/yorc.log 2>&1'
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

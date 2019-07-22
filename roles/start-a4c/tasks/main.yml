@@ -1,0 +1,44 @@
+
+- name: Start service a4c
+  service:
+    name: a4c
+    state: started
+  become: true
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Start application A4C
+  shell:
+    chdir: ~/alien4cloud
+    cmd: nohup ./alien4cloud.sh > alien_nohup.log 2>&1 & echo $! > alien.pid
+  when: ansible_distribution != 'CentOS' and ansible_distribution != 'Red Hat Enterprise Linux'
+
+- set_fact:
+    alien_url: "{{ a4c_protocol }}://{{ a4c_ip }}:{{ a4c_port }}"
+
+- name: "Wait for a4c to be reachable at {{ alien_url }}"
+  uri:
+    url: "{{ alien_url }}"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 10
+  delay: 10
+  ignore_errors: yes
+
+- name: Rename the init folder
+  command: mv ~/alien4cloud/init ~/alien4cloud/_init
+
+- name: Ensure a crontab is initialized
+  cron:
+    name: "InitCrontab"
+    minute: "0"
+    hour: "0"
+    job: "ls -alh > /dev/null"
+
+- name: Remove init job from crontab
+  cron:
+    name: "InitCrontab"
+    state: absent

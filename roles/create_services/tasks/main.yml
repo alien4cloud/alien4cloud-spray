@@ -1,0 +1,125 @@
+---
+- set_fact:
+    alien_url: "{{ a4c_protocol }}://{{ a4c_ip }}:{{ a4c_port }}"
+
+- name: Create temporary folder
+  tempfile:
+    state: directory
+  register: temp_dir
+
+- name: "Upload artifact {{resources_file_artifact}} on remote in {{ temp_dir.path }}/resources.yaml"
+  copy:
+    src: "{{resources_file_artifact}}"
+    dest: "{{ temp_dir.path }}/resources.yaml"
+
+- name: "Stat {{ temp_dir.path }}/resources.yaml"
+  stat: path="{{ temp_dir.path }}/resources.yaml"
+  register: resources_file
+
+- name: Slurp resources files
+  slurp:
+    src: "{{ temp_dir.path }}/resources.yaml"
+  register: resources_slurped
+  when: resources_file.stat.exists
+
+- set_fact:
+    resources_yaml: "{{resources_slurped['content'] | b64decode | from_yaml}}"
+- debug:
+    var: resources_yaml
+
+- set_fact:
+    resources: "{{resources_yaml['services']}}"
+- debug:
+    var: resources
+
+- debug:
+    msg: "{{item}}"
+  with_items: "{{resources}}"
+
+- name: login
+  uri:
+    url: "{{ alien_url }}/login?username={{ a4c_admin_usr }}&password={{ a4c_admin_pwd }}&submit=Login"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    status_code: 302
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+  register: login
+
+- set_fact:
+    session_id: "{{ login.set_cookie.split(';')[0] }}"
+
+- name: Create services
+  uri:
+    url: "{{ alien_url }}/rest/latest/services"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    HEADER_cookie: "{{ session_id }}"
+    body:
+      nodeType: "{{ item['nodeType'] }}"
+      nodeTypeVersion: "{{ a4c_version if item['nodeTypeVersion'] == 'a4c_version' else item['nodeTypeVersion'] }}"
+      name: "{{ item['name'] }}"
+      version: "{{ item['version'] }}"
+    body_format: json
+    status_code: 201
+  register: result
+  with_items: "{{resources}}"
+
+- debug:
+    var: result
+
+# TODO: get id and patch services with attribute values
+
+- set_fact:
+    resourceIds: []
+- name: Populate resourceIds
+  set_fact:
+    resourceIds: "{{ resourceIds }}  + ['{{item['json']['data']['id']}}']"
+  with_items: "{{result['results']}}"
+
+# Build a map with resourceId as key and resource config as entry
+- set_fact:
+    identifiedResourcesMap: {}
+- set_fact:
+    identifiedResourcesMap: "{{identifiedResourcesMap |combine({item.1: resources[item.0]})}}"
+  with_indexed_items: "{{resourceIds}}"
+
+- debug:
+    var: identifiedResourcesMap
+
+- debug:
+    var: identifiedResourcesMap[item]['nodeInstance']['capabilities']
+  with_items: "{{ identifiedResourcesMap }}"
+
+- name: "Patch service #{{ item }}"
+  uri:
+    url: "{{ alien_url }}/rest/latest/services/{{ item }}"
+    method: PATCH
+    return_content: yes
+    validate_certs: no
+    HEADER_cookie: "{{ session_id }}"
+    body: "{{ identifiedResourcesMap[item] | to_json }}"
+        # attributeValues: "{{ identifiedResourcesMap[item]['nodeInstance']['attributeValues'] }}"
+    body_format: json
+    status_code: 200
+  register: result
+  with_items: "{{ identifiedResourcesMap }}"
+
+- name: Path service to allow locations
+  uri:
+    url: "{{ alien_url }}/rest/latest/services/{{item[0]}}"
+    method: PATCH
+    return_content: yes
+    validate_certs: no
+    HEADER_cookie: "{{ session_id }}"
+    body:
+      locationIds: "[\"{{item[1]}}\"]"
+    body_format: json
+    status_code: 200
+  register: result
+  with_nested:
+    - "{{resourceIds}}"
+    - "{{locationIds}}"
+  when: locationIds is defined
