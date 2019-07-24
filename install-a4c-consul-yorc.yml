@@ -9,6 +9,6 @@
     - install-yorc
     - configure-yorc
     - start-yorc
-    # - install-a4c
-    # - configure-a4c
-    # - start-a4c
+    - install-a4c
+    - configure-a4c
+    - start-a4c

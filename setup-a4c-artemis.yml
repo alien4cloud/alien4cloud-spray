@@ -13,7 +13,7 @@
     #   }
     - { role: roles/create_orchestrator,
         orchestratorName: 'Yorc',
-        pluginId: 'alien4cloud-yorc-plugin',
+        pluginId: 'alien4cloud-yorc-provider',
         pluginBean: 'yorc-orchestrator-factory'
       }
     - { role: 'roles/create_metaproperties',
