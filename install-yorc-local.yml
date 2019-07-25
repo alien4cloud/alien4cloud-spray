@@ -1,0 +1,11 @@
+---
+
+- hosts: all
+  name: Install Yorc
+  become: false
+
+  vars:
+    - local: true
+
+  roles:
+    - install-yorc

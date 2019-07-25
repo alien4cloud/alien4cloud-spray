@@ -1,0 +1,17 @@
+---
+- hosts: all
+  name: Install an typical A4C stack with a Yorc orchestrator.
+  become: false
+
+  vars:
+    - local: true
+
+  roles:
+    - install-consul
+    - start-consul
+    - install-yorc
+    - configure-yorc
+    - start-yorc
+    - install-a4c
+    - configure-a4c
+    - start-a4c

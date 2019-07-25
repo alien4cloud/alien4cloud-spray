@@ -1,0 +1,11 @@
+---
+
+- hosts: all
+  name: install a4c
+  become: false
+
+  vars:
+    - local: true
+
+  roles:
+    - install-a4c
