@@ -4,7 +4,53 @@
     name: java-1.8.0-openjdk-headless.x86_64
     state: latest
   become: true
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (local is undefined)
+
+- name: Copy java
+  copy:
+    src: resources/bin/java/
+    dest: /tmp/java/
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (local is defined)
+
+- name: Get java files
+  find:
+    paths: /tmp/java
+  register: java_files
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (local is defined)
+
+- name : Init java files list
+  set_fact:
+     java_list: []
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (local is defined)
+
+- name : Build java files list
+  set_fact:
+     java_list: "{{ java_list + [ item.path ] }}"
+  with_items: "{{java_files.files}}"
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (local is defined)
+
+#- name: debug
+#  debug:
+#    var: java_list
+
+- name: Install java
+  yum:
+    name: "{{java_list}}"
+    state: present
+  become: true
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (local is defined)
 
 - name: Extract alien4cloud archive from remote source
   unarchive:
@@ -12,7 +58,19 @@
     dest: ~/
     mode: 0755
     remote_src: yes
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (local is undefined)
+
+- name: Extract alien4cloud archive from local source
+  unarchive:
+    src: "{{ ALIEN_DIST_URL }}"
+    dest: ~/
+    mode: 0755
+    remote_src: no
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (local is defined)
 
 - name: Usage of a4c jinja2 template for service creation
   template:
