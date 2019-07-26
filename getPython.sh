@@ -1,7 +1,7 @@
 #!/bin/bash
 cd resources/bin/python
 rm *
-wget http://mirror.centos.org/centos/7/extras/x86_64/Packages/ansible-2.4.2.0-2.el7.noarch.rpm
+wget https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/ansible-2.7.2-1.el7.ans.noarch.rpm
 wget http://mirror.centos.org/centos/7/extras/x86_64/Packages/sshpass-1.06-2.el7.x86_64.rpm
 wget http://mirror.centos.org/centos/7/extras/x86_64/Packages/python2-jmespath-0.9.0-3.el7.noarch.rpm
 wget http://mirror.centos.org/centos/7/extras/x86_64/Packages/python-passlib-1.6.5-2.el7.noarch.rpm
