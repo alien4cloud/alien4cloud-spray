@@ -34,6 +34,17 @@ The playbook `install-a4c-consul-yorc.yml` will install all stack on the remote 
 ansible-playbook -i $REMOTE_IP_ADDRESS, install-a4c-consul-yorc.yml --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.json" -v
 ```
 
+# Installation in _local_ mode
+This mode is provided in case the remote machine does not have access to Internet (but the machine running the installation must still have access to Internet).
+
+On the local machine, first run the following commands to get all required binaries (the commands use `wget`):
+```
+./getBinaries.sh
+./getPython.sh
+./getJava.sh
+```
+then proceed as for a standard installation, using `inputs.json.local.tpl` instead of `inputs.json.tpl` and `install-a4c-consul-yorc-local.yml` instead of `install-a4c-consul-yorc.yml`.
+
 # Configure
 This playbook will configure the orchestrator, a location, and services on the A4C instance :
 
