@@ -93,6 +93,12 @@
          ansible_distribution == 'Red Hat Enterprise Linux') and 
         (local is undefined)
 
+- name: Creates terraform plugins directory
+  file:
+    path: /var/terraform/plugins
+    state: directory
+  become: true
+
 - name: Extract terraform from remote source
   unarchive:
     src: "{{ TERRAFORM_DIST_URL }}"
@@ -143,13 +149,6 @@
   set_fact:
      tp_list: "{{ tp_list + [ item.path ] }}"
   with_items: "{{tp_files.files}}"
-  when: local is defined
-
-- name: Creates terraform plugins directory
-  file:
-    path: /var/terraform/plugins
-    state: directory
-  become: true
   when: local is defined
 
 - name : unzip terraform plugins
