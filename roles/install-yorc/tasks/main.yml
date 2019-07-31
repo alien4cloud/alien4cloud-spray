@@ -1,3 +1,13 @@
+- name: Get the current user
+  set_fact :
+    yorc_user: "{{ ansible_user }}"
+  when: yorc_user is not defined
+
+- name: Get the yorc install directory
+  set_fact :
+    yorc_install_dir: "{{ ansible_env.HOME }}/yorc"
+  when: yorc_install_dir is not defined
+
 - name: Instal the needed package
   yum:
     pkg: "{{ item }}"
@@ -8,8 +18,8 @@
     - unzip
     - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
     - python
-  when: (ansible_distribution == 'CentOS' or 
-         ansible_distribution == 'Red Hat Enterprise Linux') and 
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
         (local is undefined)
   # TODO: do same for other distrib
 
@@ -21,16 +31,16 @@
   become: true
   with_items:
     - python-pip
-  when: (ansible_distribution == 'CentOS' or 
-         ansible_distribution == 'Red Hat Enterprise Linux') and 
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
         (local is undefined)
 
 - name: Copy "{{ UNZIP_BIN }}"
   copy:
     src: resources/bin/{{ UNZIP_BIN }}
     dest: /tmp/unzip.rpm
-  when: (ansible_distribution == 'CentOS' or 
-         ansible_distribution == 'Red Hat Enterprise Linux') and 
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
         (local is defined)
 
 - name: Install unzip rpm
@@ -38,39 +48,39 @@
     name: /tmp/unzip.rpm
     state: present
   become: true
-  when: (ansible_distribution == 'CentOS' or 
-         ansible_distribution == 'Red Hat Enterprise Linux') and 
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
         (local is defined)
 
 - name: Copy python and ansible
   copy:
     src: resources/bin/python/
     dest: /tmp/python/
-  when: (ansible_distribution == 'CentOS' or 
-         ansible_distribution == 'Red Hat Enterprise Linux') and 
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
         (local is defined)
 
 - name: Get python and ansible files
   find:
     paths: /tmp/python
   register: python_files
-  when: (ansible_distribution == 'CentOS' or 
-         ansible_distribution == 'Red Hat Enterprise Linux') and 
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
         (local is defined)
 
 - name : Init python and ansible files list
   set_fact:
      python_list: []
-  when: (ansible_distribution == 'CentOS' or 
-         ansible_distribution == 'Red Hat Enterprise Linux') and 
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
         (local is defined)
 
 - name : Build python and ansible files list
   set_fact:
      python_list: "{{ python_list + [ item.path ] }}"
   with_items: "{{python_files.files}}"
-  when: (ansible_distribution == 'CentOS' or 
-         ansible_distribution == 'Red Hat Enterprise Linux') and 
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
         (local is defined)
 
 #- name: debug
@@ -82,15 +92,15 @@
     name: "{{python_list}}"
     state: present
   become: true
-  when: (ansible_distribution == 'CentOS' or 
-         ansible_distribution == 'Red Hat Enterprise Linux') and 
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
         (local is defined)
 
 - name: Install ansible
   command: pip install ansible==2.7.2
   become: true
-  when: (ansible_distribution == 'CentOS' or 
-         ansible_distribution == 'Red Hat Enterprise Linux') and 
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
         (local is undefined)
 
 - name: Creates terraform plugins directory
@@ -162,18 +172,18 @@
 
 - name: Creates yorc directory
   file:
-    path: ~/yorc
+    path: "{{ yorc_install_dir }}"
     state: directory
 
 - name: Creates yorc directory
   file:
-    path: ~/yorc/logs
+    path: "{{ yorc_install_dir }}/logs"
     state: directory
 
 - name: Extract Yorc from remote source
   unarchive:
     src: "{{ YORC_DIST_URL }}"
-    dest: ~/yorc
+    dest: "{{ yorc_install_dir }}"
     mode: 0755
     remote_src: yes
   when: local is undefined
@@ -181,7 +191,7 @@
 - name: Extract Yorc from local source
   unarchive:
     src: "{{ YORC_DIST_URL }}"
-    dest: ~/yorc
+    dest: "{{ yorc_install_dir }}"
     mode: 0755
     remote_src: no
   when: local is defined

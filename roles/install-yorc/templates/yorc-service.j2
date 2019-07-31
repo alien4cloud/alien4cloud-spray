@@ -3,9 +3,9 @@ Description=Yorc server
 After=consul.service
 
 [Service]
-User=centos
+User={{ yorc_user }}
 Restart=on-failure
-WorkingDirectory=/home/centos/yorc
+WorkingDirectory={{ yorc_install_dir }}
 ExecStart=/bin/bash -c './yorc server >logs/yorc.log 2>&1'
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGTERM

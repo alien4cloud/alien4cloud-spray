@@ -1,6 +1,11 @@
 
+- name: Get the yorc install directory
+  set_fact :
+    yorc_install_dir: "{{ ansible_env.HOME }}/yorc"
+  when: yorc_install_dir is not defined
+  
 - name: Configure Yorc
   template:
     src: config.yorc.json.j2
-    dest: ~/yorc/config.yorc.json
+    dest: "{{ yorc_install_dir }}/config.yorc.json"
     force: yes

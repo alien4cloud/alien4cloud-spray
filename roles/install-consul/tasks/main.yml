@@ -1,3 +1,13 @@
+- name: Get the current user
+  set_fact :
+    consul_user: "{{ ansible_user }}"
+  when: consul_user is not defined
+
+- name: Get the consul install directory
+  set_fact :
+    consul_install_dir: "{{ ansible_env.HOME }}/consul"
+  when: consul_install_dir is not defined
+
 - name: Install needed package
   yum:
     name: "{{ item }}"
@@ -6,16 +16,16 @@
   with_items:
     - unzip
     - wget
-  when: (ansible_distribution == 'CentOS' or 
-         ansible_distribution == 'Red Hat Enterprise Linux') and 
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
         (local is undefined)
 
 - name: Copy "{{ UNZIP_BIN }}"
   copy:
     src: resources/bin/{{ UNZIP_BIN }}
     dest: /tmp/unzip.rpm
-  when: (ansible_distribution == 'CentOS' or 
-         ansible_distribution == 'Red Hat Enterprise Linux') and 
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
         (local is defined)
 
 - name: Install unzip rpm
@@ -23,42 +33,42 @@
     name: /tmp/unzip.rpm
     state: present
   become: true
-  when: (ansible_distribution == 'CentOS' or 
-         ansible_distribution == 'Red Hat Enterprise Linux') and 
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
         (local is defined)
 
 - name: Creates consul directory
   file:
-    path: ~/consul
+    path: "{{ consul_install_dir }}"
     state: directory
 
 - name: Creates consul data directory
   file:
-    path: ~/consul/data
+    path: "{{ consul_install_dir }}/data"
     state: directory
 
 - name: Extract archive from remote source
   unarchive:
     src: "{{ CONSUL_DIST_URL }}"
-    dest: ~/consul
+    dest: "{{ consul_install_dir }}"
     remote_src: yes
-  when: (ansible_distribution == 'CentOS' or 
-         ansible_distribution == 'Red Hat Enterprise Linux') and 
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
         (local is undefined)
 
 - name: Extract archive from local source
   unarchive:
     src: "{{ CONSUL_DIST_URL }}"
-    dest: ~/consul
+    dest: "{{ consul_install_dir }}"
     remote_src: no
-  when: (ansible_distribution == 'CentOS' or 
-         ansible_distribution == 'Red Hat Enterprise Linux') and 
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
         (local is defined)
 
 - name: Consul config file
   template:
     src: server-config.json.j2
-    dest: ~/consul/server-config.json
+    dest: "{{ consul_install_dir }}/server-config.json"
     mode: 0666
     force: yes
 

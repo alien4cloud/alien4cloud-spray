@@ -8,4 +8,7 @@
     - local: true
 
   roles:
-    - install-a4c
+    # - install-java
+    # - install-a4c
+    - configure-a4c
+    - start-a4c

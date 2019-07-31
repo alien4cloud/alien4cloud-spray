@@ -4,9 +4,9 @@ Requires=network-online.target
 After=network-online.target
 
 [Service]
-User=centos
+User={{ consul_user }}
 Restart=on-failure
-WorkingDirectory=/home/centos/consul
+WorkingDirectory={{ consul_install_dir }}
 ExecStart=/bin/bash -c './consul agent -config-file ./server-config.json'
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGTERM

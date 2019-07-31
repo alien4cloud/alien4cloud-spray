@@ -1,4 +1,9 @@
 
+- name: Get the a4c install directory
+  set_fact :
+    a4c_install_dir: "{{ ansible_env.HOME }}/a4c"
+  when: a4c_install_dir is not defined
+
 - name: Start service a4c
   service:
     name: a4c
@@ -8,7 +13,7 @@
 
 - name: Start application A4C
   shell:
-    chdir: ~/alien4cloud
+    chdir: "{{ a4c_install_dir }}/alien4cloud"
     cmd: nohup ./alien4cloud.sh > alien_nohup.log 2>&1 & echo $! > alien.pid
   when: ansible_distribution != 'CentOS' and ansible_distribution != 'Red Hat Enterprise Linux'
 
@@ -29,7 +34,7 @@
   ignore_errors: yes
 
 - name: Rename the init folder
-  command: mv ~/alien4cloud/init ~/alien4cloud/_init
+  command: "mv {{ a4c_install_dir }}/alien4cloud/init {{ a4c_install_dir }}/alien4cloud/_init"
 
 - name: Ensure a crontab is initialized
   cron:

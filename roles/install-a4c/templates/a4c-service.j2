@@ -3,9 +3,9 @@ Description=Alien4Cloud Webapp
 After=yorc.service
 
 [Service]
-User=centos
+User={{ a4c_user }}
 Restart=on-failure
-WorkingDirectory=/home/centos/alien4cloud
+WorkingDirectory={{ a4c_install_dir }}/alien4cloud
 ExecStart=/bin/bash -c './alien4cloud.sh >alien_start.log 2>&1'
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGTERM

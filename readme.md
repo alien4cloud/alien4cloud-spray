@@ -1,3 +1,5 @@
+These playbooks install full A4C stack components (consul, york, a4c) in the home directory of the specified user.
+
 # Prerequistes
 
 You need a linux box with centos (tried on a EC2 ami-3548444c t2.medium)
