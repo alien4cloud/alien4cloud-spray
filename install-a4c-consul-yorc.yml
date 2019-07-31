@@ -1,6 +1,6 @@
 ---
 - hosts: all
-  name: Install an typical A4C stack with a Yorc orchestrator.
+  name: Install a typical A4C stack with a Yorc orchestrator.
   become: false
 
   roles:

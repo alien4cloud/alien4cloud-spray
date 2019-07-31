@@ -21,7 +21,7 @@
     remote_src: yes
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is undefined)
+        (offline is undefined)
 
 - name: Extract alien4cloud archive from local source
   unarchive:
@@ -31,7 +31,7 @@
     remote_src: no
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is defined)
+        (offline is defined)
 
 
 - name: Usage of a4c jinja2 template for service creation

@@ -20,7 +20,7 @@
     - python
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is undefined)
+        (offline is undefined)
   # TODO: do same for other distrib
 
 - name: Instal the needed package
@@ -33,7 +33,7 @@
     - python-pip
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is undefined)
+        (offline is undefined)
 
 - name: Copy "{{ UNZIP_BIN }}"
   copy:
@@ -41,7 +41,7 @@
     dest: /tmp/unzip.rpm
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is defined)
+        (offline is defined)
 
 - name: Install unzip rpm
   yum:
@@ -50,7 +50,7 @@
   become: true
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is defined)
+        (offline is defined)
 
 - name: Copy python and ansible
   copy:
@@ -58,22 +58,23 @@
     dest: /tmp/python/
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is defined)
+        (offline is defined)
 
 - name: Get python and ansible files
   find:
     paths: /tmp/python
+    excludes: readme.txt
   register: python_files
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is defined)
+        (offline is defined)
 
 - name : Init python and ansible files list
   set_fact:
      python_list: []
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is defined)
+        (offline is defined)
 
 - name : Build python and ansible files list
   set_fact:
@@ -81,7 +82,7 @@
   with_items: "{{python_files.files}}"
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is defined)
+        (offline is defined)
 
 #- name: debug
 #  debug:
@@ -94,14 +95,14 @@
   become: true
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is defined)
+        (offline is defined)
 
 - name: Install ansible
   command: pip install ansible==2.7.2
   become: true
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is undefined)
+        (offline is undefined)
 
 - name: Creates terraform plugins directory
   file:
@@ -116,7 +117,7 @@
     mode: 0755
     remote_src: yes
   become: true
-  when: local is undefined
+  when: offline is undefined
 
 - name: Get terraform plugins from remote source
   unarchive:
@@ -126,7 +127,7 @@
     remote_src: yes
   become: true
   with_items: "{{terraform_plugins}}"
-  when: local is undefined
+  when: offline is undefined
 
 - name: Extract terraform from local source
   unarchive:
@@ -135,31 +136,32 @@
     mode: 0755
     remote_src: no
   become: true
-  when: local is defined
+  when: offline is defined
 
 - name: Copy terraform plugins
   copy:
     src: resources/bin/terraform-plugins/
     dest: /var/terraform/plugins.zip
   become: true
-  when: local is defined
+  when: offline is defined
 
 - name: Get terraform plugins files list
   find:
     paths: /var/terraform/plugins.zip
+    excludes: readme.txt
   register: tp_files
-  when: local is defined
+  when: offline is defined
 
 - name : Init terraform plugins list
   set_fact:
      tp_list: []
-  when: local is defined
+  when: offline is defined
 
 - name : Build terraform plugins list
   set_fact:
      tp_list: "{{ tp_list + [ item.path ] }}"
   with_items: "{{tp_files.files}}"
-  when: local is defined
+  when: offline is defined
 
 - name : unzip terraform plugins
   unarchive:
@@ -168,7 +170,7 @@
     remote_src: yes
   become: true
   with_items: "{{ tp_list }}"
-  when: local is defined
+  when: offline is defined
 
 - name: Creates yorc directory
   file:
@@ -186,7 +188,7 @@
     dest: "{{ yorc_install_dir }}"
     mode: 0755
     remote_src: yes
-  when: local is undefined
+  when: offline is undefined
 
 - name: Extract Yorc from local source
   unarchive:
@@ -194,7 +196,7 @@
     dest: "{{ yorc_install_dir }}"
     mode: 0755
     remote_src: no
-  when: local is defined
+  when: offline is defined
 
 - name: Usage of yorc jinja2 template for service creation
   template:

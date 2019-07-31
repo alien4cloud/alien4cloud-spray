@@ -6,7 +6,7 @@
   become: true
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is undefined)
+        (offline is undefined)
 
 # - name: Copy java
 #   copy:
@@ -14,22 +14,23 @@
 #     dest: /tmp/java/
 #   when: (ansible_distribution == 'CentOS' or
 #          ansible_distribution == 'Red Hat Enterprise Linux') and
-#         (local is defined)
+#         (offline is defined)
 
 # - name: Get java files
 #   find:
 #     paths: /tmp/java
+#     excludes: readme.txt
 #   register: java_files
 #   when: (ansible_distribution == 'CentOS' or
 #          ansible_distribution == 'Red Hat Enterprise Linux') and
-#         (local is defined)
+#         (offline is defined)
 #
 # - name : Init java files list
 #   set_fact:
 #      java_list: []
 #   when: (ansible_distribution == 'CentOS' or
 #          ansible_distribution == 'Red Hat Enterprise Linux') and
-#         (local is defined)
+#         (offline is defined)
 #
 # - name : Build java files list
 #   set_fact:
@@ -37,7 +38,7 @@
 #   with_items: "{{java_files.files}}"
 #   when: (ansible_distribution == 'CentOS' or
 #          ansible_distribution == 'Red Hat Enterprise Linux') and
-#         (local is defined)
+#         (offline is defined)
 
 - name: Creates java alternative directory
   become: true
@@ -46,7 +47,7 @@
     state: directory
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is defined)
+        (offline is defined)
 
 - name: Extract java archive from local source
   become: true
@@ -57,7 +58,7 @@
     remote_src: no
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is defined)
+        (offline is defined)
 
 - name: Get files in /usr/local/oracle-java-8
   find:
@@ -66,14 +67,14 @@
   register: found_files
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is defined)
+        (offline is defined)
 
 - name: Get latest file in /usr/local/oracle-java-8
   set_fact:
     latest_file: "{{ found_files.files | sort(attribute='mtime',reverse=true) | first }}"
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is defined)
+        (offline is defined)
 
 - name: Change java
   become: true
@@ -83,4 +84,4 @@
     path: "{{ latest_file.path }}/jre/bin/java"
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is defined)
+        (offline is defined)

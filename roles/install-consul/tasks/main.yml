@@ -18,7 +18,7 @@
     - wget
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is undefined)
+        (offline is undefined)
 
 - name: Copy "{{ UNZIP_BIN }}"
   copy:
@@ -26,7 +26,7 @@
     dest: /tmp/unzip.rpm
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is defined)
+        (offline is defined)
 
 - name: Install unzip rpm
   yum:
@@ -35,7 +35,7 @@
   become: true
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is defined)
+        (offline is defined)
 
 - name: Creates consul directory
   file:
@@ -54,7 +54,7 @@
     remote_src: yes
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is undefined)
+        (offline is undefined)
 
 - name: Extract archive from local source
   unarchive:
@@ -63,7 +63,7 @@
     remote_src: no
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
-        (local is defined)
+        (offline is defined)
 
 - name: Consul config file
   template:
