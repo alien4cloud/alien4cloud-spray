@@ -1,12 +1,12 @@
 modifiers:
     - pluginId: "alien4cloud-kubernetes-plugin"
-      beanName: "kubernetes-modifier"
-      phase: "post-location-match"
-    - pluginId: "alien4cloud-kubernetes-plugin"
-      beanName: "kubernetes-final-modifier"
+      beanName: "kubernetes-adapter-modifier"
       phase: "post-matched-node-setup"
+    # - pluginId: "alien4cloud-kubernetes-plugin"
+    #   beanName: "kubernetes-final-modifier"
+    #   phase: "post-matched-node-setup"
 
 orders:
-    # Change the order : the kubernetes-final-modifier must be executed before yorc modifiers
-    - from: 5
-      to: 2
+    # Change the order : the kubernetes-adapter-modifier must be executed before yorc modifiers
+    - from: 4
+      to: 1
