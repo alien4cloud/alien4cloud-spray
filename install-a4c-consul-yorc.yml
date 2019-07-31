@@ -4,6 +4,7 @@
   become: false
 
   roles:
+    - install-dependencies
     - install-consul
     - start-consul
     - install-yorc

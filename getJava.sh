@@ -1,7 +1,7 @@
 #!/bin/bash
-cd resources/bin/java
-rm *
-wget --continue --no-check-certificate -O jdk.tar.gz --header "Cookie: oraclelicense=a" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
+
+find resources/bin/java/ ! -name 'readme.txt' -type f -exec rm -f {} +
+wget --continue --no-check-certificate -O resources/bin/java/jdk.tar.gz --header "Cookie: oraclelicense=a" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
 # wget http://mirror.centos.org/centos/7/updates/x86_64/Packages/java-1.8.0-openjdk-headless-1.8.0.222.b10-0.el7_6.x86_64.rpm
 # wget http://mirror.centos.org/centos/7/os/x86_64/Packages/avahi-libs-0.6.31-19.el7.x86_64.rpm
 # wget http://mirror.centos.org/centos/7/os/x86_64/Packages/copy-jdk-configs-3.3-10.el7_5.noarch.rpm

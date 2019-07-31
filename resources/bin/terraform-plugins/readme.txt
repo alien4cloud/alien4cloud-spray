@@ -1,1 +1,1 @@
-Binaries go here
+Terraform plugins go here (offline mode).

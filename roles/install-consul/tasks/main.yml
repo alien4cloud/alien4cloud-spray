@@ -8,35 +8,6 @@
     consul_install_dir: "{{ ansible_env.HOME }}/consul"
   when: consul_install_dir is not defined
 
-- name: Install needed package
-  yum:
-    name: "{{ item }}"
-    state: latest
-  become: true
-  with_items:
-    - unzip
-    - wget
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is undefined)
-
-- name: Copy "{{ UNZIP_BIN }}"
-  copy:
-    src: resources/bin/{{ UNZIP_BIN }}
-    dest: /tmp/unzip.rpm
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is defined)
-
-- name: Install unzip rpm
-  yum:
-    name: /tmp/unzip.rpm
-    state: present
-  become: true
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is defined)
-
 - name: Creates consul directory
   file:
     path: "{{ consul_install_dir }}"

@@ -12,6 +12,8 @@ You need the following vars:
  - `REMOTE_USER`: ie. centos
  - `PRIVATE_KEY_PATH`: ie. ~/work/env/aws/keys/vicos-awsproductteam.pem
 
+You'll also need to define the variable _a4c_ip_ in `input.json` using the remote IP address.
+
 # Setup
 
 Rename `inputs.json.tpl` to `inputs.json` and setup few things (a minima 'a4c_ip').
@@ -51,9 +53,9 @@ On the local machine, first run the following commands to get all required binar
 then proceed as for a standard installation, using `inputs.json.offline.tpl` instead of `inputs.json.tpl` (or just ensure the `offline` variable is defined).
 
 # Configure
-This playbook will configure the orchestrator, a location, and services on the A4C instance :
+Il you need some additional CSARs library, place the zip files in the `resources/csars` folder. If your dependencies need a specific order, prefix your file names so that the names represent such order.
 
-Ensure the variable _a4c_ip_ is correctly defined in input.json.
+This playbook will configure the orchestrator, a location, and services on the A4C instance :
 
 ```
 ansible-playbook -i $REMOTE_IP_ADDRESS, setup-a4c-artemis.yml --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.json" -v

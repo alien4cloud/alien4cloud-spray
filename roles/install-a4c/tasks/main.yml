@@ -33,7 +33,6 @@
          ansible_distribution == 'Red Hat Enterprise Linux') and
         (offline is defined)
 
-
 - name: Usage of a4c jinja2 template for service creation
   template:
     src: a4c-service.j2

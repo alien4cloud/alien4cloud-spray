@@ -8,37 +8,37 @@
          ansible_distribution == 'Red Hat Enterprise Linux') and
         (offline is undefined)
 
-# - name: Copy java
-#   copy:
-#     src: resources/bin/java/
-#     dest: /tmp/java/
-#   when: (ansible_distribution == 'CentOS' or
-#          ansible_distribution == 'Red Hat Enterprise Linux') and
-#         (offline is defined)
+- name: Copy java
+  copy:
+    src: resources/bin/java/
+    dest: /tmp/java/
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (offline is defined)
 
-# - name: Get java files
-#   find:
-#     paths: /tmp/java
-#     excludes: readme.txt
-#   register: java_files
-#   when: (ansible_distribution == 'CentOS' or
-#          ansible_distribution == 'Red Hat Enterprise Linux') and
-#         (offline is defined)
-#
-# - name : Init java files list
-#   set_fact:
-#      java_list: []
-#   when: (ansible_distribution == 'CentOS' or
-#          ansible_distribution == 'Red Hat Enterprise Linux') and
-#         (offline is defined)
-#
-# - name : Build java files list
-#   set_fact:
-#      java_list: "{{ java_list + [ item.path ] }}"
-#   with_items: "{{java_files.files}}"
-#   when: (ansible_distribution == 'CentOS' or
-#          ansible_distribution == 'Red Hat Enterprise Linux') and
-#         (offline is defined)
+- name: Get java files
+  find:
+    paths: /tmp/java
+    excludes: readme.txt
+  register: java_files
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (offline is defined)
+
+- name : Init java files list
+  set_fact:
+     java_list: []
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (offline is defined)
+
+- name : Build java files list
+  set_fact:
+     java_list: "{{ java_list + [ item.path ] }}"
+  with_items: "{{java_files.files}}"
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (offline is defined)
 
 - name: Creates java alternative directory
   become: true
