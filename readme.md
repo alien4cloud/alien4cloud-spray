@@ -46,9 +46,7 @@ This mode is provided in case the remote machine does not have access to Interne
 
 On the local machine, first run the following commands to get all required binaries (the commands use `wget`):
 ```
-./getBinaries.sh
-./getPython.sh
-./getJava.sh
+./download-offline-dependencies.sh
 ```
 then proceed as for a standard installation, using `inputs.json.offline.tpl` instead of `inputs.json.tpl` (or just ensure the `offline` variable is defined).
 
