@@ -1,0 +1,125 @@
+services:
+
+  - nodeType: "org.alien4cloud.kubernetes.api.types.nodes.KubeCluster"
+    nodeTypeVersion: "a4c_version"
+    name: "KubeCluster"
+    version: "1.0-SNAPSHOT"
+    # nodeInstance:
+    #   capabilities:
+    #     db:
+    #       properties:
+    #         port: "3306"
+    #         database: "similimage_annot_faces"
+    #         user: "elise_db_user"
+    #         password: "elise_db_pwd"
+    #   attributeValues:
+    #     capabilities.db.ip_address: "mariadb.artemis.public"
+    #     state: "started"
+
+  # - nodeType: "artemis.mysql.pub.nodes.MysqlDbService"
+  #   nodeTypeVersion: "a4c_version"
+  #   name: "[SIM] Mysql search"
+  #   version: "1.0-SNAPSHOT"
+  #   nodeInstance:
+  #     capabilities:
+  #       db:
+  #         properties:
+  #           port: "3306"
+  #           database: "similimage_search"
+  #           user: "elise_db_user"
+  #           password: "elise_db_pwd"
+  #     attributeValues:
+  #       capabilities.db.ip_address: "mariadb.artemis.public"
+  #       state: "started"
+  #
+  # - nodeType: "artemis.elasticsearch.pub.nodes.ElasticSearchService"
+  #   nodeTypeVersion: "a4c_version"
+  #   name: "[SIM] Test_SE"
+  #   version: "1.0-SNAPSHOT"
+  #   nodeInstance:
+  #     properties:
+  #       index_basename: "uc_similimage_osint"
+  #     capabilities:
+  #       http:
+  #         properties:
+  #           port: "9200"
+  #           protocol: "http"
+  #     attributeValues:
+  #       capabilities.http.ip_address: "http://elastic-1.artemis.public:9200/,http://elastic-2.artemis.public:9200/,http://elastic-3.artemis.public:9200/"
+  #       state: "started"
+  #
+  # - nodeType: "artemis.hadoop.pub.nodes.HDFSService"
+  #   nodeTypeVersion: "a4c_version"
+  #   name: "[SIM] hadoop01"
+  #   version: "1.0-SNAPSHOT"
+  #   nodeInstance:
+  #     capabilities:
+  #       http_endpoint:
+  #         properties:
+  #           port: "50070"
+  #           username: "root"
+  #           path: "/similimage_1/osint_1/"
+  #     attributeValues:
+  #       capabilities.http_endpoint.ip_address: "hdfs-default.artemis.public"
+  #       state: "started"
+  #
+  # - nodeType: "artemis.ceph.pub.nodes.CephBucket"
+  #   nodeTypeVersion: "a4c_version"
+  #   name: "[SIM] Ceph bucket"
+  #   version: "1.0-SNAPSHOT"
+  #   nodeInstance:
+  #     capabilities:
+  #       http:
+  #         properties:
+  #           port: "8000"
+  #           bucket_name: "uc_simil_entrepot_image_osint"
+  #           access_key: "SDXS70TGLZJGFUEB3A80"
+  #           secret_key: "5yVZZxtJKNQox0dYoO5LGbIRgRbUnqsiez9bYWf8"
+  #     attributeValues:
+  #       capabilities.http.ip_address: "ceph.artemis.public"
+  #       state: "started"
+  # - nodeType: "artemis.ceph.pub.nodes.CephBucket"
+  #   nodeTypeVersion: "a4c_version"
+  #   name: "[SIM] Ceph bucket Imint"
+  #   version: "1.0-SNAPSHOT"
+  #   nodeInstance:
+  #     capabilities:
+  #       http:
+  #         properties:
+  #           port: "8000"
+  #           bucket_name: "uc_simil_entrepot_image_imint"
+  #           access_key: "SDXS70TGLZJGFUEB3A80"
+  #           secret_key: "5yVZZxtJKNQox0dYoO5LGbIRgRbUnqsiez9bYWf8"
+  #     attributeValues:
+  #       capabilities.http.ip_address: "ceph.artemis.public"
+  #       state: "started"
+  # - nodeType: "artemis.ceph.pub.nodes.CephBucket"
+  #   nodeTypeVersion: "a4c_version"
+  #   name: "[SIM] Ceph bucket Sat"
+  #   version: "1.0-SNAPSHOT"
+  #   nodeInstance:
+  #     capabilities:
+  #       http:
+  #         properties:
+  #           port: "8000"
+  #           bucket_name: "uc_simil_entrepot_image_sat"
+  #           access_key: "SDXS70TGLZJGFUEB3A80"
+  #           secret_key: "5yVZZxtJKNQox0dYoO5LGbIRgRbUnqsiez9bYWf8"
+  #     attributeValues:
+  #       capabilities.http.ip_address: "ceph.artemis.public"
+  #       state: "started"
+  # - nodeType: "artemis.mysql.pub.nodes.MysqlDbService"
+  #   nodeTypeVersion: "a4c_version"
+  #   name: "[SIM] Mysql search_imint"
+  #   version: "1.0-SNAPSHOT"
+  #   nodeInstance:
+  #     capabilities:
+  #       db:
+  #         properties:
+  #           port: "3306"
+  #           database: "similimage_annot_satellite_1"
+  #           user: "similimage_elise_1"
+  #           password: "similimage_elise_1"
+  #     attributeValues:
+  #       capabilities.db.ip_address: "mariadb.artemis.public"
+  #       state: "started"

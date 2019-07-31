@@ -53,6 +53,8 @@ then proceed as for a standard installation, using `inputs.json.offline.tpl` ins
 # Configure
 This playbook will configure the orchestrator, a location, and services on the A4C instance :
 
+Ensure the variable _a4c_ip_ is correctly defined in input.json.
+
 ```
 ansible-playbook -i $REMOTE_IP_ADDRESS, setup-a4c-artemis.yml --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.json" -v
 ```
