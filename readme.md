@@ -68,7 +68,7 @@ That's all folk, the full system should be available.
 To test the integration between A4C and Yorc:
  1. Go to 'Application' / 'Nouvelle Application'
  2. Give a name to your app (ie. MyFirstTest)
- 3. In 'Modèle de topologie', choose '1TinyMock' template
+ 3. In 'Modèle de topologie', choose '3MockWithRel' template
  4. Click on 'Créer'
  5. In 'Work on an environment' section, click on the line 'Environment OTHER 0.1.0-SNAPSHOT'
  6. Choose the "AWS Orchestrator: Yorc" under the 'Locations' blue button
