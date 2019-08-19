@@ -41,7 +41,7 @@ The playbook `install-a4c-consul-yorc.yml` will install all stack on the remote 
 ansible-playbook -i $REMOTE_IP_ADDRESS, install-a4c-consul-yorc.yml --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.json" -v
 ```
 
-If you don't use a SSH key but a password authentication (which is not recommanded !) you can use:
+If you don't use a SSH key but a password authentication (which is not recomanded !) you can use:
 
 ```
 ansible-playbook -i $REMOTE_IP_ADDRESS, install-a4c-consul-yorc.yml --user $REMOTE_USER --extra-vars "@inputs.json" -v --extra-vars "ansible_user=root ansible_password=yourpassword"
