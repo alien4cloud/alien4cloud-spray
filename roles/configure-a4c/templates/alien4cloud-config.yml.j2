@@ -6,7 +6,7 @@ server:
   # If you want to enable SSL comment the previous line and un-comment the following lines.
 {% if a4c_protocol == 'https' %}
   ssl:
-    key-store: {{ a4c_ssl_dir }}/server-keystore.jks
+    key-store: ssl/server-keystore.jks
     key-store-password: {{ ssl_dest_keystore_password }}
     key-password: {{ ssl_key_password }}
 {% endif %}

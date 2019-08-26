@@ -17,13 +17,13 @@
 
 - name: Creates SSL directory
   file:
-    path: "{{ a4c_ssl_dir }}"
+    path: "{{ a4c_install_dir }}/alien4cloud/ssl"
     state: directory
   when: a4c_protocol == 'https'
 
 - name: Generate key store
   shell:
-    cmd: "keytool -importkeystore -destkeystore {{ a4c_ssl_dir }}/server-keystore.jks -srckeystore {{ temp_dir.path }}/server-keystore.p12 -srcstoretype pkcs12 -alias server -deststorepass {{ ssl_dest_keystore_password }} -srckeypass {{ ssl_key_password }} -srcstorepass {{ ssl_src_keystore_password }}"
+    cmd: "keytool -importkeystore -destkeystore {{ a4c_install_dir }}/alien4cloud/ssl/server-keystore.jks -srckeystore {{ temp_dir.path }}/server-keystore.p12 -srcstoretype pkcs12 -alias server -deststorepass {{ ssl_dest_keystore_password }} -srckeypass {{ ssl_key_password }} -srcstorepass {{ ssl_src_keystore_password }}"
   become: true
   when: a4c_protocol == 'https'
 

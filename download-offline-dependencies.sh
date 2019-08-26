@@ -11,6 +11,7 @@ wget -P resources/bin/ https://github.com/ystia/yorc/releases/download/v3.2.3/yo
 # Get rpm dependencies
 wget -P resources/bin/rpms/ http://downloads.naulinux.ru/pub/SLCE/7x/x86_64/CyrEd/RPMS//unzip-6.0-15.1.el7.x86_64.rpm
 wget -P resources/bin/rpms/ http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jq-1.5-1.el7.x86_64.rpm
+wget -O resources/bin/rpms/0-libonig.rpm https://rpmfind.net/linux/mageia/distrib/6/x86_64/media/core/release/lib64onig2-5.9.6-2.mga6.x86_64.rpm
 
 # Get Terraform plugins
 wget -P resources/bin/terraform-plugins/ https://releases.hashicorp.com/terraform-provider-consul/2.1.0/terraform-provider-consul_2.1.0_linux_amd64.zip

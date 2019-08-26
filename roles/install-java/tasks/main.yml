@@ -85,3 +85,13 @@
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
         (offline is defined)
+
+- name: Link keytool
+  become: true
+  alternatives:
+    name: keytool
+    link: /usr/bin/keytool
+    path: "{{ latest_file.path }}/jre/bin/keytool"
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (offline is defined)
