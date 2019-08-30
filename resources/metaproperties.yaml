@@ -67,7 +67,7 @@ metaproperties:
     password: false
     filtered: false
     required: false
-  - name: "Description données consomées"
+  - name: "Description données consommées"
     description: ""
     target: component
     type: string
@@ -90,7 +90,7 @@ metaproperties:
     password: false
     filtered: false
     required: false
-  - name: "Description données consomées"
+  - name: "Description données consommées"
     description: ""
     target: topology
     type: string
@@ -138,7 +138,7 @@ metaproperties:
     password: false
     filtered: false
     required: false
-  - name: "Description données consomées"
+  - name: "Description données consommées"
     description: ""
     target: application
     type: string
