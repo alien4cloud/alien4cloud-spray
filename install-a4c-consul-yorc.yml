@@ -1,15 +1,45 @@
 ---
 - hosts: all
-  name: Install a typical A4C stack with a Yorc orchestrator.
+  name: Install all common dependencies.
   become: false
+  roles:
+    - install-common-dependencies
 
+- hosts: consul
+  name: Install configure and start consul.
+  become: false
+  roles:
+    - install-consul
+    - { role: configure-consul, consul_mode: 'server' }
+    - configure-consul
+    - start-consul
+
+- hosts: yorc
+  name: Install configure and start Yorc.
+  become: false
   roles:
     - install-dependencies
     - install-consul
-    - start-consul
+    - { role: configure-consul, consul_mode: 'client' }
     - install-yorc
     - configure-yorc
+    - start-consul
     - start-yorc
+
+- hosts: elasticsearch
+  name: Install configure and start Elasticsearch.
+  become: false
+  roles:
+    # - stop-elasticsearch
+    - install-java
+    - install-elasticsearch
+    - configure-elasticsearch
+    - start-elasticsearch
+
+- hosts: a4c
+  name: Install configure and start A4C.
+  become: false
+  roles:
     - install-java
     - install-a4c
     - configure-a4c

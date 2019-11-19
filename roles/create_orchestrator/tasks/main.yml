@@ -1,7 +1,7 @@
 ---
 - set_fact:
     alien_url: "{{ a4c_protocol }}://{{ a4c_ip }}:{{ a4c_port }}"
-    
+
 - set_fact:
     url: "{{ alien_url }}/login?username={{ a4c_admin_usr }}&password={{ a4c_admin_pwd }}&submit=Login"
 
@@ -61,6 +61,9 @@
 - set_fact:
     orchestratorConfiguration: "{{ content.data.configuration }}"
 
+- debug:
+    var: orchestratorConfiguration
+
 - name: Update orchestrator deployment name pattern
   uri:
     url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}"
@@ -74,6 +77,35 @@
     body_format: json
     status_code: 200
   register: result
+
+- name: Define yorc host
+  set_fact:
+    yorc_host: "{{ groups['yorc'][0] }}"
+
+- name: Use 'localhost' if a4c and yorc are co-hosted
+  set_fact:
+    yorc_host: "localhost"
+  when: "{{ yorc_host == inventory_hostname }}"
+
+# TODO: adapt scheme if secured
+- name: Define yorc url
+  set_fact:
+    yorc_url: "http://{{ yorc_host }}:8800"
+
+- name: Add 'urlYorc' to orchestrator config
+  set_fact:
+    orchestratorConfiguration: "{{ orchestratorConfiguration|combine({'urlYorc': yorc_url}) }}"
+
+- name: Configure orchestrator
+  uri:
+    url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/configuration"
+    method: PUT
+    validate_certs: no
+    HEADER_cookie: "{{ session_id }}"
+    HEADER_Content-Type: "application/json"
+    body: "{{ orchestratorConfiguration | to_json }}"
+    body_format: json
+    status_code: 200
 
 - name: Activate orchestrator
   uri:

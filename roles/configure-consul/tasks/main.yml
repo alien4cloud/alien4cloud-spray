@@ -1,0 +1,74 @@
+- name: Ensure consul_mode variable is defined
+  set_fact:
+    consul_mode: "client"
+  when: consul_mode is not defined
+
+- name: The 'consul_mode' variable defines if the node is a 'server' or a 'client'
+  debug:
+    var: consul_mode
+
+- name: Get the consul install directory
+  set_fact :
+    consul_install_dir: "{{ ansible_env.HOME }}/consul"
+  when: consul_install_dir is not defined
+
+- name: Count consul hosts
+  set_fact :
+    CONSUL_HOST_COUNT: "{{ groups['consul'] | length}}"
+
+- name: The 'CONSUL_HOST_COUNT' variable contains the number of consul hosts
+  debug:
+    var: CONSUL_HOST_COUNT
+
+- name: Slurp the consul config file
+  slurp:
+    src: "{{ consul_install_dir }}/server-config.json"
+  register: consul_config
+
+- name: Extract consul config
+  set_fact:
+    consul_config: "{{ consul_config['content'] | b64decode }}"
+
+- name: Add 'bootstrap_expect' to consul config
+  set_fact:
+    consul_config: "{{ consul_config|combine({'bootstrap_expect': CONSUL_HOST_COUNT|int}) }}"
+  when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
+
+- name: Add 'bootstrap' to consul config
+  set_fact:
+    consul_config: "{{ consul_config|combine({'bootstrap': true}) }}"
+  when: "{{ CONSUL_HOST_COUNT }} == 1 and consul_mode == 'server'"
+
+- name: Add 'server' to consul config
+  set_fact:
+    consul_config: "{{ consul_config|combine({'server': true}) }}"
+  when: consul_mode == "server"
+
+- set_fact:
+    consul_host_array: []
+  when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
+
+- name: Loop over the consul group
+  set_fact:
+    consul_host_array: "{{ consul_host_array + [item] }}"
+  with_items: "{{ groups['consul'] }}"
+  when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
+
+- name: Add 'start_join' to consul config
+  set_fact:
+    consul_config: "{{ consul_config|combine({'start_join': consul_host_array}) }}"
+  when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
+
+- name: Add 'advertise_addr' to consul config
+  set_fact:
+    consul_config: "{{consul_config |combine({'advertise_addr': inventory_hostname})}}"
+  with_dict: "{{consul_config}}"
+
+- name: Debug the consul config before serializing it to file system
+  debug:
+    var: consul_config
+
+- name: Serialize consul config into ({{ consul_install_dir }}/server-config.json)
+  copy:
+    content: "{{ consul_config }}"
+    dest: "{{ consul_install_dir }}/server-config.json"

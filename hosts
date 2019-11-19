@@ -1,0 +1,19 @@
+[consul]
+34.246.223.145
+63.32.91.91
+52.212.206.102
+
+[yorc]
+54.72.159.12
+
+[elasticsearch]
+34.246.223.145
+63.32.91.91
+52.212.206.102
+
+[a4c]
+34.242.180.159
+
+[a4c_front]
+# for configuration purpose, here just put 1 only a4c ip (reverse proxy in case of HA)
+34.242.180.159

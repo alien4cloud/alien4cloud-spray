@@ -8,6 +8,14 @@
     consul_install_dir: "{{ ansible_env.HOME }}/consul"
   when: consul_install_dir is not defined
 
+- name: Check if consul is installed
+  shell: "command -v {{ consul_install_dir }}/consul >/dev/null 2>&1"
+  register: is_consul_exist
+  ignore_errors: yes
+
+- name: Is consul installed ?
+  debug: msg="{{ is_consul_exist.rc }}" # it returns rc 0
+
 - name: Creates consul directory
   file:
     path: "{{ consul_install_dir }}"
@@ -25,6 +33,7 @@
     remote_src: yes
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
+         is_consul_exist.rc != 0 and
         (offline is undefined)
 
 - name: Extract archive from local source
@@ -34,7 +43,13 @@
     remote_src: no
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
+         is_consul_exist.rc != 0 and
         (offline is defined)
+
+- name: Check if consul config already exists
+  stat:
+    path: "{{ consul_install_dir }}/server-config.json"
+  register: consul_config_stat_result
 
 - name: Consul config file
   template:
@@ -42,6 +57,7 @@
     dest: "{{ consul_install_dir }}/server-config.json"
     mode: 0666
     force: yes
+  when: "not {{ consul_config_stat_result.stat.exists }}"
 
 - name: Usage of consul jinja2 template for service creation
   template:

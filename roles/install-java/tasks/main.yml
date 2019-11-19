@@ -1,3 +1,25 @@
+- name: Fetch Java version
+  shell: java -version 2>&1 | grep version | awk '{print $3}' | sed 's/"//g'
+  register: java_version
+  changed_when: false
+
+- debug:
+    var: java_version
+
+- name: Check java version
+  set_fact :
+    java8_installed: "{{ java_version.stdout|length > 0 and java_version.stdout is version_compare('1.8', '>=') }}"
+
+- debug:
+    var: java8_installed
+
+- debug:
+    msg: "Java 8 is installed"
+  when: (java8_installed)
+
+- debug:
+    msg: "Java 8 is NOT installed"
+  when: (not java8_installed)
 
 - name: Install latest jdk 1.8
   yum:
@@ -6,6 +28,7 @@
   become: true
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
+        (not java8_installed) and
         (offline is undefined)
 
 - name: Copy java
@@ -14,6 +37,7 @@
     dest: /tmp/java/
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
+         (not java8_installed) and
         (offline is defined)
 
 - name: Get java files
@@ -23,6 +47,7 @@
   register: java_files
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
+         (not java8_installed) and
         (offline is defined)
 
 - name : Init java files list
@@ -30,6 +55,7 @@
      java_list: []
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
+        (not java8_installed) and
         (offline is defined)
 
 - name : Build java files list
@@ -38,6 +64,7 @@
   with_items: "{{java_files.files}}"
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
+         (not java8_installed) and
         (offline is defined)
 
 - name: Creates java alternative directory
@@ -47,6 +74,7 @@
     state: directory
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
+         (not java8_installed) and
         (offline is defined)
 
 - name: Extract java archive from local source
@@ -58,6 +86,7 @@
     remote_src: no
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
+         (not java8_installed) and
         (offline is defined)
 
 - name: Get files in /usr/local/oracle-java-8
@@ -67,6 +96,7 @@
   register: found_files
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
+         (not java8_installed) and
         (offline is defined)
 
 - name: Get latest file in /usr/local/oracle-java-8
@@ -74,6 +104,7 @@
     latest_file: "{{ found_files.files | sort(attribute='mtime',reverse=true) | first }}"
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
+         (not java8_installed) and
         (offline is defined)
 
 - name: Change java
@@ -84,6 +115,7 @@
     path: "{{ latest_file.path }}/jre/bin/java"
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
+         (not java8_installed) and
         (offline is defined)
 
 - name: Link keytool
@@ -94,4 +126,5 @@
     path: "{{ latest_file.path }}/jre/bin/keytool"
   when: (ansible_distribution == 'CentOS' or
          ansible_distribution == 'Red Hat Enterprise Linux') and
+         (not java8_installed) and
         (offline is defined)

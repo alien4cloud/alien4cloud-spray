@@ -3,7 +3,13 @@
   set_fact :
     yorc_install_dir: "{{ ansible_env.HOME }}/yorc"
   when: yorc_install_dir is not defined
-  
+
+- name: Default Yorc location file
+  template:
+    src: config.locations.json.j2
+    dest: "{{ yorc_install_dir }}/config.locations.json"
+    force: yes
+
 - name: Configure Yorc
   template:
     src: config.yorc.json.j2

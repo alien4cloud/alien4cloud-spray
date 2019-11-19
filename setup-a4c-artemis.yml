@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: a4c_front
   name: Setup A4C with a Yorc orchestrator for Artemis.
   become: false
 
@@ -8,7 +8,7 @@
     #     repositoryUrl: 'https://github.com/alien4cloud/samples',
     #     repositoryUsername: '',
     #     repositoryPassword: '',
-    #     branchId: 'master',
+    #     branchId: 'develop',
     #     subPath: 'org/alien4cloud/mock'
     #   }
     - { role: roles/create_orchestrator,
@@ -51,9 +51,9 @@
     # - { role: 'roles/remove_services',
     #     resources_file_artifact: 'resources/a4c/config/locations/ROEM/services.yaml'
     #   }
-    - { role: 'roles/create_services',
-        resources_file_artifact: 'resources/services.yaml'
-      }
+    # - { role: 'roles/create_services',
+    #     resources_file_artifact: 'resources/services.yaml'
+    #   }
     - { role: roles/upload_csars }
     # - { role: 'roles/create_location_policies',
     #     resources_file_artifact: 'resources/a4c/config/locations/ROEM/policies.yaml'

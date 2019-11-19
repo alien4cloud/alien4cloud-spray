@@ -1,0 +1,47 @@
+
+- name: Instal the needed package
+  yum:
+    pkg: "{{ item }}"
+    state: present
+    update_cache: true
+  become: true
+  with_items:
+    - unzip
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (offline is undefined)
+
+- name: Copy Unzip
+  copy:
+    src: resources/bin/unzip/
+    dest: /tmp/rpms/
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (offline is defined)
+
+- name: Get RPMs packages
+  find:
+    paths: /tmp/rpms/
+    patterns: "*.rpm"
+  register: rpm_files
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (offline is defined)
+
+- name: Install RPMs
+  yum:
+    name: "{{ item.path }}"
+    state: present
+  become: true
+  with_items: "{{ rpm_files.files | sort(attribute='path') | list }}"
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (offline is defined)
+
+- name: Remove RMPs folder
+  file:
+    path: /tmp/rpms
+    state: absent
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+        (offline is defined)

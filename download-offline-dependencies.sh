@@ -3,13 +3,15 @@
 find resources/bin/ ! -name 'readme.txt' -type f -exec rm -f {} +
 
 # Get a4c ecosystem binaries
-wget -P resources/bin/ http://54.246.249.105/dist/alien4cloud/alien4cloud-artemis-dist/2.2.0-SM8/alien4cloud-artemis-dist-2.2.0-SM8-dist.tar.gz
+wget -P resources/bin/ http://54.246.249.105/dist/alien4cloud/alien4cloud-artemis-dist/3.0.0-M1/alien4cloud-artemis-dist-3.0.0-M1-dist.tar.gz
 wget -P resources/bin/ https://releases.hashicorp.com/consul/1.2.3/consul_1.2.3_linux_amd64.zip
 wget -P resources/bin/ https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
-wget -P resources/bin/ https://github.com/ystia/yorc/releases/download/v3.2.3/yorc-3.2.3.tgz
+wget -O resources/bin/yorc-4.0.0-M6.tgz https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.0-M6%2Fyorc-4.0.0-M6.tgz
+wget -P resources/bin/elasticsearch/ https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.6.2.rpm
 
 # Get rpm dependencies
-wget -P resources/bin/rpms/ http://downloads.naulinux.ru/pub/SLCE/7x/x86_64/CyrEd/RPMS//unzip-6.0-15.1.el7.x86_64.rpm
+#wget -P resources/bin/rpms/ http://downloads.naulinux.ru/pub/SLCE/7x/x86_64/CyrEd/RPMS//unzip-6.0-15.1.el7.x86_64.rpm
+wget -P resources/bin/unzip/ http://mirror.centos.org/centos/7/os/x86_64/Packages/unzip-6.0-20.el7.x86_64.rpm
 wget -P resources/bin/rpms/ http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jq-1.5-1.el7.x86_64.rpm
 wget -O resources/bin/rpms/0-libonig.rpm https://rpmfind.net/linux/mageia/distrib/6/x86_64/media/core/release/lib64onig2-5.9.6-2.mga6.x86_64.rpm
 

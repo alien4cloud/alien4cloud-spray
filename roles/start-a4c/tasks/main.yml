@@ -1,8 +1,8 @@
 
-- name: Get the a4c install directory
-  set_fact :
-    a4c_install_dir: "{{ ansible_env.HOME }}/a4c"
-  when: a4c_install_dir is not defined
+# - name: Get the a4c install directory
+#   set_fact :
+#     a4c_install_dir: "{{ ansible_env.HOME }}/a4c"
+#   when: a4c_install_dir is not defined
 
 - name: Start service a4c
   service:
@@ -18,7 +18,7 @@
   when: ansible_distribution != 'CentOS' and ansible_distribution != 'Red Hat Enterprise Linux'
 
 - set_fact:
-    alien_url: "{{ a4c_protocol }}://{{ a4c_ip }}:{{ a4c_port }}"
+    alien_url: "{{ a4c_protocol }}://localhost:{{ a4c_port }}/rest/admin/health"
 
 - name: "Wait for a4c to be reachable at {{ alien_url }}"
   uri:
@@ -33,8 +33,14 @@
   delay: 10
   ignore_errors: yes
 
-- name: Rename the init folder
+- name: Check if init directory exists
+  stat:
+    path: "{{ a4c_install_dir }}/alien4cloud/init"
+  register: a4c_init_stat_result
+
+- name: Rename the init directory
   command: "mv {{ a4c_install_dir }}/alien4cloud/init {{ a4c_install_dir }}/alien4cloud/_init"
+  when: "{{ a4c_init_stat_result.stat.exists }}"
 
 - name: Ensure a crontab is initialized
   cron:

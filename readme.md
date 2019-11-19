@@ -1,14 +1,14 @@
 These playbooks install full A4C stack components (consul, york, a4c) in the home directory of the specified user.
+It supports cluster mode for Elasticsearch and Consul. Comming soon: cluster mode for A4C (HA) and Yorc.
 
 > [!WARNING]
-> These playbook's roles are not always reentrant.
+> The install playbook's roles are reentrant. Config playbooks are not.
 
 # Prerequistes
 
-You need a linux box with centos (tried on a EC2 ami-3548444c t2.medium)
+You need some linux boxes with centos (tried on a EC2 ami-3548444c t2.medium)
 
 You need the following vars:
- - `REMOTE_IP_ADDRESS`: ie. 34.245.10.8
  - `REMOTE_USER`: ie. centos
  - `PRIVATE_KEY_PATH`: ie. ~/work/env/aws/keys/vicos-awsproductteam.pem
 
@@ -34,17 +34,71 @@ It will finally echo you something like :
 
 Fill the 'ssl_keystore_source_location' in `inputs.json` file using this path
 
+# Inventory
+
+You need a ansible inventory file (`hosts`) containing hostnames or ip addresses for the different nodes of your cluster, following this group name convention :
+
+* *consul*: list of consul cluster hosts
+* *elasticsearch*: list of Elasticsearch cluster hosts
+* *yorc*: list of Yorc cluster hosts
+* *a4c*: list of A4C cluster hosts
+* *a4c_front*: will contain 1 single host (the A4C reverse proxy if A4C is setup in cluster AKA HA)
+
+You can adapt the file regarding the configuration you need:
+
+Here is an example where Elasticsearch and Consul are co-hosted on a 3 nodes cluster, 1 host for A4C, and 1 other host for Yorc:
+
+```
+[consul]
+192.168.0.10
+192.168.0.11
+192.168.0.12
+
+[yorc]
+192.168.0.2
+
+[elasticsearch]
+192.168.0.10
+192.168.0.11
+192.168.0.12
+
+[a4c]
+192.168.0.1
+
+[a4c_front]
+192.168.0.1
+```
+
+In the example below, we only setup a single host containing all stack:
+
+```
+[consul]
+192.168.0.1
+
+[yorc]
+192.168.0.1
+
+[elasticsearch]
+192.168.0.1
+
+[a4c]
+192.168.0.1
+
+[a4c_front]
+192.168.0.1
+```
+
 # Installation
 The playbook `install-a4c-consul-yorc.yml` will install all stack on the remote machine:
 
 ```
-ansible-playbook -i $REMOTE_IP_ADDRESS, install-a4c-consul-yorc.yml --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.json" -v
+ansible-playbook -i hosts install-a4c-consul-yorc.yml --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.json" -v
 ```
 
 If you don't use a SSH key but a password authentication (which is not recomanded !) you can use:
 
 ```
-ansible-playbook -i $REMOTE_IP_ADDRESS, install-a4c-consul-yorc.yml --user $REMOTE_USER --extra-vars "@inputs.json" -v --extra-vars "ansible_user=root ansible_password=yourpassword"
+ansible-playbook -i hosts install-a4c-consul-yorc.yml --user $REMOTE_USER --extra-vars "@inputs.json" -v --extra-vars "ansible_user=root ansible_password=yourpassword"
 ```
 
 # Installation in _offline_ mode
@@ -62,7 +116,7 @@ Il you need some additional CSARs library, place the zip files in the `resources
 This playbook will configure the orchestrator, a location, and services on the A4C instance :
 
 ```
-ansible-playbook -i $REMOTE_IP_ADDRESS, setup-a4c-artemis.yml --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.json" -v
+ansible-playbook -i hosts setup-a4c-artemis.yml --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.json" -v
 ```
 
 That's all folk, the full system should be available.

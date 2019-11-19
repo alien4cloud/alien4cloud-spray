@@ -1,4 +1,13 @@
 
+- name: Count consul hosts
+  set_fact :
+    CONSUL_HOST_COUNT: "{{ groups['consul'] | length }}"
+
+- name: Get the consul install directory
+  set_fact :
+    consul_install_dir: "{{ ansible_env.HOME }}/consul"
+  when: consul_install_dir is not defined
+
 - name: Start consul
   service:
     name: consul
@@ -14,11 +23,16 @@
 
 - name: Start consul
   shell:
-    chdir: ~/consul
-    cmd: nohup consul agent -ui -client 0.0.0.0 -server -bootstrap-expect 1 -data-dir ./data &
+    chdir: "{{ consul_install_dir }}"
+    cmd: nohup consul agent -config-file ./server-config.json &
   when: ansible_distribution != 'CentOS' and ansible_distribution != 'Red Hat Enterprise Linux'
 
 - name: Ensure consul is running
   shell:
     cmd: ps -ef |grep consul |grep -v grep
   when: ansible_distribution != 'CentOS' and ansible_distribution != 'Red Hat Enterprise Linux'
+
+- name: Loop over the elasticsearch group
+  shell: "{{ consul_install_dir }}/consul join {{ item }}"
+  with_items: "{{ groups['consul'] }}"
+  when: inventory_hostname != item and CONSUL_HOST_COUNT > 1

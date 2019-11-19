@@ -1,0 +1,48 @@
+
+- name: Count elasticsearch hosts
+  set_fact :
+    ES_HOST_COUNT: "{{ groups['elasticsearch'] | length }}"
+
+- debug:
+    var: ES_HOST_COUNT
+- debug:
+    var: inventory_hostname
+
+- debug:
+    msg: "{{ groups['elasticsearch'] }}"
+
+- name: Count elasticsearch hosts
+  set_fact :
+    cluster_host_list: "[\"127.0.0.1\""
+
+- name: Loop over the elasticsearch group
+  set_fact:
+    cluster_host_list: "{{ cluster_host_list }}, \"{{ item }}\""
+  with_items: "{{ groups['elasticsearch'] }}"
+  when: inventory_hostname != item
+
+- name: Count elasticsearch hosts
+  set_fact :
+    cluster_host_list: "{{ cluster_host_list }}]"
+
+- debug:
+    var: cluster_host_list
+
+- name: Append the hosts list to ES config file
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    line: "discovery.zen.ping.unicast.hosts: [\"{{ cluster_host_list | list | join ('\",\"') }}\"]"
+  become: true
+  when: ES_HOST_COUNT > 1
+
+- name: Append the cluster name to ES config file
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    line: "cluster.name: escluster"
+  become: true
+
+- name: Setup elasticsearch to bind 0.0.0.0
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    line: "network.host: 0.0.0.0"
+  become: true
