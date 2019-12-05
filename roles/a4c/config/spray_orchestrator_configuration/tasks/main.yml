@@ -1,0 +1,54 @@
+---
+- set_fact:
+    alien_url: "{{ a4c_protocol }}://{{ a4c_ip }}:{{ a4c_port }}"
+
+- set_fact:
+    url: "{{ alien_url }}/login?username={{ a4c_admin_usr }}&password={{ a4c_admin_pwd }}&submit=Login"
+
+- name: "Login onto A4C using {{url}}"
+  uri:
+    url: "{{url}}"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    status_code: 302
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+  register: login
+
+- set_fact:
+    session_id: "{{ login.set_cookie.split(';')[0] }}"
+
+- name: Create temporary file to store config
+  tempfile:
+    state: file
+    suffix: yorc_orchestrator_config
+  register: yorc_orchestrator_config_file
+
+- name: Copy local file to remote temp file
+  copy:
+    src: "{{ yorc_orchestrator_config_file_path }}"
+    dest: "{{ yorc_orchestrator_config_file.path }}"
+  when: (yorc_tls)
+
+- name: Slurp configuration file
+  slurp:
+    src: "{{ yorc_orchestrator_config_file.path }}"
+  register: yorc_orchestrator_config_slurped
+
+- set_fact:
+    orchestratorConfiguration: "{{ yorc_orchestrator_config_slurped['content'] | b64decode | from_json }}"
+
+- debug:
+    var: orchestratorConfiguration
+
+- name: Configure orchestrator
+  uri:
+    url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/configuration"
+    method: PUT
+    validate_certs: no
+    HEADER_cookie: "{{ session_id }}"
+    HEADER_Content-Type: "application/json"
+    body: "{{ orchestratorConfiguration | to_json }}"
+    body_format: json
+    status_code: 200

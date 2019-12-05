@@ -6,15 +6,8 @@
     - stop-yorc
     - stop-consul
 
-- hosts: elasticsearch
-  name: Stop Elasticsearch
-  become: false
-  roles:
-    - stop-elasticsearch
-
 - hosts: consul
   name: Stop Consul
   become: false
   roles:
     - stop-consul
-    - delete-consul

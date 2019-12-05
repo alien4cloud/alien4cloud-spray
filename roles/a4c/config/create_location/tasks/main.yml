@@ -22,7 +22,8 @@
     method: POST
     return_content: yes
     validate_certs: no
-    HEADER_cookie: "{{ session_id }}"
+    headers:
+      Cookie: "{{ session_id }}"
     body:
       name: "{{ location_name }}"
       infrastructureType: "{{ location_type }}"

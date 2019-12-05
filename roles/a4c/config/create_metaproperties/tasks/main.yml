@@ -55,8 +55,9 @@
     method: POST
     return_content: yes
     validate_certs: no
-    HEADER_cookie: "{{ session_id }}"
-    HEADER_Content-Type: application/json
+    headers:
+      Cookie: "{{ session_id }}"
+      Content-Type: "application/json"
     body: "{{ item | to_json }}"
     body_format: json
     status_code: 200
@@ -65,4 +66,3 @@
 
 - debug:
     var: result
-

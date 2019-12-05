@@ -65,7 +65,8 @@
     method: POST
     return_content: yes
     validate_certs: no
-    HEADER_cookie: "{{ session_id }}"
+    headers:
+      Cookie: "{{ session_id }}"
     body:
       pluginId: "{{ item['pluginId'] }}"
       beanName: "{{ item['beanName'] }}"
@@ -88,7 +89,8 @@
     method: PUT
     return_content: yes
     validate_certs: no
-    HEADER_cookie: "{{ session_id }}"
+    headers:
+      Cookie: "{{ session_id }}"
     status_code: 200
   register: result
   with_items: "{{orders}}"

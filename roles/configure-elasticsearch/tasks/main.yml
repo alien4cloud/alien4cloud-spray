@@ -1,17 +1,21 @@
+- name: Ensure elasticsearch_tls variable is defined
+  set_fact:
+    elasticsearch_tls: false
+  when: elasticsearch_tls is not defined
+
+- name: The 'elasticsearch_tls' variable defines if elasticsearch connections should be secured
+  debug:
+    var: elasticsearch_tls
 
 - name: Count elasticsearch hosts
   set_fact :
     ES_HOST_COUNT: "{{ groups['elasticsearch'] | length }}"
 
-- debug:
+- name: Here is the number of nodes in the elasticsearch cluster
+  debug:
     var: ES_HOST_COUNT
-- debug:
-    var: inventory_hostname
 
-- debug:
-    msg: "{{ groups['elasticsearch'] }}"
-
-- name: Count elasticsearch hosts
+- name: Define elasticsearch hosts
   set_fact :
     cluster_host_list: "[\"127.0.0.1\""
 
@@ -31,18 +35,153 @@
 - name: Append the hosts list to ES config file
   lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?discovery.zen.ping.unicast.hosts:.*'
     line: "discovery.zen.ping.unicast.hosts: [\"{{ cluster_host_list | list | join ('\",\"') }}\"]"
+  become: true
+  when: ES_HOST_COUNT > 1
+
+- name: Define minimum_master_nodes
+  set_fact :
+    minimum_master_nodes: "{{ ((ES_HOST_COUNT|int / 2) | int ) + 1 }}"
+
+- name: Append minimum_master_nodes to ES config file
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?discovery.zen.minimum_master_nodes:.*'
+    line: "discovery.zen.minimum_master_nodes: {{ minimum_master_nodes }}"
   become: true
   when: ES_HOST_COUNT > 1
 
 - name: Append the cluster name to ES config file
   lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?cluster.name:.*'
     line: "cluster.name: escluster"
   become: true
 
 - name: Setup elasticsearch to bind 0.0.0.0
   lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?network.host:.*'
     line: "network.host: 0.0.0.0"
   become: true
+
+- name: Creates elasticsearch ssl directory
+  file:
+    path: "/etc/elasticsearch/ssl"
+    state: directory
+  become: true
+  when: (elasticsearch_tls)
+
+- name: Define CA file path
+  set_fact:
+    ca_file_path: "/etc/elasticsearch/ssl/ca-cert.pem"
+  when: (elasticsearch_tls)
+
+- name: Copy CA cert file
+  copy:
+    src: "{{ certificates_path }}/ca-cert.pem"
+    dest: "{{ ca_file_path }}"
+  become: true
+  when: (elasticsearch_tls)
+
+- name: Define host key file path
+  set_fact:
+    hostkey_file_path: "/etc/elasticsearch/ssl/{{ inventory_hostname }}-key.pem"
+  when: (elasticsearch_tls)
+
+- name: Copy host key file
+  copy:
+    src: "{{ certificates_path }}/{{ inventory_hostname }}-key.pem"
+    dest: "{{ hostkey_file_path }}"
+  become: true
+  when: (elasticsearch_tls)
+
+- name: Define host cert file path
+  set_fact:
+    hostcert_file_path: "/etc/elasticsearch/ssl/{{ inventory_hostname }}-cert.pem"
+  when: (elasticsearch_tls)
+
+- name: Copy host cert file
+  copy:
+    src: "{{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
+    dest: "{{ hostcert_file_path }}"
+  become: true
+  when: (elasticsearch_tls)
+
+- name: Setup elasticsearch security (transport.ssl.enabled)
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    line: "xpack.security.transport.ssl.enabled: true"
+  become: true
+  when: (elasticsearch_tls)
+
+- name: Setup elasticsearch security (transport.ssl.verification_mode)
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    line: "xpack.security.transport.ssl.verification_mode: certificate"
+  become: true
+  when: (elasticsearch_tls)
+
+- name: Setup elasticsearch security (transport.ssl.key)
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    line: "xpack.security.transport.ssl.key: {{hostkey_file_path}}"
+  become: true
+  when: (elasticsearch_tls)
+
+- name: Setup elasticsearch security (transport.ssl.certificate)
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    line: "xpack.security.transport.ssl.certificate: {{hostcert_file_path}}"
+  become: true
+  when: (elasticsearch_tls)
+
+- name: Setup elasticsearch security (transport.ssl.certificate_authorities)
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    line: "xpack.security.transport.ssl.certificate_authorities: [\"{{ca_file_path}}\"]"
+  become: true
+  when: (elasticsearch_tls)
+
+- name: Setup elasticsearch security (http.ssl.enabled)
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    line: "xpack.security.http.ssl.enabled: true"
+  become: true
+  when: (elasticsearch_tls)
+
+- name: Setup elasticsearch security (http.ssl.verification_mode)
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    line: "xpack.security.http.ssl.verification_mode: certificate"
+  become: true
+  when: (elasticsearch_tls)
+
+- name: Setup elasticsearch security (http.ssl.key)
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    line: "xpack.security.http.ssl.key: {{hostkey_file_path}}"
+  become: true
+  when: (elasticsearch_tls)
+
+- name: Setup elasticsearch security (http.ssl.certificate)
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    line: "xpack.security.http.ssl.certificate: {{hostcert_file_path}}"
+  become: true
+  when: (elasticsearch_tls)
+
+- name: Setup elasticsearch security (http.ssl.certificate_authorities)
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    line: "xpack.security.http.ssl.certificate_authorities: [\"{{ca_file_path}}\"]"
+  become: true
+  when: (elasticsearch_tls)
+
+- name: Setup elasticsearch security (http.ssl.certificate_authorities)
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    line: "xpack.security.authc.anonymous.roles: superuser"
+  become: true
+  when: (elasticsearch_tls)

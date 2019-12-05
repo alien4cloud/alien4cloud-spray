@@ -11,12 +11,12 @@
     #     branchId: 'develop',
     #     subPath: 'org/alien4cloud/mock'
     #   }
-    - { role: roles/create_orchestrator,
+    - { role: roles/a4c/config/create_orchestrator,
         orchestratorName: 'Yorc',
         pluginId: 'alien4cloud-yorc-provider',
         pluginBean: 'yorc-orchestrator-factory'
       }
-    - { role: 'roles/create_metaproperties',
+    - { role: 'roles/a4c/config/create_metaproperties',
         resources_file_artifact: 'resources/metaproperties.yaml'
       }
     # - { role: roles/git-ssl }
@@ -34,18 +34,18 @@
     #     branchId: 'develop',
     #     subPath: ''
     #   }
-    - { role: 'roles/a4c/config/get_orchectrator',
-        orchestratorName: 'Yorc'
-      }
+    # - { role: 'roles/a4c/config/get_orchectrator',
+    #     orchestratorName: 'Yorc'
+    #   }
     # ROEM
-    - { role: 'roles/create_location',
+    - { role: 'roles/a4c/config/create_location',
         location_name: 'Default',
         location_type: 'OpenStack'
       }
     # - { role: 'roles/create_location_resources',
     #     resources_file_artifact: 'resources/a4c/config/locations/ROEM/location_resources.yaml'
     #   }
-    - { role: 'roles/add_location_modifiers',
+    - { role: 'roles/a4c/config/add_location_modifiers',
         resources_file_artifact: 'resources/location_modifiers.yaml'
       }
     # - { role: 'roles/remove_services',
@@ -54,7 +54,7 @@
     # - { role: 'roles/create_services',
     #     resources_file_artifact: 'resources/services.yaml'
     #   }
-    - { role: roles/upload_csars }
+    - { role: roles/a4c/config/upload_csars }
     # - { role: 'roles/create_location_policies',
     #     resources_file_artifact: 'resources/a4c/config/locations/ROEM/policies.yaml'
     #   }

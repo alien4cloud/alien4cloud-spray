@@ -9,15 +9,18 @@
   name: Install configure and start consul.
   become: false
   roles:
+    - stop-consul
     - install-consul
+    - configure-consul-gossip-keygen
     - { role: configure-consul, consul_mode: 'server' }
-    - configure-consul
     - start-consul
 
 - hosts: yorc
   name: Install configure and start Yorc.
   become: false
   roles:
+    - stop-yorc
+    - stop-consul
     - install-dependencies
     - install-consul
     - { role: configure-consul, consul_mode: 'client' }
@@ -40,6 +43,7 @@
   name: Install configure and start A4C.
   become: false
   roles:
+    # - stop-a4c
     - install-java
     - install-a4c
     - configure-a4c

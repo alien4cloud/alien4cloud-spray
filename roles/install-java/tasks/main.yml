@@ -8,7 +8,8 @@
 
 - name: Check java version
   set_fact :
-    java8_installed: "{{ java_version.stdout|length > 0 and java_version.stdout is version_compare('1.8', '>=') }}"
+   java8_installed: "{{ java_version.stdout|length > 0 and java_version.stdout is version_compare('1.8', '>=') }}"
+    # java8_installed: false
 
 - debug:
     var: java8_installed

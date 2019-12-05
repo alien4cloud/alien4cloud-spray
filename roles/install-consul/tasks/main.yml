@@ -46,19 +46,6 @@
          is_consul_exist.rc != 0 and
         (offline is defined)
 
-- name: Check if consul config already exists
-  stat:
-    path: "{{ consul_install_dir }}/server-config.json"
-  register: consul_config_stat_result
-
-- name: Consul config file
-  template:
-    src: server-config.json.j2
-    dest: "{{ consul_install_dir }}/server-config.json"
-    mode: 0666
-    force: yes
-  when: "not {{ consul_config_stat_result.stat.exists }}"
-
 - name: Usage of consul jinja2 template for service creation
   template:
     src: consul-service.j2

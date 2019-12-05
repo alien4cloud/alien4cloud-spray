@@ -25,7 +25,8 @@ wget -P resources/bin/terraform-plugins/ https://releases.hashicorp.com/terrafor
 wget -P resources/bin/usr/ https://storage.googleapis.com/kubernetes-release/release/v1.14.1/bin/linux/amd64/kubectl
 
 # Get Java
-wget --continue --no-check-certificate -O resources/bin/java/jdk.tar.gz --header "Cookie: oraclelicense=a" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
+#wget --continue --no-check-certificate -O resources/bin/java/jdk.tar.gz --header "Cookie: oraclelicense=a" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
+wget -O resources/bin/java/jdk.tar.gz https://api.adoptopenjdk.net/v2/binary/releases/openjdk8?openjdk_impl=hotspot&os=linux&arch=x64&release=jdk8u212-b03&type=jdk
 
 # Get python Packages
 wget -P resources/bin/python/ https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/ansible-2.7.2-1.el7.ans.noarch.rpm

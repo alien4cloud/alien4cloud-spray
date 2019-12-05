@@ -2,30 +2,39 @@
 #   set_fact :
 #     a4c_install_dir: "{{ ansible_env.HOME }}/a4c"
 #   when: a4c_install_dir is not defined
+#
+# - name: Create temporary folder
+#   tempfile:
+#     state: directory
+#   register: temp_dir
 
-- name: Create temporary folder
-  tempfile:
-    state: directory
-  register: temp_dir
+# - name: Copy server keystore
+#   copy:
+#     src: "{{ ssl_keystore_source_location }}"
+#     dest: "{{ temp_dir.path }}/server-keystore.p12"
+#     mode: 0600
+#   when: a4c_protocol == 'https'
+#
+# - name: Creates SSL directory
+#   file:
+#     path: "{{ a4c_install_dir }}/alien4cloud/ssl"
+#     state: directory
+#   when: a4c_protocol == 'https'
 
-- name: Copy server keystore
-  copy:
-    src: "{{ ssl_keystore_source_location }}"
-    dest: "{{ temp_dir.path }}/server-keystore.p12"
-    mode: 0600
-  when: a4c_protocol == 'https'
+# - name: Generate key store
+#   shell:
+#     cmd: "keytool -importkeystore -destkeystore {{ a4c_install_dir }}/alien4cloud/ssl/server-keystore.jks -srckeystore {{ temp_dir.path }}/server-keystore.p12 -srcstoretype pkcs12 -alias server -deststorepass {{ ssl_dest_keystore_password }} -srckeypass {{ ssl_key_password }} -srcstorepass {{ ssl_src_keystore_password }}"
+#   become: true
+#   when: a4c_protocol == 'https'
 
-- name: Creates SSL directory
-  file:
-    path: "{{ a4c_install_dir }}/alien4cloud/ssl"
-    state: directory
-  when: a4c_protocol == 'https'
+- name: Ensure yorc_tls variable is defined
+  set_fact:
+    yorc_tls: false
+  when: yorc_tls is not defined
 
-- name: Generate key store
-  shell:
-    cmd: "keytool -importkeystore -destkeystore {{ a4c_install_dir }}/alien4cloud/ssl/server-keystore.jks -srckeystore {{ temp_dir.path }}/server-keystore.p12 -srcstoretype pkcs12 -alias server -deststorepass {{ ssl_dest_keystore_password }} -srckeypass {{ ssl_key_password }} -srcstorepass {{ ssl_src_keystore_password }}"
-  become: true
-  when: a4c_protocol == 'https'
+- name: The 'yorc_tls' variable defines if yorc should be secured
+  debug:
+    var: yorc_tls
 
 - name: Creates logs directory
   file:
@@ -54,7 +63,85 @@
     dest: "{{ a4c_install_dir }}/alien4cloud/config/alien4cloud-config.yml"
     force: yes
 
-- name: Remove temporary folder
+- name: Creates a4c ssl directory
   file:
-    path: "{{ temp_dir.path }}"
-    state: absent
+    path: "{{ a4c_install_dir }}/alien4cloud/config/ssl"
+    state: directory
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls)
+
+- name: Copy CA cert file
+  copy:
+    src: "{{ certificates_path }}/ca-cert.pem"
+    dest: "{{ a4c_install_dir }}/alien4cloud/config/ssl/ca-cert.pem"
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls)
+
+- name: Copy host key file
+  copy:
+    src: "{{ certificates_path }}/{{ inventory_hostname }}-key.pem"
+    dest: "{{ a4c_install_dir }}/alien4cloud/config/ssl/{{ inventory_hostname }}-key.pem"
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls)
+
+- name: Copy host cert file
+  copy:
+    src: "{{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
+    dest: "{{ a4c_install_dir }}/alien4cloud/config/ssl/{{ inventory_hostname }}-cert.pem"
+  become: true
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls)
+
+- name: Find the firts jre cacerts trustore
+  shell: "find / -name cacerts | grep jre | head -n 1"
+  become: true
+  register: find_cacerts_command_output
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls)
+
+- name: Define the cacerts path
+  set_fact :
+    cacerts_path: "{{ find_cacerts_command_output.stdout |trim }}"
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls)
+
+- fail:
+    msg: "Not able to locate any cacerts truststore !"
+  when: ((elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls)) and (cacerts_path == "")
+
+- name: Copy cacerts truststore
+  copy:
+    src: "{{ cacerts_path }}"
+    remote_src: yes
+    dest: "{{ a4c_install_dir }}/alien4cloud/config/ssl/server-truststore.jks"
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls)
+
+- name: Prepare CA certificate to be imported into truststore
+  shell: "openssl x509 -outform der -in ca-cert.pem -out ca-cert.der"
+  args:
+    chdir: "{{ a4c_install_dir }}/alien4cloud/config/ssl"
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls)
+
+- name: Import CA certificate into truststore
+  shell: "keytool -import -alias alien4cloud -keystore server-truststore.jks -file ca-cert.der -storepass changeit -noprompt"
+  args:
+    chdir: "{{ a4c_install_dir }}/alien4cloud/config/ssl"
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls)
+
+- name: Generate server keystore using openssl
+  shell: "openssl pkcs12 -export -name alien4cloud -in {{ inventory_hostname }}-cert.pem -inkey {{ inventory_hostname }}-key.pem -out server-keystore.p12 -chain -CAfile ca-cert.pem -caname root -password pass:changeit"
+  args:
+    chdir: "{{ a4c_install_dir }}/alien4cloud/config/ssl"
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls)
+
+- name: Export server keystore using keytool
+  shell: "keytool -importkeystore -destkeystore server-keystore.jks -srckeystore server-keystore.p12 -srcstoretype pkcs12 -alias alien4cloud -deststorepass changeit -srcstorepass changeit"
+  args:
+    chdir: "{{ a4c_install_dir }}/alien4cloud/config/ssl"
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls)
+
+- name: Append -Djavax.net.ssl... JVM options for Yorc TLS trustore and keystore
+  lineinfile:
+    path: "{{ a4c_install_dir }}/alien4cloud/alien4cloud.sh"
+    insertbefore: '^\$JAVA \$JAVA_OPTIONS \$JAVA_EXT_OPTIONS.*'
+    line: "JAVA_EXT_OPTIONS=\"$JAVA_EXT_OPTIONS -Djavax.net.ssl.keyStore={{ a4c_install_dir }}/alien4cloud/config/ssl/server-keystore.jks -Djavax.net.ssl.keyStorePassword=changeit  -Djavax.net.ssl.trustStore={{ a4c_install_dir }}/alien4cloud/config/ssl/server-truststore.jks -Djavax.net.ssl.trustStorePassword=changeit\""
+  when: (yorc_tls)
+
+# - name: Remove temporary folder
+#   file:
+#     path: "{{ temp_dir.path }}"
+#     state: absent

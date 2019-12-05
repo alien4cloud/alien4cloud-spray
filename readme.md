@@ -91,6 +91,14 @@ In the example below, we only setup a single host containing all stack:
 # Installation
 The playbook `install-a4c-consul-yorc.yml` will install all stack on the remote machine:
 
+Fisrt off all, if you didn't attempt to connect to the remote machines, you will probably need to desactivate the host key checking:
+
+```
+export ANSIBLE_HOST_KEY_CHECKING=False
+```
+
+Then, lauch the playbook:
+
 ```
 ansible-playbook -i hosts install-a4c-consul-yorc.yml --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.json" -v
 ```

@@ -6,7 +6,7 @@ server:
   # If you want to enable SSL comment the previous line and un-comment the following lines.
 {% if a4c_protocol == 'https' %}
   ssl:
-    key-store: ssl/server-keystore.jks
+    key-store: {{ a4c_install_dir }}/alien4cloud/config/ssl/server-keystore.jks
     key-store-password: {{ ssl_dest_keystore_password }}
     key-password: {{ ssl_key_password }}
 {% endif %}
@@ -70,6 +70,18 @@ elasticSearch:
   hosts: {{ es_hosts_list | list | join (',') }}
   shard_count: {{ es_hosts_list | length }}
   replica_count: {{ (es_hosts_list | length)  -1}}
+
+{% if (elasticsearch_tls) %}
+searchguard:
+  ssl:
+    transport:
+      enabled: true
+      enforce_hostname_verification: true
+      keystore_filepath: "{{ a4c_install_dir }}/alien4cloud/config/ssl/server-keystore.jks"
+      keystore_password: changeit
+      truststore_filepath: "{{ a4c_install_dir }}/alien4cloud/config/ssl/server-truststore.jks"
+      truststore_password: changeit
+{% endif %}
 
 # Configuration of default admin ensurer, if true it creates a default admin user if no admin can be found in the system.
 alien_security:
