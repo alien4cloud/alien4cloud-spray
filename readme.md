@@ -18,23 +18,9 @@ You'll also need to define the variable _a4c_ip_ in `input.json` using the remot
 
 Rename `inputs.json.tpl` to `inputs.json` and setup few things (a minima 'a4c_ip').
 
-If you want to activate SSL for A4C (HTTPS) you need to set 'a4c_protocol' to 'https' and to generate a keystore
+If you want to activate SSL for A4C (HTTPS) you need to set 'a4c_protocol' to 'https'.
 
-The script resources/ssl.sh will generate all autosigned stuff for you
-
-```
-./resources/ssl.sh $REMOTE_IP_ADDRESS changeIt!
-```
-
-**If it prompt for a password, it needs the root password of your own machine !**
-
-It will finally echo you something like :
-
-> Generated key store in : /var/folders/2d/3krvvvn538ggxjx8mtvwmj_c0000gn/T/tmp.vaCqIRYH/server-keystore.p12
-
-Fill the 'ssl_keystore_source_location' in `inputs.json` file using this path
-
-# Inventory
+## Inventory
 
 You need a ansible inventory file (`hosts`) containing hostnames or ip addresses for the different nodes of your cluster, following this group name convention :
 
@@ -88,7 +74,7 @@ In the example below, we only setup a single host containing all stack:
 192.168.0.1
 ```
 
-# Certificates
+## SSL Certificates
 
 If you want to securize the components of your stack, you will need to have some certificates for each concerned hosts.
 
@@ -111,7 +97,7 @@ We use to generate certificates with SAN extension (Subject Alt Name) containing
 * DNS: 'localhost'
 * DNS: server.dc1.yorc (server.${datacenter}.${domain}) for the consul cluster members.
 
-Usually, we use to add the `extendedKeyUsage` extension with values `serverAuth,clientAuth` since our component are both clients and servers.
+Usually, we use to add the `extendedKeyUsage` extension with values `serverAuth,clientAuth` since our components are usually both clients and servers.
 
 You can find scripts that help you generating such CA and hosts keys and certificates:
 * `resources/ssl/gen-ssl-material.sh` : generate CA key and certificate of not found and key and certificate for a given host.
