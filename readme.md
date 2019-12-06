@@ -88,6 +88,35 @@ In the example below, we only setup a single host containing all stack:
 192.168.0.1
 ```
 
+# Certificates
+
+If you want to securize the components of your stack, you will need to have some certificates for each concerned hosts.
+
+All certificates should be found in the `certificates_path` folder.
+
+We need the CA certificate to feed truststores:
+
+* `ca-cert.pem` : X509 certificate for the CA
+
+And for each host:
+
+* `${hostname}-key.pem` : RSA private key for the host
+* `${hostname}-cert.pem` : X509 certificate for the host, signed using the CA certificate.
+
+We use to generate certificates with SAN extension (Subject Alt Name) containing :
+* IP: public IP
+* IP: private IP
+* IP: '127.0.0.1'
+* DNS: hostname
+* DNS: 'localhost'
+* DNS: server.dc1.yorc (server.${datacenter}.${domain}) for the consul cluster members.
+
+Usually, we use to add the `extendedKeyUsage` extension with values `serverAuth,clientAuth` since our component are both clients and servers.
+
+You can find scripts that help you generating such CA and hosts keys and certificates:
+* `resources/ssl/gen-ssl-material.sh` : generate CA key and certificate of not found and key and certificate for a given host.
+* `resources/ssl/gen-aws-ssl-material.sh` : generate all SSL stuff for EC2 instances (filtered by name).
+
 # Installation
 The playbook `install-a4c-consul-yorc.yml` will install all stack on the remote machine:
 
