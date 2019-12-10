@@ -1,0 +1,32 @@
+# - name: Add the user '{{ smb_user }}'
+#   user:
+#     name: "{{ smb_user }}"
+#     create_home: true
+#     state: present
+#   become: true
+
+- name: Creates samba share directory
+  file:
+    path: "/var/samba/{{ samba_share_name }}"
+    state: directory
+    owner: nobody
+    group: nobody
+    mode: 0777
+    setype: samba_share_t
+  become: true
+
+- name: Insert/Update samba share configuration block for {{ samba_share_name }} in /etc/samba/smb.conf
+  blockinfile:
+    path: /etc/samba/smb.conf
+    marker: "# {mark} Ansible generated block for share {{ samba_share_name }}"
+    block: |
+      [{{ samba_share_name }}]
+      path = "/var/samba/{{ samba_share_name }}"
+      browsable =yes
+      writable = yes
+      guest ok = yes
+      read only = no
+      create mask = 666
+      force create mode = 0666
+      force directory mode = 2777
+  become: true

@@ -1,50 +1,79 @@
 ---
 - hosts: all
   name: Install all common dependencies.
-  become: false
   roles:
     - install-common-dependencies
 
 - hosts: consul
   name: Install configure and start consul.
-  become: false
   roles:
-    - stop-consul
-    - install-consul
-    - configure-consul-gossip-keygen
-    - { role: configure-consul, consul_mode: 'server' }
-    - start-consul
+    - consul/stop-consul
+    - consul/install-consul
+    - consul/configure-consul-gossip-keygen
+    - { role: consul/configure-consul, consul_mode: 'server' }
+    - consul/start-consul
 
 - hosts: yorc
   name: Install configure and start Yorc.
-  become: false
   roles:
-    - stop-yorc
-    - stop-consul
-    - install-dependencies
-    - install-consul
-    - { role: configure-consul, consul_mode: 'client' }
-    - install-yorc
-    - configure-yorc
-    - start-consul
-    - start-yorc
+    - yorc/stop-yorc
+    - consul/stop-consul
+    - yorc/install-dependencies
+    - consul/install-consul
+    - { role: consul/configure-consul, consul_mode: 'client' }
+    - yorc/install-yorc
+    - yorc/configure-yorc
+    - consul/start-consul
+    - yorc/start-yorc
 
 - hosts: elasticsearch
   name: Install configure and start Elasticsearch.
-  become: false
   roles:
-    # - stop-elasticsearch
+    - elasticsearch/stop-elasticsearch
     - install-java
-    - install-elasticsearch
-    - configure-elasticsearch
-    - start-elasticsearch
+    - elasticsearch/install-elasticsearch
+    - elasticsearch/configure-elasticsearch
+    - elasticsearch/start-elasticsearch
 
 - hosts: a4c
-  name: Install configure and start A4C.
-  become: false
+  name: Install and configure A4C.
   roles:
-    # - stop-a4c
+    - consul/stop-consul
+    - a4c/stop-a4c
     - install-java
-    - install-a4c
-    - configure-a4c
-    - start-a4c
+    - a4c/install-a4c
+    - consul/install-consul
+    - { role: consul/configure-consul, consul_mode: 'client' }
+    - a4c/configure-a4c
+    - consul/start-consul
+
+- hosts: a4c
+  name: Start A4C.
+  # we want each A4C to be started sequencially in case of HA
+  serial: 1
+  roles:
+    - a4c/start-a4c
+
+- hosts: a4c_front
+  name: Install A4C front (Nginx, consul and consul-template).
+  roles:
+    - nginx/stop-nginx
+    - a4c_front/stop-consul-template
+    - consul/stop-consul
+    - nginx/install-nginx
+    - consul/install-consul
+    - { role: consul/configure-consul, consul_mode: 'client' }
+    - a4c_front/configure-nginx
+    - a4c_front/install-consul-template
+    - a4c_front/configure-consul-template
+    - consul/start-consul
+    - nginx/start-nginx
+    - a4c_front/start-consul-template
+
+- hosts: yorc_front
+  name: Install Yorc front (Nginx).
+  roles:
+    - nginx/stop-nginx
+    - nginx/install-nginx
+    - yorc/configure-nginx
+    - nginx/start-nginx

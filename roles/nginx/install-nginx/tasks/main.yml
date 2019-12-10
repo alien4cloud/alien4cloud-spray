@@ -1,0 +1,69 @@
+
+- name: Ensure the 'offline' variable is defined
+  set_fact :
+    offline: false
+  when: offline is not defined
+
+- name: List ansible packages and register result to print with debug later.
+  yum:
+    list: nginx
+  register: yum_list_result
+
+- name: Check nginx rpm installed
+  set_fact :
+    nginx_installed: "{{ yum_list_result.results|length > 0 and yum_list_result.results[0].yumstate == 'installed'}}"
+
+- name: Is nginx installed ?
+  debug:
+    var: nginx_installed
+
+- name: Install epel-release
+  yum:
+    pkg: epel-release
+    state: present
+    update_cache: true
+  become: true
+  when: (not offline)
+
+- name: Install Nginx
+  yum:
+    pkg: nginx
+    state: present
+    update_cache: true
+  become: true
+  when: (not offline)
+
+- name: Create temporary RMP directory
+  tempfile:
+    state: directory
+    suffix: rpm
+  register: temp_rpm_dir
+  when: (not nginx_installed) and (offline)
+
+- name: Copy Nginx RPMs into {{ temp_rpm_dir.path }}
+  copy:
+    src: resources/bin/nginx/
+    dest: "{{ temp_rpm_dir.path }}"
+  when: (not nginx_installed) and (offline)
+
+- name: Locally install all RMPs found in {{ temp_rpm_dir.path }}
+  shell: "yum localinstall *.rpm -y"
+  args:
+    chdir: "{{ temp_rpm_dir.path }}"
+  become: true
+  when: (not nginx_installed) and (offline)
+
+- name: Remove RMPs folder
+  file:
+    path: "{{ temp_rpm_dir.path }}"
+    state: absent
+  when: (not nginx_installed) and (offline)
+
+- name: Reload the systemd deamon
+  systemd:
+    daemon_reload: yes
+  become: true
+
+- name: Enable Nginx service
+  command: systemctl enable nginx.service
+  become: true

@@ -2,10 +2,10 @@
 
 "offline":"True",
 "UNZIP_BIN": "unzip-6.0-15.1.el7.x86_64.rpm",
-"ALIEN_DIST_URL": "resources/bin/alien4cloud-artemis-dist-2.2.0-SM8-dist.tar.gz",
+"ALIEN_DIST_URL": "resources/bin/alien4cloud-artemis-dist-3.0.0-M1-dist.tar.gz",
 "JAVA_DIST_URL": "resources/bin/java/jdk.tar.gz",
 "CONSUL_DIST_URL": "resources/bin/consul_1.2.3_linux_amd64.zip",
-"YORC_DIST_URL": "resources/bin/yorc-3.2.3.tgz",
+"YORC_DIST_URL": "resources/bin/yorc-4.0.0-M6.tgz",
 "TERRAFORM_DIST_URL": "resources/bin/terraform_0.11.8_linux_amd64.zip",
 "AWS_ACCESS_KEY": "",
 "AWS_SECRET_KEY": "",

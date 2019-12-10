@@ -1,0 +1,10 @@
+- name: Instal the needed packages
+  yum:
+    pkg: "{{ item }}"
+    state: present
+    update_cache: true
+  become: true
+  with_items:
+    - cifs-utils
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux')

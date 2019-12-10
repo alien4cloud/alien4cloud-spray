@@ -1,0 +1,81 @@
+
+- name: Yorc port is not yet configurable !
+  set_fact:
+    yorc_port: 8800
+
+# - name: Ensure yorc_ha_enabled variable is defined
+#   set_fact:
+#     yorc_ha_enabled: "{{ groups['yorc'] | length > 1 }}"
+#
+# - name: Is the HA enabled for Yorc ?
+#   debug:
+#     var: yorc_ha_enabled
+
+- name: Ensure yorc_tls variable is defined
+  set_fact:
+    yorc_tls: false
+  when: yorc_tls is not defined
+
+- name: The 'yorc_tls' variable defines if yorc should be secured
+  debug:
+    var: yorc_tls
+
+- name: Configure nginx
+  template:
+    src: yorc.conf.j2
+    dest: /etc/nginx/conf.d/yorc.conf
+    force: yes
+  become: true
+  # when: (yorc_ha_enabled)
+
+- name: Find the front port using semanage
+  shell: "semanage port -l |grep {{ yorc_port }}"
+  become: true
+  ignore_errors: yes
+  register: find_front_port_semanage_cmd
+  # when: (yorc_ha_enabled)
+
+- name: Ensure nginx can bind listen port {{ yorc_port }}
+  become: true
+  ignore_errors: yes
+  shell: "semanage port -a -t http_port_t  -p tcp {{ yorc_port }}"
+  when: (find_front_port_semanage_cmd.rc != 0)
+
+- name: Locally Check for Host key file
+  local_action: "stat path={{ certificates_path }}/{{ inventory_hostname }}-key.pem"
+  register: stat_hostkey_path
+  when: (yorc_tls)
+
+- fail:
+    msg: "The nginx should be secured by no host key file found in {{ certificates_path }}/{{ inventory_hostname }}-key.pem ! Please provide host key file."
+  when: (yorc_tls) and (not stat_hostkey_path.stat.exists)
+
+- name: Locally Check for Host cert file
+  local_action: "stat path={{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
+  register: stat_hostcert_path
+  when: (yorc_tls)
+
+- fail:
+    msg: "The nginx should be secured by no host certificate file found in {{ certificates_path }}/{{ inventory_hostname }}-cert.pem ! Please provide host certificate file."
+  when: (yorc_tls) and (not stat_hostcert_path.stat.exists)
+
+- name: Creates nginx ssl directory
+  file:
+    path: "/etc/nginx/ssl"
+    state: directory
+  become: true
+  when: (yorc_tls)
+
+- name: Copy host key file
+  copy:
+    src: "{{ certificates_path }}/{{ inventory_hostname }}-key.pem"
+    dest: "/etc/nginx/ssl/{{ inventory_hostname }}-key.pem"
+  become: true
+  when: (yorc_tls)
+
+- name: Copy host cert file
+  copy:
+    src: "{{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
+    dest: "/etc/nginx/ssl/{{ inventory_hostname }}-cert.pem"
+  become: true
+  when: (yorc_tls)

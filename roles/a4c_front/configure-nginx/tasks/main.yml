@@ -1,0 +1,114 @@
+
+- name: Ensure a4c_ha_enabled variable is defined
+  set_fact:
+    a4c_ha_enabled: "{{ groups['a4c'] | length > 1 }}"
+
+- name: Is the HA enabled ?
+  debug:
+    var: a4c_ha_enabled
+
+- name: Copy index.html
+  copy:
+    src: "content/index.html"
+    dest: "/usr/share/nginx/html/"
+  become: true
+  when: (a4c_ha_enabled)
+
+- name: Copy alien4cloud-logo.png
+  copy:
+    src: "content/alien4cloud-logo.png"
+    dest: "/usr/share/nginx/html/"
+  become: true
+  when: (a4c_ha_enabled)
+
+- name: Ensure securize_nginx variable is defined
+  set_fact:
+    securize_nginx: false
+
+- name: We will securise nginx when a4c or a4c_front is in https
+  set_fact:
+    securize_nginx: true
+  when: (a4c_protocol == 'https') or (a4c_front_protocol == 'https')
+
+- name: The 'securize_nginx' variable defines if nginx should be secured
+  debug:
+    var: securize_nginx
+
+- name: Configure nginx for HA
+  template:
+    src: a4c-ha.conf.j2
+    dest: /etc/nginx/conf.d/a4c.conf
+    force: yes
+  become: true
+  when: (a4c_ha_enabled)
+
+- name: Configure nginx for a single a4c
+  template:
+    src: a4c-single.conf.j2
+    dest: /etc/nginx/conf.d/a4c.conf
+    force: yes
+  become: true
+  when: (not a4c_ha_enabled)
+
+- name: Find the port {{ a4c_front_port }} using semanage
+  shell: "semanage port -l |grep {{ a4c_front_port }}"
+  become: true
+  ignore_errors: yes
+  register: find_front_port_semanage_cmd
+
+- name: Ensure nginx can bind {{ a4c_front_port }}
+  become: true
+  ignore_errors: yes
+  shell: "semanage port -a -t http_port_t  -p tcp {{ a4c_front_port }}"
+  when: (find_front_port_semanage_cmd.rc != 0)
+
+
+- name: Find the port {{ a4c_port }} using semanage
+  shell: "semanage port -l |grep {{ a4c_port }}"
+  become: true
+  ignore_errors: yes
+  register: find_front_port_semanage_cmd
+
+- name: Ensure nginx can bind {{ a4c_port }}
+  become: true
+  ignore_errors: yes
+  shell: "semanage port -a -t http_port_t  -p tcp {{ a4c_port }}"
+  when: (find_front_port_semanage_cmd.rc != 0)
+
+- name: Locally Check for Host key file
+  local_action: "stat path={{ certificates_path }}/{{ inventory_hostname }}-key.pem"
+  register: stat_hostkey_path
+  when: (securize_nginx)
+
+- fail:
+    msg: "The nginx should be secured by no host key file found in {{ certificates_path }}/{{ inventory_hostname }}-key.pem ! Please provide host key file."
+  when: (securize_nginx) and (not stat_hostkey_path.stat.exists)
+
+- name: Locally Check for Host cert file
+  local_action: "stat path={{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
+  register: stat_hostcert_path
+
+- fail:
+    msg: "The nginx should be secured by no host certificate file found in {{ certificates_path }}/{{ inventory_hostname }}-cert.pem ! Please provide host certificate file."
+  when: (securize_nginx) and (not stat_hostcert_path.stat.exists)
+
+- name: Creates nginx ssl directory
+  file:
+    path: "/etc/nginx/ssl"
+    state: directory
+  become: true
+  when: (securize_nginx)
+
+- name: Copy host key file
+  copy:
+    src: "{{ certificates_path }}/{{ inventory_hostname }}-key.pem"
+    dest: "/etc/nginx/ssl/{{ inventory_hostname }}-key.pem"
+  become: true
+  when: (securize_nginx)
+
+- name: Copy host cert file
+  copy:
+    src: "{{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
+    dest: "/etc/nginx/ssl/{{ inventory_hostname }}-cert.pem"
+  become: true
+  when: (securize_nginx)

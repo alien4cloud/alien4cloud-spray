@@ -1,21 +1,30 @@
 [consul]
-34.255.179.205
-34.242.140.30
-63.33.44.133
+34.245.165.174
+54.171.6.106
 
 [yorc]
-34.251.104.163
+52.212.78.6
 
 [elasticsearch]
-34.255.179.205
-34.242.140.30
-63.33.44.133
+34.245.165.174
+54.171.6.106
 
 [a4c]
-34.243.242.227
+52.212.78.6
 
 [a4c_front]
-# for configuration purpose, here just put 1 only a4c ip (reverse proxy in case of HA)
-34.243.242.227
+34.243.15.26
+
+[samba]
+#63.35.225.20
+
+[yorc_front]
+34.243.15.26
+
+[_config]
+# This group is used to play A4C config playbooks (roles in roles/a4c/config)
+# We need to have here a single node, it can be any node in the cluster
+# The target A4C url will be defined regarding cluster configuration
+34.243.15.26
 
 #localhost ansible_connection=local

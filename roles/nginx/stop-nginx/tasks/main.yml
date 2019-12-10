@@ -1,0 +1,9 @@
+
+- name: Stop nginx service
+  service:
+    name: nginx
+    state: stopped
+    enabled: yes
+  become: true
+  ignore_errors: yes
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

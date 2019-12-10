@@ -1,0 +1,22 @@
+server {
+
+{% if (securize_nginx) %}
+        listen {{ a4c_front_port }} ssl http2;
+        listen [::]:{{ a4c_front_port }} ssl http2;
+
+        ssl_certificate /etc/nginx/ssl/{{ inventory_hostname }}-cert.pem;
+        ssl_certificate_key /etc/nginx/ssl/{{ inventory_hostname }}-key.pem;
+{% else %}
+        listen {{ a4c_front_port }} default_server;
+        listen [::]:{{ a4c_front_port }} default_server ipv6only=on;
+{% endif %}
+
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+
+        server_name {{ inventory_hostname }};
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+}

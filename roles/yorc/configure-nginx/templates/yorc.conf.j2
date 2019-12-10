@@ -1,0 +1,24 @@
+
+    upstream yorc {
+{% for host in groups['yorc'] %}
+        server {{host}}:{{yorc_port}};
+{% endfor %}
+    }
+
+    server {
+
+{% if (yorc_tls) %}
+        listen {{ yorc_port }} ssl http2;
+        listen [::]:{{ yorc_port }} ssl http2;
+        ssl_certificate /etc/nginx/ssl/{{ inventory_hostname }}-cert.pem;
+        ssl_certificate_key /etc/nginx/ssl/{{ inventory_hostname }}-key.pem;
+        ssl_session_cache shared:SSL:10m;
+{% else %}
+        listen {{ yorc_port }};
+        listen [::]:{{ yorc_port }};
+{% endif %}
+
+        location / {
+            proxy_pass {{ 'https' if yorc_tls else 'http' }}://yorc;
+        }
+    }

@@ -1,0 +1,20 @@
+- name: Instal the needed packages
+  yum:
+    pkg: "{{ item }}"
+    state: present
+    update_cache: true
+  become: true
+  with_items:
+    - samba
+    - samba-client
+    - samba-common
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux')
+  become: true
+  
+- name: Creates samba directory
+  file:
+    path: "/var/samba"
+    state: directory
+    mode: 0777
+  become: true

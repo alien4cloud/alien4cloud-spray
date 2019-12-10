@@ -1,0 +1,30 @@
+---
+- name: Define a4c url (using the fist member of the a4c group)
+  set_fact:
+    alien_url: "{{ a4c_protocol }}://{{ groups['a4c'][0] }}:{{ a4c_port }}"
+
+- name: Define a4c url when A4C is behind a nginx
+  set_fact:
+    alien_url: "{{ a4c_front_protocol }}://{{ groups['a4c_front'][0] }}:{{ a4c_front_port }}"
+  when: groups['a4c_front'] | length > 0
+
+- set_fact:
+    url: "{{ alien_url }}/login?username={{ a4c_admin_usr }}&password={{ a4c_admin_pwd }}&submit=Login"
+
+- name: Finally use this url to reach a4c
+  debug:
+    var: alien_url
+
+- name: "Login onto A4C using {{url}}"
+  uri:
+    url: "{{url}}"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    status_code: 302
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+  register: login
+
+- set_fact:
+    session_id: "{{ login.set_cookie.split(';')[0] }}"

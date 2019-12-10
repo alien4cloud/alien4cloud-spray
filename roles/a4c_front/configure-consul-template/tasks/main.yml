@@ -1,0 +1,122 @@
+
+- name: Ensure a4c_ha_enabled variable is defined
+  set_fact:
+    a4c_ha_enabled: "{{ groups['a4c'] | length > 1 }}"
+
+- name: Is the HA enabled ?
+  debug:
+    var: a4c_ha_enabled
+
+- name: Get the current user
+  set_fact :
+    consul_template_user: "{{ ansible_user }}"
+  when: consul_template_user is not defined
+
+- name: Ensure consul_tls variable is defined
+  set_fact:
+    consul_tls: false
+  when: consul_tls is not defined
+
+- name: The 'consul_tls' variable defines if consul http connections should be secured
+  debug:
+    var: consul_tls
+
+- name: Ensure securize_nginx variable is defined
+  set_fact:
+    securize_nginx: false
+
+- name: We will securise nginx when a4c or a4c_front is in https
+  set_fact:
+    securize_nginx: true
+  when: (a4c_protocol == 'https') or (a4c_front_protocol == 'https')
+
+- name: The 'securize_nginx' variable defines if nginx should be secured
+  debug:
+    var: securize_nginx
+
+- name: Setup consul template configuration
+  template:
+    src: consul_template.conf.j2
+    dest: /etc/consul_template/consul_template.conf
+    mode: 0444
+    force: yes
+  become: true
+  become_user: "{{ consul_template_user }}"
+  when: (a4c_ha_enabled)
+
+- name: Setup nginx template configuration for consul template
+  template:
+    src: a4c.conf.ctpl.j2
+    dest: /etc/consul_template/a4c.conf.ctpl
+    mode: 0444
+    force: yes
+  become: true
+  become_user: "{{ consul_template_user }}"
+  when: (a4c_ha_enabled)
+
+- name: Locally Check for CA file
+  local_action: "stat path={{ certificates_path }}/ca-cert.pem"
+  register: stat_cacert_path
+  when: (consul_tls) and (a4c_ha_enabled)
+
+- fail:
+    msg: "The consul http communication should be secured by no CA file found in {{ certificates_path }}/ca-cert.pem ! Please provide CA certificate file."
+  when: (consul_tls) and (a4c_ha_enabled) and (not stat_cacert_path.stat.exists)
+
+- name: Locally Check for Host key file
+  local_action: "stat path={{ certificates_path }}/{{ inventory_hostname }}-key.pem"
+  register: stat_hostkey_path
+  when: (consul_tls) and (a4c_ha_enabled)
+
+- fail:
+    msg: "The consul http communication should be secured by no host key file found in {{ certificates_path }}/{{ inventory_hostname }}-key.pem ! Please provide host key file."
+  when: (consul_tls) and (a4c_ha_enabled) and (not stat_hostkey_path.stat.exists)
+
+- name: Locally Check for Host cert file
+  local_action: "stat path={{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
+  register: stat_hostcert_path
+  when: (consul_tls) and (a4c_ha_enabled)
+
+- fail:
+    msg: "The consul http communication should be secured by no host certificate file found in {{ certificates_path }}/{{ inventory_hostname }}-cert.pem ! Please provide host certificate file."
+  when: (consul_tls) and (a4c_ha_enabled) and (not stat_hostcert_path.stat.exists)
+
+- name: Creates consul-template ssl directory
+  file:
+    path: "/etc/consul_template/ssl"
+    state: directory
+  become: true
+  become_user: "{{ consul_template_user }}"
+  when: (consul_tls) and (a4c_ha_enabled)
+
+- name: Copy CA cert file
+  copy:
+    src: "{{ certificates_path }}/ca-cert.pem"
+    dest: "/etc/consul_template/ssl/ca-cert.pem"
+  become: true
+  become_user: "{{ consul_template_user }}"
+  when: (consul_tls) and (a4c_ha_enabled)
+
+- name: Copy host key file
+  copy:
+    src: "{{ certificates_path }}/{{ inventory_hostname }}-key.pem"
+    dest: "/etc/consul_template/ssl/{{ inventory_hostname }}-key.pem"
+  become: true
+  become_user: "{{ consul_template_user }}"
+  when: (consul_tls) and (a4c_ha_enabled)
+
+- name: Copy host cert file
+  copy:
+    src: "{{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
+    dest: "/etc/consul_template/ssl/{{ inventory_hostname }}-cert.pem"
+  become: true
+  become_user: "{{ consul_template_user }}"
+  when: (consul_tls) and (a4c_ha_enabled)
+
+- name: Ensure we can write into /etc/nginx/conf.d/
+  file:
+    path: /etc/nginx/conf.d/
+    mode: '0777'
+    recurse: yes
+  become: true
+  when: (a4c_ha_enabled)

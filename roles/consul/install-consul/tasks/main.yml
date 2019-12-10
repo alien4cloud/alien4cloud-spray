@@ -1,0 +1,85 @@
+- name: Ensure the 'offline' variable is defined
+  set_fact :
+    offline: false
+  when: offline is not defined
+
+- name: Add the user '{{ consul_user }}'
+  user:
+    name: "{{ consul_user }}"
+    create_home: false
+    state: present
+  become: true
+  when: consul_user is defined
+
+- name: Get the current user
+  set_fact :
+    consul_user: "{{ ansible_user }}"
+  when: consul_user is not defined
+
+- name: Get the consul install directory
+  set_fact :
+    consul_install_dir: "{{ ansible_env.HOME }}/consul"
+  when: consul_install_dir is not defined
+
+- name: Check if consul is installed
+  shell: "command -v {{ consul_install_dir }}/consul >/dev/null 2>&1"
+  register: is_consul_exist
+  ignore_errors: yes
+  become: true
+  become_user: "{{ consul_user }}"
+
+- name: Is consul installed ?
+  debug: msg="{{ is_consul_exist.rc }}" # it returns rc 0
+
+- name: Creates consul directory
+  file:
+    path: "{{ consul_install_dir }}"
+    state: directory
+    owner: "{{ consul_user }}"
+  become: true
+
+- name: Creates consul data directory
+  file:
+    path: "{{ consul_install_dir }}/data"
+    state: directory
+    owner: "{{ consul_user }}"
+  become: true
+
+- name: Extract archive from remote source
+  unarchive:
+    src: "{{ CONSUL_DIST_URL }}"
+    dest: "{{ consul_install_dir }}"
+    remote_src: yes
+  become: true
+  become_user: "{{ consul_user }}"
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+         is_consul_exist.rc != 0 and
+        (not offline)
+
+- name: Extract archive from local source
+  unarchive:
+    src: "{{ CONSUL_DIST_URL }}"
+    dest: "{{ consul_install_dir }}"
+    remote_src: no
+  become: true
+  become_user: "{{ consul_user }}"
+  when: (ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux') and
+         is_consul_exist.rc != 0 and
+        (offline)
+
+- name: Usage of consul jinja2 template for service creation
+  template:
+    src: consul-service.j2
+    dest: /etc/systemd/system/consul.service
+    mode: 0444
+    force: yes
+  become: true
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Reload the deamon before starting the service
+  systemd:
+    daemon_reload: yes
+  become: true
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

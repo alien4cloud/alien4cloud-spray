@@ -1,0 +1,21 @@
+consul {
+  address = "localhost:{{ '8501' if consul_tls else '8500' }}"
+  retry {
+    enabled = true
+    attempts = 12
+    backoff = "250ms"
+  }
+  ssl {
+    enabled = {{ 'true' if consul_tls else 'false' }}
+    verify = true
+    cert = "/etc/consul_template/ssl/{{ inventory_hostname }}-cert.pem"
+    key = "/etc/consul_template/ssl/{{ inventory_hostname }}-key.pem"
+    ca_cert = "/etc/consul_template/ssl/ca-cert.pem"
+  }
+}
+
+template {
+  source = "/etc/consul_template/a4c.conf.ctpl"
+  destination = "/etc/nginx/conf.d/a4c.conf"
+  command = "sudo systemctl reload nginx"
+}

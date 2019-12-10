@@ -1,0 +1,21 @@
+
+- name: Creates samba share directory
+  file:
+    path: "{{ samba_share_path }}"
+    state: directory
+    mode: 0777
+  become: true
+
+- name: Loop over the samba group
+  set_fact:
+    samba_ip: "{{ item }}"
+  with_items: "{{ groups['samba'] }}"
+
+- name: Mount samba share
+  mount:
+    path: "{{ samba_share_path }}"
+    src: "//{{ samba_ip }}/{{ samba_share_name }}"
+    fstype: cifs
+    state: mounted
+    opts: "rw,sec=ntlm,guest"
+  become: true

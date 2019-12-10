@@ -9,13 +9,15 @@
 InstanceName=$1
 # The folder where to generate keys and certificates
 CertificatesFolder=$2
+# pass --dry just to simulate
+DryRun=$3
 
 script_dir=$(dirname $0)
 
 aws_result=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=${InstanceName}" "Name=instance-state-name,Values=running" --query="Reservations[*].Instances[*].{a:PublicIpAddress,b:PrivateIpAddress,c:PrivateDnsName}" --output text)
 
 echo "$aws_result"
-public_ips="Generated certificates for hosts :"
+public_ips="\nGenerated certificates for hosts : "
 
 while read -r line
 do
@@ -23,8 +25,11 @@ do
 		public_ip="${array[0]}"
 		private_ip="${array[1]}"
 		private_dns="${array[2]}"
-		eval "${script_dir}/gen-ssl-material.sh ${public_ip} ${private_dns},server.dc1.yorc ${public_ip},${private_ip} ${CertificatesFolder}"
-		public_ips="${public_ips} ${public_ip}"
+		if [ -z "$DryRun" ] || [ "$DryRun" != "--dry" ]; then
+			eval "${script_dir}/gen-ssl-material.sh ${public_ip} ${private_dns},server.dc1.yorc ${public_ip},${private_ip} ${CertificatesFolder}"
+		fi
+		public_ips="${public_ips}\n${public_ip}"
 done < <(printf '%s\n' "$aws_result")
 
-echo "${public_ips}"
+printf -v str "${public_ips}\n"
+echo "$str"

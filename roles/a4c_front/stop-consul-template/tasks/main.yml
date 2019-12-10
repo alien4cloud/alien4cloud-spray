@@ -1,0 +1,9 @@
+
+- name: Start a4c-front service
+  service:
+    name: a4c-front
+    state: stopped
+    enabled: yes
+  become: true
+  ignore_errors: yes  
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

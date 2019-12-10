@@ -1,0 +1,28 @@
+
+server {
+        listen {{ a4c_front_port }}{{ ' default ssl' if securize_nginx else '' }};
+        server_name {{ inventory_hostname }};
+
+{% if (securize_nginx) %}
+        ssl_session_timeout 10m;
+        ssl_certificate /etc/nginx/ssl/{{ inventory_hostname }}-cert.pem;
+        ssl_certificate_key /etc/nginx/ssl/{{ inventory_hostname }}-key.pem;
+        ssl_verify_client off;
+        ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers RC4:HIGH:!aNULL:!MD5;
+        ssl_prefer_server_ciphers on;
+{% endif %}
+
+        location / {
+                proxy_pass {{ a4c_protocol }}://{{ groups['a4c'][0] }}:{{ a4c_port }};
+                # necessary for websockets to work correctly behind a the proxy
+                proxy_set_header Host {{ inventory_hostname }};
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header X-Forwarded-Port $server_port;
+{% if (securize_nginx) %}
+                #proxy_ssl_session_reuse on;
+                # Force https
+                proxy_redirect http:// https://;
+{% endif %}
+        }
+}

@@ -1,0 +1,286 @@
+- name: Get the consul install directory
+  set_fact :
+    consul_install_dir: "{{ ansible_env.HOME }}/consul"
+  when: consul_install_dir is not defined
+
+- name: Check if consul config already exists
+  stat:
+    path: "{{ consul_install_dir }}/server-config.json"
+  register: consul_config_stat_result
+
+- name: Consul config file
+  template:
+    src: server-config.json.j2
+    dest: "{{ consul_install_dir }}/server-config.json"
+    mode: 0666
+    force: yes
+  become: true
+  become_user: "{{ consul_user }}"
+  when: "not {{ consul_config_stat_result.stat.exists }}"
+
+- name: Ensure consul_mode variable is defined
+  set_fact:
+    consul_mode: "client"
+  when: consul_mode is not defined
+
+- name: The 'consul_mode' variable defines if the node is a 'server' or a 'client'
+  debug:
+    var: consul_mode
+
+- name: Ensure consul_gossip_encrypt variable is defined
+  set_fact:
+    consul_gossip_encrypt: false
+  when: consul_gossip_encrypt is not defined
+
+- name: The 'consul_gossip_encrypt' variable defines if the gossip traffic should be encrypted
+  debug:
+    var: consul_gossip_encrypt
+
+- name: Locally Check for consul key file
+  local_action: "stat path={{ consul_gossip_encrypt_key_path }}"
+  register: stat_consul_gossip_encrypt_key_path
+
+- fail:
+    msg: "The consul Gossip exchange should be encrypted by no key can be found in {{ consul_gossip_encrypt_key_path }} !"
+  when: (consul_gossip_encrypt) and (not stat_consul_gossip_encrypt_key_path.stat.exists)
+
+- name: Create temporary file to store consul key
+  tempfile:
+    state: file
+    suffix: temp
+  register: consul_key_file
+  when: (consul_gossip_encrypt)
+
+- name: Copy consul key file
+  copy:
+    src: "{{ consul_gossip_encrypt_key_path }}"
+    dest: "{{ consul_key_file.path }}"
+  when: (consul_gossip_encrypt)
+
+- name: Get consul key
+  slurp:
+    src: "{{ consul_key_file.path }}"
+  register: consul_key_slurped
+  when: (consul_gossip_encrypt)
+
+- set_fact:
+    consul_key_config: "{{ consul_key_slurped['content'] | b64decode | from_json }}"
+  when: (consul_gossip_encrypt)
+
+- name: Ensure consul_tls variable is defined
+  set_fact:
+    consul_tls: false
+  when: consul_tls is not defined
+
+- name: The 'consul_tls' variable defines if consul http connections should be secured
+  debug:
+    var: consul_tls
+
+- name: Locally Check for CA file
+  local_action: "stat path={{ certificates_path }}/ca-cert.pem"
+  register: stat_cacert_path
+  when: (consul_tls)
+
+- fail:
+    msg: "The consul http communication should be secured by no CA file found in {{ certificates_path }}/ca-cert.pem ! Please provide CA certificate file."
+  when: (consul_tls) and (not stat_cacert_path.stat.exists)
+
+- name: Locally Check for Host key file
+  local_action: "stat path={{ certificates_path }}/{{ inventory_hostname }}-key.pem"
+  register: stat_hostkey_path
+  when: (consul_tls)
+
+- fail:
+    msg: "The consul http communication should be secured by no host key file found in {{ certificates_path }}/{{ inventory_hostname }}-key.pem ! Please provide host key file."
+  when: (consul_tls) and (not stat_hostkey_path.stat.exists)
+
+- name: Locally Check for Host cert file
+  local_action: "stat path={{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
+  register: stat_hostcert_path
+  when: (consul_tls)
+
+- fail:
+    msg: "The consul http communication should be secured by no host certificate file found in {{ certificates_path }}/{{ inventory_hostname }}-cert.pem ! Please provide host certificate file."
+  when: (consul_tls) and (not stat_hostcert_path.stat.exists)
+
+- name: Creates consul ssl directory
+  file:
+    path: "{{ consul_install_dir }}/ssl"
+    state: directory
+  become: true
+  become_user: "{{ consul_user }}"
+  when: (consul_tls)
+
+- name: Define CA file path
+  set_fact:
+    ca_file_path: "{{ consul_install_dir }}/ssl/ca-cert.pem"
+  when: (consul_tls)
+
+- name: Copy CA cert file
+  copy:
+    src: "{{ certificates_path }}/ca-cert.pem"
+    dest: "{{ ca_file_path }}"
+  become: true
+  become_user: "{{ consul_user }}"
+  when: (consul_tls)
+
+- name: Define host key file path
+  set_fact:
+    hostkey_file_path: "{{ consul_install_dir }}/ssl/{{ inventory_hostname }}-key.pem"
+  when: (consul_tls)
+
+- name: Copy host key file
+  copy:
+    src: "{{ certificates_path }}/{{ inventory_hostname }}-key.pem"
+    dest: "{{ hostkey_file_path }}"
+  become: true
+  become_user: "{{ consul_user }}"
+  when: (consul_tls)
+
+- name: Define host cert file path
+  set_fact:
+    hostcert_file_path: "{{ consul_install_dir }}/ssl/{{ inventory_hostname }}-cert.pem"
+  when: (consul_tls)
+
+- name: Copy host cert file
+  copy:
+    src: "{{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
+    dest: "{{ hostcert_file_path }}"
+  become: true
+  become_user: "{{ consul_user }}"
+  when: (consul_tls)
+
+- name: Count consul hosts
+  set_fact :
+    CONSUL_HOST_COUNT: "{{ groups['consul'] | length}}"
+
+- name: The 'CONSUL_HOST_COUNT' variable contains the number of consul hosts
+  debug:
+    var: CONSUL_HOST_COUNT
+
+- name: Slurp the consul config file
+  slurp:
+    src: "{{ consul_install_dir }}/server-config.json"
+  become: true
+  become_user: "{{ consul_user }}"
+  register: consul_config
+
+- name: Extract consul config
+  set_fact:
+    consul_config: "{{ consul_config['content'] | b64decode }}"
+
+- name: Add 'bootstrap_expect' to consul config
+  set_fact:
+    consul_config: "{{ consul_config|combine({'bootstrap_expect': CONSUL_HOST_COUNT|int}) }}"
+  when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
+
+- name: Add 'bootstrap' to consul config
+  set_fact:
+    consul_config: "{{ consul_config|combine({'bootstrap': true}) }}"
+  when: "{{ CONSUL_HOST_COUNT }} == 1 and consul_mode == 'server'"
+
+- name: Add 'server' to consul config
+  set_fact:
+    consul_config: "{{ consul_config|combine({'server': true}) }}"
+  when: consul_mode == "server"
+
+- set_fact:
+    consul_host_array: []
+  when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
+
+- name: Loop over the consul group
+  set_fact:
+    consul_host_array: "{{ consul_host_array + [item] }}"
+  with_items: "{{ groups['consul'] }}"
+  when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
+
+- name: Add 'start_join' to consul config
+  set_fact:
+    consul_config: "{{ consul_config|combine({'start_join': consul_host_array}) }}"
+  when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
+
+- name: Add 'advertise_addr' to consul config
+  set_fact:
+    consul_config: "{{consul_config |combine({'advertise_addr': inventory_hostname})}}"
+  with_dict: "{{consul_config}}"
+
+- name: Add 'advertise_addr' to consul config
+  set_fact:
+    consul_config: "{{consul_config |combine(consul_key_config)}}"
+  with_dict: "{{consul_config}}"
+  when: (consul_gossip_encrypt)
+
+- name: Add 'ca_file' to consul config
+  set_fact:
+    consul_config: "{{consul_config |combine({'ca_file': ca_file_path})}}"
+  with_dict: "{{consul_config}}"
+  when: (consul_tls)
+
+- name: Add 'key_file' to consul config
+  set_fact:
+    consul_config: "{{consul_config |combine({'key_file': hostkey_file_path})}}"
+  with_dict: "{{consul_config}}"
+  when: (consul_tls)
+
+- name: Add 'cert_file' to consul config
+  set_fact:
+    consul_config: "{{consul_config |combine({'cert_file': hostcert_file_path})}}"
+  with_dict: "{{consul_config}}"
+  when: (consul_tls)
+
+- name: Add 'verify_incoming' to consul config
+  set_fact:
+    consul_config: "{{consul_config |combine({'verify_incoming': true})}}"
+  with_dict: "{{consul_config}}"
+  when: (consul_tls)
+
+- name: Add 'verify_outgoing' to consul config
+  set_fact:
+    consul_config: "{{consul_config |combine({'verify_outgoing': true})}}"
+  with_dict: "{{consul_config}}"
+  when: (consul_tls)
+
+  # certificates need to have a server.dc1.yorc (server.${datacenter}.${domain}) SAN (subjectAltName) for the cluster members to be accepted
+  # set this to false to avoid bad certificates errors
+- name: Add 'verify_server_hostname' to consul config
+  set_fact:
+    consul_config: "{{consul_config |combine({'verify_server_hostname': true})}}"
+  with_dict: "{{consul_config}}"
+  when: (consul_tls)
+
+- name: Define a variable to store the consul 'ports' configuration
+  set_fact:
+    consul_port_config: "{{ '{}' | from_json }}"
+  when: (consul_tls)
+
+- name: Add 'http' to consul ports config
+  set_fact:
+    consul_port_config: "{{consul_port_config |combine({'http': -1})}}"
+  when: (consul_tls)
+
+- name: Add 'https' to consul ports config
+  set_fact:
+    consul_port_config: "{{consul_port_config |combine({'https': 8501})}}"
+  when: (consul_tls)
+
+- name: Add 'ports' to consul config
+  set_fact:
+    consul_config: "{{consul_config |combine({'ports': consul_port_config})}}"
+  with_dict: "{{consul_config}}"
+  when: (consul_tls)
+
+- name: Add 'enable_agent_tls_for_checks' to consul config when Yorc is secured
+  set_fact:
+    consul_config: "{{consul_config |combine({'enable_agent_tls_for_checks': true})}}"
+  when: (yorc_tls is defined) and (yorc_tls) and (consul_mode == 'client')
+
+- name: Debug the consul config before serializing it to file system
+  debug:
+    var: consul_config
+
+- name: Serialize consul config into ({{ consul_install_dir }}/server-config.json)
+  copy:
+    content: "{{ consul_config }}"
+    dest: "{{ consul_install_dir }}/server-config.json"
+  become: true
+  become_user: "{{ consul_user }}"

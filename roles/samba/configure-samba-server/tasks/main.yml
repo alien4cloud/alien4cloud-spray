@@ -1,0 +1,7 @@
+
+- name: Configure Samba
+  template:
+    src: smb.conf.j2
+    dest: "/etc/samba/smb.conf"
+    force: yes
+  become: true

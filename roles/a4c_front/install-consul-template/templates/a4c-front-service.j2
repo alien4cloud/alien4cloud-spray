@@ -1,0 +1,14 @@
+[Unit]
+Description=Alien4Cloud consul template for nginx configuration daemon
+After=consul.service
+
+[Service]
+User={{ consul_template_user }}
+Restart=on-failure
+WorkingDirectory=/var/lib/consul_template
+ExecStart=/var/lib/consul_template/consul-template -config /etc/consul_template/consul_template.conf
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

@@ -1,9 +1,10 @@
 ---
-- hosts: a4c_front
+- hosts: _config
   name: Setup A4C with a Yorc orchestrator for Artemis.
   become: false
 
   roles:
+    - { role: roles/a4c/config/define_a4c_url }
     # - { role: roles/git,
     #     repositoryUrl: 'https://github.com/alien4cloud/samples',
     #     repositoryUsername: '',
@@ -34,9 +35,9 @@
     #     branchId: 'develop',
     #     subPath: ''
     #   }
-    # - { role: 'roles/a4c/config/get_orchectrator',
-    #     orchestratorName: 'Yorc'
-    #   }
+    - { role: 'roles/a4c/config/get_orchectrator',
+        orchestratorName: 'Yorc'
+      }
     # ROEM
     - { role: 'roles/a4c/config/create_location',
         location_name: 'Default',
@@ -45,9 +46,9 @@
     # - { role: 'roles/create_location_resources',
     #     resources_file_artifact: 'resources/a4c/config/locations/ROEM/location_resources.yaml'
     #   }
-    - { role: 'roles/a4c/config/add_location_modifiers',
-        resources_file_artifact: 'resources/location_modifiers.yaml'
-      }
+    # - { role: 'roles/a4c/config/add_location_modifiers',
+    #     resources_file_artifact: 'resources/location_modifiers.yaml'
+    #   }
     # - { role: 'roles/remove_services',
     #     resources_file_artifact: 'resources/a4c/config/locations/ROEM/services.yaml'
     #   }

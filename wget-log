@@ -1,0 +1,6 @@
+--2019-12-02 21:05:37--  https://api.adoptopenjdk.net/v2/binary/releases/openjdk8?openjdk_impl=hotspot
+Résolution de api.adoptopenjdk.net (api.adoptopenjdk.net)… 104.17.159.60, 104.17.158.60
+Connexion à api.adoptopenjdk.net (api.adoptopenjdk.net)|104.17.159.60|:443… connecté.
+requête HTTP transmise, en attente de la réponse… 400 Bad Request
+2019-12-02 21:05:39 erreur 400 : Bad Request.
+
