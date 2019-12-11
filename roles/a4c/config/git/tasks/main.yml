@@ -1,27 +1,12 @@
 ---
-- set_fact:
-    alien_url: "{{ a4c_protocol }}://{{ a4c_ip }}:{{ a4c_port }}"
-
-- debug:
-    msg: "Distribution is: {{ ansible_distribution }}"
 
 #- name: Add repository
 #  yum:
 #   name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 #   state: present
-#  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_distribution == 'RedHat'
 
 - name: Install pip
   yum: pkg=python-pip state=present
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_distribution == 'RedHat'
-
-- name: Install system dependencies (Ubuntu)
-  apt: name={{item}} state=installed
-  with_items:
-    - python-pip
-    - python-dev
-    - build-essential
-  when: ansible_distribution == 'Ubuntu'
 
 - name: Ensure httplib2 is installed
   pip:

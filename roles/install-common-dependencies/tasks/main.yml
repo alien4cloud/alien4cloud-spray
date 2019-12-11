@@ -1,4 +1,14 @@
 
+- name: Fail when trying to use these plays on non centos compatible distribution
+  fail:
+    msg: "These playbook are only working for 'CentOS' or 'Red Hat Enterprise Linux' distributions"
+  when: (ansible_distribution != 'CentOS') and (ansible_distribution != 'Red Hat Enterprise Linux')
+
+- name: Ensure the 'offline' variable is defined
+  set_fact :
+    offline: false
+  when: offline is not defined
+
 - name: Instal the needed package
   yum:
     pkg: "{{ item }}"
@@ -7,26 +17,20 @@
   become: true
   with_items:
     - unzip
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is undefined)
+  when: (not offline)
 
 - name: Copy Unzip
   copy:
     src: resources/bin/unzip/
     dest: /tmp/rpms/
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is defined)
+  when: (offline)
 
 - name: Get RPMs packages
   find:
     paths: /tmp/rpms/
     patterns: "*.rpm"
   register: rpm_files
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is defined)
+  when: (offline)
 
 - name: Install RPMs
   yum:
@@ -34,14 +38,10 @@
     state: present
   become: true
   with_items: "{{ rpm_files.files | sort(attribute='path') | list }}"
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is defined)
+  when: (offline)
 
 - name: Remove RMPs folder
   file:
     path: /tmp/rpms
     state: absent
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is defined)
+  when: (offline)

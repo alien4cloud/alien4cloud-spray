@@ -5,4 +5,3 @@
     state: stopped
   become: true
   ignore_errors: yes
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

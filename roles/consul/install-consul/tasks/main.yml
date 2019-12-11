@@ -52,10 +52,7 @@
     remote_src: yes
   become: true
   become_user: "{{ consul_user }}"
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-         is_consul_exist.rc != 0 and
-        (not offline)
+  when: (is_consul_exist.rc != 0) and (not offline)
 
 - name: Extract archive from local source
   unarchive:
@@ -64,10 +61,7 @@
     remote_src: no
   become: true
   become_user: "{{ consul_user }}"
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-         is_consul_exist.rc != 0 and
-        (offline)
+  when: (is_consul_exist.rc != 0) and (offline)
 
 - name: Usage of consul jinja2 template for service creation
   template:
@@ -76,10 +70,8 @@
     mode: 0444
     force: yes
   become: true
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
 - name: Reload the deamon before starting the service
   systemd:
     daemon_reload: yes
   become: true
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

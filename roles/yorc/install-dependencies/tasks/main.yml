@@ -1,4 +1,9 @@
 
+- name: Ensure the 'offline' variable is defined
+  set_fact :
+    offline: false
+  when: offline is not defined
+
 - name: Instal the needed package
   yum:
     pkg: "{{ item }}"
@@ -8,9 +13,7 @@
   with_items:
     - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
     - python
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is undefined)
+  when: (not offline)
 
 - name: Instal the needed package
   yum:
@@ -20,33 +23,25 @@
   become: true
   with_items:
     - python-pip
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is undefined)
+  when: (not offline)
 
 - name: Install ansible
   command: pip install ansible==2.7.2
   become: true
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is undefined)
+  when: (not offline)
 
 - name: Copy RPMs
   copy:
     src: resources/bin/rpms/
     dest: /tmp/rpms/
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is defined)
+  when: (offline)
 
 - name: Get RPMs packages
   find:
     paths: /tmp/rpms/
     patterns: "*.rpm"
   register: rpm_files
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is defined)
+  when: (offline)
 
 - name: Install RPMs
   yum:
@@ -54,49 +49,37 @@
     state: present
   become: true
   with_items: "{{ rpm_files.files | sort(attribute='path') | list }}"
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is defined)
+  when: (offline)
 
 - name: Remove RMPs folder
   file:
     path: /tmp/rpms
     state: absent
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is defined)
+  when: (offline)
 
 - name: Copy python and ansible
   copy:
     src: resources/bin/python/
     dest: /tmp/python/
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is defined)
+  when: (offline)
 
 - name: Get python and ansible files
   find:
     paths: /tmp/python
     excludes: readme.txt
   register: python_files
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is defined)
+  when: (offline)
 
 - name : Init python and ansible files list
   set_fact:
      python_list: []
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is defined)
+  when: (offline)
 
 - name : Build python and ansible files list
   set_fact:
      python_list: "{{ python_list + [ item.path ] }}"
   with_items: "{{python_files.files}}"
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is defined)
+  when: (offline)
 
 #- name: debug
 #  debug:
@@ -107,17 +90,13 @@
     name: "{{python_list}}"
     state: present
   become: true
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is defined)
+  when: (offline)
 
 - name: Remove python folder
   file:
     path: /tmp/python
     state: absent
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is defined)
+  when: (offline)
 
 - name: Copy usr binaries
   copy:

@@ -5,23 +5,10 @@
     state: started
     enabled: yes
   become: true
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
 - name: Ensure Yorc is running
   command: systemctl status yorc
   ignore_errors: false
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-
-- name: Start Yorc
-  shell:
-    chdir: ~/yorc
-    cmd: nohup ./yorc server > yorc.log 2>&1 & echo $! > yorc.pid
-  when: ansible_distribution != 'CentOS' and ansible_distribution != 'Red Hat Enterprise Linux'
-
-- name: Ensure Yorc is running
-  shell:
-    cmd: ps -ef |grep yorc |grep -v grep
-  when: ansible_distribution != 'CentOS' and ansible_distribution != 'Red Hat Enterprise Linux'
 
 - name: Ensure a crontab is initialized
   cron:
@@ -33,4 +20,4 @@
 - name: Remove init job from crontab
   cron:
     name: "InitCrontab"
-    state: absent  
+    state: absent

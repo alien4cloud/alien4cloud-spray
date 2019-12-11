@@ -5,4 +5,3 @@
     state: started
     enabled: yes
   become: true
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

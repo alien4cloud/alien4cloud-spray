@@ -64,11 +64,7 @@
     remote_src: yes
   become: true
   become_user: "{{ consul_template_user }}"
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (not offline) and
-        (not consul_template_installed) and
-        (a4c_ha_enabled)
+  when: (not offline) and (not consul_template_installed) and (a4c_ha_enabled)
 
 - name: Extract consul_template archive from local source
   unarchive:
@@ -78,11 +74,7 @@
     remote_src: no
   become: true
   become_user: "{{ consul_template_user }}"
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline) and
-        (not consul_template_installed) and
-        (a4c_ha_enabled)
+  when: (offline) and (not consul_template_installed) and (a4c_ha_enabled)
 
 - name: Usage of a4c-front-service jinja2 template for service creation
   template:
@@ -91,16 +83,15 @@
     mode: 0444
     force: yes
   become: true
-  when: (a4c_ha_enabled) and (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+  when: (a4c_ha_enabled)
 
 - name: Reload the deamon
   systemd:
     daemon_reload: yes
   become: true
-  when: (a4c_ha_enabled) and (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+  when: (a4c_ha_enabled) and (a4c_ha_enabled)
 
 - name: Enable a4c-front service
   command: systemctl enable a4c-front.service
   become: true
-  when: (a4c_ha_enabled) and (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux') and
-        (not consul_template_installed)
+  when: (not consul_template_installed) and (a4c_ha_enabled)

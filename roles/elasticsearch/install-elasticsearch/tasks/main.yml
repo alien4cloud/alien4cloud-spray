@@ -19,37 +19,25 @@
 - debug:
     var: elasticsearch_installed
 
-# - name: Install Elasticsearch
-#   yum:
-#     pkg: "{{ item }}"
-#     state: present
-#     update_cache: true
-#   become: true
-#   with_items:
-#     - unzip
-#   when: (ansible_distribution == 'CentOS' or
-#          ansible_distribution == 'Red Hat Enterprise Linux') and
-#         (not elasticsearch_installed) and
-#         (offline is undefined)
+- name: Install the Elasticsearch rpm from a remote repo
+  become: true
+  yum:
+    name: "{{ elasticsearch_rmp_url }}"
+    state: present
+  when: (not offline)
 
 - name: Copy Elasticsearch
   copy:
     src: resources/bin/elasticsearch/
     dest: /tmp/rpms/
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (not elasticsearch_installed) and
-        (offline)
+  when: (not elasticsearch_installed) and (offline)
 
 - name: Get RPMs packages
   find:
     paths: /tmp/rpms/
     patterns: "*.rpm"
   register: rpm_files
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (not elasticsearch_installed) and
-        (offline)
+  when: (not elasticsearch_installed) and (offline)
 
 - name: Install RPMs
   yum:
@@ -57,29 +45,21 @@
     state: present
   become: true
   with_items: "{{ rpm_files.files | sort(attribute='path') | list }}"
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (not elasticsearch_installed) and
-        (offline)
+  when: (not elasticsearch_installed) and (offline)
 
 - name: Remove RMPs folder
   file:
     path: /tmp/rpms
     state: absent
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (not elasticsearch_installed) and
-        (offline)
+  when: (not elasticsearch_installed) and (offline)
 
 - name: Reload the systemd deamon
   systemd:
     daemon_reload: yes
   become: true
-  when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux') and
-        (not elasticsearch_installed)
+  when: (not elasticsearch_installed)
 
 - name: Enable elasticsearch service
   command: systemctl enable elasticsearch.service
   become: true
-  when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux') and
-        (not elasticsearch_installed)
+  when: (not elasticsearch_installed)

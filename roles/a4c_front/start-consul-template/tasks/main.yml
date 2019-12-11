@@ -13,4 +13,4 @@
     state: started
     enabled: yes
   become: true
-  when: (a4c_ha_enabled) and (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+  when: (a4c_ha_enabled)

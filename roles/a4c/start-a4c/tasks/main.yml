@@ -27,13 +27,6 @@
     name: a4c
     state: started
   become: true
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-
-- name: Start application A4C
-  shell:
-    chdir: "{{ a4c_install_dir }}/alien4cloud"
-    cmd: nohup ./alien4cloud.sh > alien_nohup.log 2>&1 & echo $! > alien.pid
-  when: ansible_distribution != 'CentOS' and ansible_distribution != 'Red Hat Enterprise Linux'
 
 - set_fact:
     alien_url: "{{ a4c_protocol }}://localhost:{{ a4c_port }}/rest/admin/health"

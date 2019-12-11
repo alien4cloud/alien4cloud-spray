@@ -1,3 +1,9 @@
+
+- name: Ensure the 'offline' variable is defined
+  set_fact :
+    offline: false
+  when: offline is not defined
+
 - name: Add the user '{{ yorc_user }}'
   user:
     name: "{{ yorc_user }}"
@@ -30,7 +36,7 @@
     mode: 0755
     remote_src: yes
   become: true
-  when: offline is undefined
+  when: (not offline)
 
 - name: Get terraform plugins from remote source
   unarchive:
@@ -40,7 +46,7 @@
     remote_src: yes
   become: true
   with_items: "{{terraform_plugins}}"
-  when: offline is undefined
+  when: (not offline)
 
 - name: Extract terraform from local source
   unarchive:
@@ -49,32 +55,32 @@
     mode: 0755
     remote_src: no
   become: true
-  when: offline is defined
+  when: (offline)
 
 - name: Copy terraform plugins
   copy:
     src: resources/bin/terraform-plugins/
     dest: /var/terraform/plugins.zip
   become: true
-  when: offline is defined
+  when: (offline)
 
 - name: Get terraform plugins files list
   find:
     paths: /var/terraform/plugins.zip
     excludes: readme.txt
   register: tp_files
-  when: offline is defined
+  when: (offline)
 
 - name : Init terraform plugins list
   set_fact:
      tp_list: []
-  when: offline is defined
+  when: (offline)
 
 - name : Build terraform plugins list
   set_fact:
      tp_list: "{{ tp_list + [ item.path ] }}"
   with_items: "{{tp_files.files}}"
-  when: offline is defined
+  when: (offline)
 
 - name : unzip terraform plugins
   unarchive:
@@ -83,7 +89,7 @@
     remote_src: yes
   become: true
   with_items: "{{ tp_list }}"
-  when: offline is defined
+  when: (offline)
 
 - name: Creates yorc directory
   file:
@@ -122,7 +128,7 @@
     remote_src: yes
   become: true
   become_user: "{{ yorc_user }}"
-  when: (offline is undefined) and (not yorc_installed)
+  when: (not offline) and (not yorc_installed)
 
 - name: Extract Yorc from local source
   unarchive:
@@ -132,7 +138,7 @@
     remote_src: no
   become: true
   become_user: "{{ yorc_user }}"
-  when: (offline is defined) and (not yorc_installed)
+  when: (offline) and (not yorc_installed)
 
 - name: Usage of yorc jinja2 template for service creation
   template:
@@ -141,10 +147,8 @@
     mode: 0444
     force: yes
   become: true
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
 - name: Reload the deamon before starting the service
   systemd:
     daemon_reload: yes
   become: true
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

@@ -6,14 +6,3 @@
     enabled: yes
   become: true
   ignore_errors: yes
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-
-- name: Get PID Yorc
-  command: ps -eo pid,command | grep yorc | awk '{print $1}'
-  ignore_errors: yes
-  register: yorc_pid
-  when: ansible_distribution != 'CentOS' and ansible_distribution != 'Red Hat Enterprise Linux'
-
-- name: Stop process Yorc
-  command: kill -9 {{ yorc_pid }}
-  when: ansible_distribution != 'CentOS' and ansible_distribution != 'Red Hat Enterprise Linux'

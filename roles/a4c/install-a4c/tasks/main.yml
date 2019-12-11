@@ -1,3 +1,8 @@
+- name: Ensure the 'offline' variable is defined
+  set_fact :
+    offline: false
+  when: offline is not defined
+
 - name: Add the user '{{ a4c_user }}'
   user:
     name: "{{ a4c_user }}"
@@ -59,10 +64,7 @@
     remote_src: yes
   become: true
   become_user: "{{ a4c_user }}"
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is undefined) and
-        (not a4c_installed)
+  when: (not offline) and (not a4c_installed)
 
 - name: Extract alien4cloud archive from local source
   unarchive:
@@ -72,10 +74,7 @@
     remote_src: no
   become: true
   become_user: "{{ a4c_user }}"
-  when: (ansible_distribution == 'CentOS' or
-         ansible_distribution == 'Red Hat Enterprise Linux') and
-        (offline is defined) and
-        (not a4c_installed)
+  when: (offline) and (not a4c_installed)
 
 - name: Usage of a4c jinja2 template for service creation
   template:
@@ -84,18 +83,15 @@
     mode: 0444
     force: yes
   become: true
-  when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux') and
-        (not a4c_installed)
+  when: (not a4c_installed)
 
 - name: Reload the deamon
   systemd:
     daemon_reload: yes
   become: true
-  when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux') and
-        (not a4c_installed)
+  when: (not a4c_installed)
 
 - name: Enable a4c service
   command: systemctl enable a4c.service
   become: true
-  when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux') and
-        (not a4c_installed)
+  when: (not a4c_installed)

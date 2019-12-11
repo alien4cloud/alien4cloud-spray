@@ -22,23 +22,10 @@
     state: started
     enabled: yes
   become: true
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
 - name: Ensure consul is running
   command: systemctl status consul
   ignore_errors: false
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-
-- name: Start consul
-  shell:
-    chdir: "{{ consul_install_dir }}"
-    cmd: nohup consul agent -config-file ./server-config.json &
-  when: ansible_distribution != 'CentOS' and ansible_distribution != 'Red Hat Enterprise Linux'
-
-- name: Ensure consul is running
-  shell:
-    cmd: ps -ef |grep consul |grep -v grep
-  when: ansible_distribution != 'CentOS' and ansible_distribution != 'Red Hat Enterprise Linux'
 
 - name: Loop over the consul group to join cluster
   shell: "{{ consul_install_dir }}/consul join {{ item }}"
