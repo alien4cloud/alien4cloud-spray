@@ -106,12 +106,22 @@
   copy:
     src: resources/bin/usr/
     dest: /tmp/usr/
+  when: (offline)
 
 - name: Get usr binaries
   find:
     paths: /tmp/usr/
     excludes: "readme.txt"
   register: usr_files
+  when: (offline)
+
+- name: Download binaries into /usr/local/bin/
+  get_url:
+    url: {{ item }}
+    dest: /usr/local/bin/
+    mode: '0777'
+  with_items: "{{ yorc_dependencies_usr_urls }}"
+  when: (not offline)
 
 - name: Install usr binaries
   copy:
@@ -121,8 +131,10 @@
     mode: '0777'
   become: true
   with_items: "{{ usr_files.files | sort(attribute='path') | list }}"
+  when: (offline)
 
 - name: Remove usr folder
   file:
     path: /tmp/usr/
     state: absent
+  when: (offline)

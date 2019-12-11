@@ -81,6 +81,8 @@ yorc_dependencies_rpm_urls:
   - http://mirror.centos.org/centos/7/os/x86_64/Packages/python-ply-3.4-11.el7.noarch.rpm
   - http://mirror.centos.org/centos/7/os/x86_64/Packages/python-pycparser-2.14-1.el7.noarch.rpm
   - http://mirror.centos.org/centos/7/os/x86_64/Packages/python2-pyasn1-0.1.9-7.el7.noarch.rpm
+yorc_dependencies_usr_urls:
+  - https://storage.googleapis.com/kubernetes-release/release/v1.14.1/bin/linux/amd64/kubectl
 
 # For Yorc AWS configuration
 AWS_ACCESS_KEY:
