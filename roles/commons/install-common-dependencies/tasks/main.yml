@@ -9,14 +9,12 @@
     offline: false
   when: offline is not defined
 
-- name: Instal the needed package
+- name: Instal unzip
   yum:
-    pkg: "{{ item }}"
+    pkg: unzip
     state: present
     update_cache: true
   become: true
-  with_items:
-    - unzip
   when: (not offline)
 
 - name: Copy Unzip
