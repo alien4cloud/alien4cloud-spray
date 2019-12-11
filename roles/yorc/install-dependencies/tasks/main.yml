@@ -25,12 +25,40 @@
 #   become: true
 #   when: (not offline)
 
-- name: Install ansible and all python packages
+# - name: Install ansible and all python packages
+#   become: true
+#   yum:
+#     name: "{{ yorc_dependencies_rpm_urls }}"
+#     state: present
+#   when: (not offline) and (yorc_dependencies_rpm_urls is defined)
+
+- name: Create temporary RMP directory
+  tempfile:
+    state: directory
+    suffix: rpm
+  register: temp_rpm_dir
+  when: (not offline)
+
+- name: Download RMPs into {{ temp_rpm_dir.path }}
+  get_url:
+    url: {{ item }}
+    dest: {{ temp_rpm_dir.path }}
+  with_items: "{{ yorc_dependencies_rpm_urls }}"
+  when: (not offline)
+
+- name: Locally install all RMPs found in {{ temp_rpm_dir.path }}
+  shell: "yum localinstall *.rpm -y"
+  args:
+    chdir: "{{ temp_rpm_dir.path }}"
   become: true
-  yum:
-    name: "{{ yorc_dependencies_rpm_urls }}"
-    state: present
-  when: (not offline) and (yorc_dependencies_rpm_urls is defined)
+  when: (not offline)
+
+- name: Remove RMPs folder
+  file:
+    path: "{{ temp_rpm_dir.path }}"
+    state: absent
+  when: (not offline)
+
 
 # FIXME: find a better way to perform this offline install
 
@@ -116,6 +144,7 @@
   when: (offline)
 
 - name: Download binaries into /usr/local/bin/
+  become: true
   get_url:
     url: {{ item }}
     dest: /usr/local/bin/
