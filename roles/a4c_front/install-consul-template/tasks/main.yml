@@ -16,6 +16,7 @@
   set_fact :
     consul_template_user: centos
       # FIXME "{{ ansible_user }}"
+      # FIXME need for a sudo user (the user that launch consul-template needs to restart nginx)
   when: consul_template_user is not defined
 
 - name: Ensure /etc/consul_template directory exists
@@ -47,7 +48,6 @@
   register: is_consul_template_exist_command
   ignore_errors: yes
   become: true
-  become_user: "{{ consul_template_user }}"
 
 - name: Register a boolean indicating if consul_template is already installed
   set_fact:
