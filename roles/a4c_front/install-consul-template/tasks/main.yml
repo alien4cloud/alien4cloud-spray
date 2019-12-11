@@ -14,7 +14,8 @@
 
 - name: Get the current user
   set_fact :
-    consul_template_user: "{{ ansible_user }}"
+    consul_template_user: centos
+      # FIXME "{{ ansible_user }}"
   when: consul_template_user is not defined
 
 - name: Ensure /etc/consul_template directory exists

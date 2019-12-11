@@ -4,6 +4,7 @@
   roles:
     - commons/install-common-dependencies
     - commons/add_dns_server
+    - commons/remove_epel_repo
 
 - hosts: elasticsearch
   name: Install configure and start Elasticsearch.
