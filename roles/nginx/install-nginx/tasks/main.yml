@@ -8,17 +8,14 @@
   yum:
     list: nginx
   register: yum_list_result
-  when: (offline)
 
 - name: Check nginx rpm installed
   set_fact :
     nginx_installed: "{{ yum_list_result.results|length > 0 and yum_list_result.results[0].yumstate == 'installed'}}"
-  when: (offline)
 
 - name: Is nginx installed ?
   debug:
     var: nginx_installed
-  when: (offline)
 
 - name: Install epel-release
   yum:
