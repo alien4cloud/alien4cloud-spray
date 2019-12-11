@@ -4,7 +4,7 @@ It supports cluster mode for Elasticsearch and Consul. Comming soon: cluster mod
 > [!WARNING]
 > The install playbook's roles are reentrant. Config playbooks are not.
 
-# Prerequistes
+# Prerequisites
 
 You need some linux boxes with centos (tried on a EC2 ami-3548444c t2.medium)
 
@@ -12,11 +12,9 @@ You need the following vars:
  - `REMOTE_USER`: ie. centos
  - `PRIVATE_KEY_PATH`: ie. ~/work/env/aws/keys/vicos-awsproductteam.pem
 
-You'll also need to define the variable _a4c_ip_ in `input.yml` using the remote IP address.
-
 # Setup
 
-Rename `inputs.yml.tpl` to `inputs.yml` and setup few things (a minima 'a4c_ip').
+Rename `inputs.yml.tpl` to `inputs.yml` and setup few things.
 
 If you want to activate SSL for A4C (HTTPS) you need to set 'a4c_protocol' to 'https'.
 
@@ -131,9 +129,9 @@ You can find scripts that help you generating such CA and hosts keys and certifi
 * `resources/ssl/gen-aws-ssl-material.sh` : generate all SSL stuff for EC2 instances (filtered by name).
 
 # Installation
-The playbook `install-a4c-consul-yorc.yml` will install all stack on the remote machine:
+The playbook `install-a4c-consul-yorc.yml` will install all stack on the remote machines:
 
-Fisrt off all, if you didn't attempt to connect to the remote machines, you will probably need to desactivate the host key checking:
+Fisrt off all, if you didn't attempt to connect to the remote machines, you will probably need to deactivate the host key checking:
 
 ```
 export ANSIBLE_HOST_KEY_CHECKING=False
@@ -158,7 +156,7 @@ On the local machine, first run the following commands to get all required binar
 ```
 ./download-offline-dependencies.sh
 ```
-then proceed as for a standard installation, using `inputs.json.offline.tpl` instead of `inputs.json.tpl` (or just ensure the `offline` variable is defined).
+then proceed as for a standard installation, using `inputs.yml.offline.tpl` instead of `inputs.yml.tpl` (or just ensure the `offline` variable is defined to `true`).
 
 # Configure
 Il you need some additional CSARs library, place the zip files in the `resources/csars` folder. If your dependencies need a specific order, prefix your file names so that the names represent such order.

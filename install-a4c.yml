@@ -1,11 +1,42 @@
 ---
-
-- hosts: all
-  name: install a4c
-  become: false
-
+- hosts:
+    - a4c
+    - a4c_front
+  name: Install all common dependencies.
   roles:
+    - install-common-dependencies
+
+- hosts: a4c
+  name: Install and configure A4C.
+  roles:
+    - consul/stop-consul
+    - a4c/stop-a4c
     - install-java
-    - install-a4c
-    - configure-a4c
-    - start-a4c
+    - a4c/install-a4c
+    - consul/install-consul
+    - { role: consul/configure-consul, consul_mode: 'client' }
+    - a4c/configure-a4c
+    - consul/start-consul
+
+- hosts: a4c
+  name: Start A4C.
+  # we want each A4C to be started sequencially in case of HA
+  serial: 1
+  roles:
+    - a4c/start-a4c
+
+- hosts: a4c_front
+  name: Install A4C front (Nginx, consul and consul-template).
+  roles:
+    - nginx/stop-nginx
+    - a4c_front/stop-consul-template
+    - consul/stop-consul
+    - nginx/install-nginx
+    - consul/install-consul
+    - { role: consul/configure-consul, consul_mode: 'client' }
+    - a4c_front/configure-nginx
+    - a4c_front/install-consul-template
+    - a4c_front/configure-consul-template
+    - consul/start-consul
+    - nginx/start-nginx
+    - a4c_front/start-consul-template

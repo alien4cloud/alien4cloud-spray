@@ -1,8 +1,28 @@
 ---
-
-- hosts: all
-  name: Install Yorc
-  become: false
-
+- hosts:
+    - yorc
+    - yorc_front
+  name: Install all common dependencies.
   roles:
-    - install-yorc
+    - install-common-dependencies
+
+- hosts: yorc
+  name: Install configure and start Yorc.
+  roles:
+    - yorc/stop-yorc
+    - consul/stop-consul
+    - yorc/install-dependencies
+    - consul/install-consul
+    - { role: consul/configure-consul, consul_mode: 'client' }
+    - yorc/install-yorc
+    - yorc/configure-yorc
+    - consul/start-consul
+    - yorc/start-yorc
+
+- hosts: yorc_front
+  name: Install Yorc front (Nginx).
+  roles:
+    - nginx/stop-nginx
+    - nginx/install-nginx
+    - yorc/configure-nginx
+    - nginx/start-nginx

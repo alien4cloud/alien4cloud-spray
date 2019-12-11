@@ -1,5 +1,5 @@
 # Define if the installation should be done in offline mode (no access to internet from the hosts)
-offline: false
+offline: true
 
 # A4C
 a4c_user: a4c
@@ -34,6 +34,7 @@ yorc_install_dir: /opt/yorc
 # If true yorc http server will be secured using TLS (certificates nedded)
 yorc_tls: false
 discriminator: ART_YORK_
+
 # Inidicates of TLS should be activated for ES cluster
 elasticsearch_tls: false
 
@@ -48,12 +49,12 @@ ssl_key_password: changeit
 
 # Download urls in online mode
 elasticsearch_rmp_url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.6.2.rpm
-ALIEN_DIST_URL: http://54.246.249.105/dist/alien4cloud/alien4cloud-artemis-dist/3.0.0-M1/alien4cloud-artemis-dist-3.0.0-M1-dist.tar.gz
-JAVA_DIST_URL: http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
-CONSUL_DIST_URL: https://releases.hashicorp.com/consul/1.2.3/consul_1.2.3_linux_amd64.zip
-YORC_DIST_URL: https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.0-M6%2Fyorc-4.0.0-M6.tgz
-TERRAFORM_DIST_URL: https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
-CONSUL_TEMPLATE_DL_URL: https://releases.hashicorp.com/consul-template/0.23.0/consul-template_0.23.0_linux_amd64.zip
+ALIEN_DIST_URL: resources/bin/alien4cloud-artemis-dist-3.0.0-M1-dist.tar.gz
+JAVA_DIST_URL: resources/bin/java/jdk.tar.gz
+CONSUL_DIST_URL: resources/bin/consul_1.2.3_linux_amd64.zip
+YORC_DIST_URL: resources/bin/yorc-4.0.0-M6.tgz
+TERRAFORM_DIST_URL: resources/bin/terraform_0.11.8_linux_amd64.zip
+CONSUL_TEMPLATE_DL_URL: resources/bin/consul-template_0.23.0_linux_amd64.zip
 
 # For Yorc AWS configuration
 AWS_ACCESS_KEY:

@@ -1,8 +1,14 @@
 ---
-
-- hosts: all
-  name: install consul
-  become: false
-
+- hosts: consul
+  name: Install all common dependencies.
   roles:
-    - install-consul
+    - install-common-dependencies
+
+- hosts: consul
+  name: Install configure and start consul.
+  roles:
+    - consul/stop-consul
+    - consul/install-consul
+    - consul/configure-consul-gossip-keygen
+    - { role: consul/configure-consul, consul_mode: 'server' }
+    - consul/start-consul

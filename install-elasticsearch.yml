@@ -1,0 +1,14 @@
+---
+- hosts: elasticsearch
+  name: Install all common dependencies.
+  roles:
+    - install-common-dependencies
+
+- hosts: elasticsearch
+  name: Install configure and start Elasticsearch.
+  roles:
+    - elasticsearch/stop-elasticsearch
+    - install-java
+    - elasticsearch/install-elasticsearch
+    - elasticsearch/configure-elasticsearch
+    - elasticsearch/start-elasticsearch
