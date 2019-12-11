@@ -41,8 +41,8 @@
 
 - name: Download RMPs into {{ temp_rpm_dir.path }}
   get_url:
-    url: {{ item }}
-    dest: {{ temp_rpm_dir.path }}
+    url: "{{ item }}"
+    dest: "{{ temp_rpm_dir.path }}"
   with_items: "{{ yorc_dependencies_rpm_urls }}"
   when: (not offline)
 
@@ -146,7 +146,7 @@
 - name: Download binaries into /usr/local/bin/
   become: true
   get_url:
-    url: {{ item }}
+    url: "{{ item }}"
     dest: /usr/local/bin/
     mode: '0777'
   with_items: "{{ yorc_dependencies_usr_urls }}"
