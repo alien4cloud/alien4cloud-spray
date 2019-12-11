@@ -140,13 +140,13 @@ export ANSIBLE_HOST_KEY_CHECKING=False
 Then, lauch the playbook:
 
 ```
-ansible-playbook -i hosts install-a4c-consul-yorc.yml --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v
+ansible-playbook -i hosts playbooks/install-a4c-consul-yorc.yml --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v
 ```
 
 If you don't use a SSH key but a password authentication (which is not recomanded !) you can use:
 
 ```
-ansible-playbook -i hosts install-a4c-consul-yorc.yml --user $REMOTE_USER --extra-vars "@inputs.yml" -v --extra-vars "ansible_user=root ansible_password=yourpassword"
+ansible-playbook -i hosts playbooks/install-a4c-consul-yorc.yml --user $REMOTE_USER --extra-vars "@inputs.yml" -v --extra-vars "ansible_user=root ansible_password=yourpassword"
 ```
 
 # Installation in _offline_ mode
@@ -164,7 +164,7 @@ Il you need some additional CSARs library, place the zip files in the `resources
 This playbook will configure the orchestrator, a location, and services on the A4C instance :
 
 ```
-ansible-playbook -i hosts setup-a4c-artemis.yml --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v
+ansible-playbook -i hosts playbooks/setup-a4c-artemis.yml --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v
 ```
 
 That's all folk, the full system should be available.
