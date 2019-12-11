@@ -25,12 +25,12 @@
 #   become: true
 #   when: (not offline)
 
-- name: Install ansible and all python packages
+- name: Install ansible and all python packages ({{item}})
   become: true
   yum:
     name: "{{ item }}"
     state: present
-    with_items: "{{ yorc_dependencies_rpm_urls }}"
+  with_items: "{{ yorc_dependencies_rpm_urls }}"
   when: (not offline) and (yorc_dependencies_rpm_urls is defined)
 
 # FIXME: find a better way to perform this offline install
