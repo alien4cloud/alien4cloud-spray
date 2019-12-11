@@ -1,0 +1,8 @@
+
+- name: Add DNS server {{ item }} into /etc/resolv.conf
+  lineinfile:
+    path: /etc/resolv.conf
+    line: "nameserver {{ item }}"
+  become: true
+  with_items: "{{dns_to_add}}"
+  when: dns_to_add is defined

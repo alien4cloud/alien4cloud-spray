@@ -2,7 +2,7 @@
 - hosts: all
   name: Install all common dependencies.
   roles:
-    - install-common-dependencies
+    - commons/install-common-dependencies
 
 - hosts: consul
   name: Install configure and start consul.

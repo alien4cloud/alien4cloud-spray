@@ -1,5 +1,5 @@
 ---
-- hosts: a4c_repo
+- hosts: a4crepo
   name: Install Nginx
   roles:
     - nginx/stop-nginx

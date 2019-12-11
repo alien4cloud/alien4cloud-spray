@@ -4,7 +4,8 @@
     - yorcfront
   name: Install all common dependencies.
   roles:
-    - install-common-dependencies
+    - commons/install-common-dependencies
+    - commons/add_dns_server
 
 - hosts: yorc
   name: Install configure and start Yorc.
