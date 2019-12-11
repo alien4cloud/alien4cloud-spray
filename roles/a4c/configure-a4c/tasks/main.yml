@@ -62,17 +62,17 @@
 
 - name: Init elasticsearch cluster host list
   set_fact :
-    es_hosts_list: []
+    es_node_list: []
 
 - name: Loop over the elasticsearch group
   set_fact:
-    es_hosts_list: "{{ es_hosts_list + [ item + ':9300' ] }}"
+    es_node_list: "{{ es_node_list + [ item + ':9300' ] }}"
   with_items: "{{ groups['elasticsearch'] }}"
   when: inventory_hostname != item
 
 - name: Loop over the elasticsearch group (only for localhost)
   set_fact:
-    es_hosts_list: "{{ es_hosts_list + [ 'localhost:9300' ] }}"
+    es_node_list: "{{ es_node_list + [ 'localhost:9300' ] }}"
   with_items: "{{ groups['elasticsearch'] }}"
   when: inventory_hostname == item
 
