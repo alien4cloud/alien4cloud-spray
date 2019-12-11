@@ -6,23 +6,18 @@
 
 - name: Instal the needed package
   yum:
-    pkg: "{{ item }}"
+    pkg: ['epel-release', 'python']
     state: present
     update_cache: true
   become: true
-  with_items:
-    - epel-release
-    - python
   when: (not offline)
 
 - name: Instal the needed package
   yum:
-    pkg: "{{ item }}"
+    pkg: python-pip
     state: present
     update_cache: true
   become: true
-  with_items:
-    - python-pip
   when: (not offline)
 
 - name: Install ansible

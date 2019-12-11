@@ -90,10 +90,10 @@
     yorc_host: "localhost"
   when: "{{ yorc_host == inventory_hostname }} and (groups['yorc'] | length == 1) and (groups['a4c'] | length == 1)"
 
-- name: Use 'yorc_front' if exists
+- name: Use 'yorcfront' if exists
   set_fact:
-    yorc_host: "{{ groups['yorc_front'][0] }}"
-  when: "groups['yorc_front'] | length > 0"
+    yorc_host: "{{ groups['yorcfront'][0] }}"
+  when: "groups['yorcfront'] | length > 0"
 
 - name: Define yorc url
   set_fact:

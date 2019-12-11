@@ -136,11 +136,11 @@
     yorc_config: "{{ yorc_config|combine({'ssl_verify': true}) }}"
   when: (yorc_tls)
 
-# if yorc is behind a proxy (ie. if we have yorc_front host), then yorc will not verify host 
+# if yorc is behind a proxy (ie. if we have yorcfront host), then yorc will not verify host
 - name: Add 'ssl_verify' to yorc config
   set_fact:
     yorc_config: "{{ yorc_config|combine({'ssl_verify': false}) }}"
-  when: (yorc_tls) and (groups['yorc_front'] | length > 0)
+  when: (yorc_tls) and (groups['yorcfront'] | length > 0)
 
 - name: Add 'key_file' to yorc config
   set_fact:

@@ -1,7 +1,7 @@
 ---
 - hosts:
     - yorc
-    - yorc_front
+    - yorcfront
   name: Install all common dependencies.
   roles:
     - install-common-dependencies
@@ -19,7 +19,7 @@
     - consul/start-consul
     - yorc/start-yorc
 
-- hosts: yorc_front
+- hosts: yorcfront
   name: Install Yorc front (Nginx).
   roles:
     - nginx/stop-nginx

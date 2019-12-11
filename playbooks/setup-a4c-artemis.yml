@@ -1,5 +1,5 @@
 ---
-- hosts: _config
+- hosts: a4cconfig
   name: Setup A4C with a Yorc orchestrator for Artemis.
   become: false
 

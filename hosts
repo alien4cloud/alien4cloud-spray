@@ -12,16 +12,16 @@
 [a4c]
 34.254.99.243
 
-[a4c_front]
+[a4cfront]
 63.34.171.236
 
 [samba]
 #63.35.225.20
 
-[yorc_front]
+[yorcfront]
 63.34.171.236
 
-[_config]
+[a4cconfig]
 # This group is used to play A4C config playbooks (roles in roles/a4c/config)
 # We need to have here a single node, it can be any node in the cluster
 # The target A4C url will be defined regarding cluster configuration

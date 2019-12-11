@@ -54,7 +54,7 @@
   roles:
     - a4c/start-a4c
 
-- hosts: a4c_front
+- hosts: a4cfront
   name: Install A4C front (Nginx, consul and consul-template).
   roles:
     - nginx/stop-nginx
@@ -70,7 +70,7 @@
     - nginx/start-nginx
     - a4c_front/start-consul-template
 
-- hosts: yorc_front
+- hosts: yorcfront
   name: Install Yorc front (Nginx).
   roles:
     - nginx/stop-nginx

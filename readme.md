@@ -26,8 +26,8 @@ You need a ansible inventory file (`hosts`) containing hostnames or ip addresses
 * *elasticsearch*: list of Elasticsearch cluster hosts
 * *yorc*: list of Yorc cluster hosts
 * *a4c*: list of A4C cluster hosts
-* *a4c_front*: a front for a4c (HA)
-* *yorc_front*: a front for yorc (HA)
+* *a4cfront*: a front for a4c (HA)
+* *yorcfront*: a front for yorc (HA)
 
 You can adapt the file regarding the configuration you need:
 
@@ -50,7 +50,7 @@ Here is an example where Elasticsearch and Consul are co-hosted on a 3 nodes clu
 [a4c]
 192.168.0.1
 
-[a4c_front]
+[a4cfront]
 192.168.0.1
 ```
 
@@ -69,7 +69,7 @@ In the example below, we only setup a single host containing all stack:
 [a4c]
 192.168.0.1
 
-[a4c_front]
+[a4cfront]
 192.168.0.1
 ```
 
@@ -92,10 +92,10 @@ In the example below, a 2 nodes cluster for consul and elasticsearch, 2 nodes ha
 192.168.0.12
 192.168.0.13
 
-[a4c_front]
+[a4cfront]
 192.168.0.1
 
-[yorc_front]
+[yorcfront]
 192.168.0.1
 ```
 

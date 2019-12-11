@@ -5,8 +5,8 @@
 
 - name: Define a4c url when A4C is behind a nginx
   set_fact:
-    alien_url: "{{ a4c_front_protocol }}://{{ groups['a4c_front'][0] }}:{{ a4c_front_port }}"
-  when: groups['a4c_front'] | length > 0
+    alien_url: "{{ a4c_front_protocol }}://{{ groups['a4cfront'][0] }}:{{ a4c_front_port }}"
+  when: groups['a4cfront'] | length > 0
 
 - set_fact:
     url: "{{ alien_url }}/login?username={{ a4c_admin_usr }}&password={{ a4c_admin_pwd }}&submit=Login"

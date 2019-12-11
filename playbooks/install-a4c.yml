@@ -1,7 +1,7 @@
 ---
 - hosts:
     - a4c
-    - a4c_front
+    - a4cfront
   name: Install all common dependencies.
   roles:
     - install-common-dependencies
@@ -25,7 +25,7 @@
   roles:
     - a4c/start-a4c
 
-- hosts: a4c_front
+- hosts: a4cfront
   name: Install A4C front (Nginx, consul and consul-template).
   roles:
     - nginx/stop-nginx
