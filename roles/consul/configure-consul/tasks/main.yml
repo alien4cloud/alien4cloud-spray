@@ -199,12 +199,18 @@
     consul_config: "{{ consul_config|combine({'start_join': consul_host_array}) }}"
   when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
 
-- name: Add 'advertise_addr' to consul config
-  set_fact:
-    consul_config: "{{consul_config |combine({'advertise_addr': inventory_hostname})}}"
-  with_dict: "{{consul_config}}"
+- debug:
+    var: ansible_all_ipv4_addresses
+
+- set_fact:
+    private_ip_address: "{{ ansible_all_ipv4_addresses | ipaddr('private') | first }}"
 
 - name: Add 'advertise_addr' to consul config
+  set_fact:
+    consul_config: "{{consul_config |combine({'advertise_addr': private_ip_address})}}"
+  with_dict: "{{consul_config}}"
+
+- name: Add 'encrypt' to consul config
   set_fact:
     consul_config: "{{consul_config |combine(consul_key_config)}}"
   with_dict: "{{consul_config}}"
