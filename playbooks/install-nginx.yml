@@ -1,0 +1,7 @@
+---
+- hosts: a4c_repo
+  name: Install Nginx
+  roles:
+    - nginx/stop-nginx
+    - nginx/install-nginx
+    - nginx/start-nginx
