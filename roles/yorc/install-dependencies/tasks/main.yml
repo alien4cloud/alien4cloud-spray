@@ -11,7 +11,7 @@
     update_cache: true
   become: true
   with_items:
-    - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    - epel-release
     - python
   when: (not offline)
 
