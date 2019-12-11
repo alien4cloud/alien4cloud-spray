@@ -16,7 +16,7 @@
     force: yes
   become: true
   become_user: "{{ consul_user }}"
-  when: "not {{ consul_config_stat_result.stat.exists }}"
+  when: not consul_config_stat_result.stat.exists
 
 - name: Ensure consul_mode variable is defined
   set_fact:
