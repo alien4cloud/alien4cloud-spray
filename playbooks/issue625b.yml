@@ -1,0 +1,6 @@
+---
+
+- hosts: front
+  name: Try reading from inventory.
+  roles:
+    - sandbox/read_inventory
