@@ -4,7 +4,7 @@
   become: false
 
   roles:
-    - { role: a4c/config/define_a4c_url }
+    - a4c/config/define_a4c_url
     - { role: a4c/config/create_orchestrator,
         orchestratorName: 'Yorc',
         pluginId: 'alien4cloud-yorc-provider',
