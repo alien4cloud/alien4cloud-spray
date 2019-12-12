@@ -5,14 +5,21 @@
 
   roles:
     - { role: roles/a4c/config/define_a4c_url }
+    # - { role: roles/git,
+    #     repositoryUrl: 'https://github.com/alien4cloud/samples',
+    #     repositoryUsername: '',
+    #     repositoryPassword: '',
+    #     branchId: 'develop',
+    #     subPath: 'org/alien4cloud/mock'
+    #   }
     - { role: roles/a4c/config/create_orchestrator,
         orchestratorName: 'Yorc',
         pluginId: 'alien4cloud-yorc-provider',
         pluginBean: 'yorc-orchestrator-factory'
       }
-    # - { role: 'roles/a4c/config/create_metaproperties',
-    #     resources_file_artifact: 'resources/metaproperties.yaml'
-    #   }
+    - { role: 'roles/a4c/config/create_metaproperties',
+        resources_file_artifact: 'resources/metaproperties.yaml'
+      }
     # - { role: roles/git-ssl }
     # - { role: roles/git,
     #     repositoryUrl: 'https://34.242.16.28/artemis_use_cases/service_applicatif.git',
@@ -48,7 +55,7 @@
     # - { role: 'roles/create_services',
     #     resources_file_artifact: 'resources/services.yaml'
     #   }
-    # - { role: roles/a4c/config/upload_csars }
+    - { role: roles/a4c/config/upload_csars }
     # - { role: 'roles/create_location_policies',
     #     resources_file_artifact: 'resources/a4c/config/locations/ROEM/policies.yaml'
     #   }
