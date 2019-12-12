@@ -4,3 +4,6 @@
   name: Try reading extras resource var.
   roles:
     - sandbox/read_extras_var
+    - { role: 'sandbox/slurp_extras_resource',
+        resources_file_path: 'resources/sandbox.yml'
+      }
