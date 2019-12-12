@@ -2,15 +2,19 @@
   slurp:
     src: "{{ inventory_dir }}/group_vars/all/hello.yml"
   register: inventory_resource_slurped
+  ignore_errors: yes
 
 - name: Here is the inventory ressource
   debug:
     var: inventory_resource_slurped
+  when: (inventory_resource_slurped is defined)
 
 - name: Decode the inventory ressource content
   set_fact:
     inventory_resource_content: "{{ inventory_resource_slurped['content'] | b64decode }}"
+  when: (inventory_resource_slurped is defined)
 
 - name: Here is the inventory ressource content
   debug:
     var: inventory_resource_content
+  when: (inventory_resource_content is defined)
