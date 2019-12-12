@@ -13,6 +13,7 @@
   set_fact:
     inventory_resource_content: "{{ inventory_resource_slurped['content'] | b64decode }}"
   when: (inventory_resource_slurped is defined)
+  ignore_errors: yes
 
 - name: Here is the inventory ressource content
   debug:
