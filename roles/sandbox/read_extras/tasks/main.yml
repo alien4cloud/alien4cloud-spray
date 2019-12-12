@@ -4,7 +4,7 @@
     var: metaproperties
   when: (metaproperties is defined)
 
-- name: 'metaproperties' var is NOT defined
+- name: metaproperties var is NOT defined
   debug:
-    msg: 'metaproperties' var is NOT defined
+    msg: metaproperties var is NOT defined
   when: (metaproperties is not defined)
