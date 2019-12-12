@@ -1,0 +1,4 @@
+- name: Write a file in {{ inventory_dir }}
+  copy:
+    content: "World !"
+    dest: "{{ inventory_dir }}/group_vars/all/hello"

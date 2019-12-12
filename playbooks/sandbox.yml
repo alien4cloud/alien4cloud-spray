@@ -1,0 +1,6 @@
+---
+
+- hosts: a4cfront
+  name: Try something.
+  roles:
+    - sandbox/write_inventory
