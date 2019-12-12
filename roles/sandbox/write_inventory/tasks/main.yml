@@ -3,7 +3,7 @@
     path: "{{ inventory_dir }}/group_vars/all/"
     state: directory
 
-- name: Write a file in {{ inventory_dir }}
+- name: Write a file in {{ inventory_dir }}/group_vars/all/hello.yml
   copy:
     content: "hello: World"
     dest: "{{ inventory_dir }}/group_vars/all/hello.yml"
