@@ -1,6 +1,6 @@
 - name: Slurp inventory file
   slurp:
-    src: "{{ inventory_dir }}/group_vars/all/hello"
+    src: "{{ inventory_dir }}/group_vars/all/hello.yml"
   register: inventory_slurped
 
 - name: Here is the inventory ressource
