@@ -1,0 +1,8 @@
+- name: Slurp inventory file
+  slurp:
+    src: "{{ inventory_dir }}/group_vars/all/hello"
+  register: inventory_slurped
+
+- name: Here is the inventory ressource
+  debug:
+    var: inventory_slurped

@@ -1,6 +1,11 @@
 ---
 
 - hosts: a4cfront
-  name: Try something.
+  name: Try wrinting into inventory.
   roles:
     - sandbox/write_inventory
+
+- hosts: yorc
+  name: Try reading from inventory.
+  roles:
+    - sandbox/read_inventory
