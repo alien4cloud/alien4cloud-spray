@@ -19,7 +19,7 @@
     var: resources_yaml
   when: (resources_yaml is defined)
 
-- name: {{ resources_file_path }} can not be found on remote
+- name: "{{ resources_file_path }} can not be found on remote"
   debug:
     msg: "{{ resources_file_path }} can't be found on remote"
   when: (resources_file.stat.exists)
