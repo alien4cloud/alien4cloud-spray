@@ -7,6 +7,9 @@
     - { role: 'sandbox/slurp_extras_resource',
         resources_file_path: 'resources/sandbox.yml'
       }
+    - { role: 'sandbox/slurp_extras_resource',
+        resources_file_path: 'sandbox.yml'
+      }
     - { role: 'sandbox/slurp_extras_resource_remote',
         resources_file_path: 'resources/sandbox.yml'
       }
