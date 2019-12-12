@@ -19,19 +19,19 @@
 
 - name: Install epel-release
   yum:
-    pkg: ['epel-release', 'nginx']
+    pkg: epel-release
     state: present
     update_cache: true
   become: true
   when: (not offline)
 
-# - name: Install Nginx
-#   yum:
-#     pkg: nginx
-#     state: present
-#     update_cache: true
-#   become: true
-#   when: (not offline)
+- name: Install epel-release
+  yum:
+    pkg: nginx
+    state: present
+    update_cache: true
+  become: true
+  when: (not offline)
 
 - name: Create temporary RMP directory
   tempfile:
