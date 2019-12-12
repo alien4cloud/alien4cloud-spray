@@ -1,7 +1,7 @@
 ---
 
 - hosts: a4cfront
-  name: Try wrinting into inventory.
+  name: Try writing/reading into/from inventory.
   roles:
     - sandbox/write_inventory
     - sandbox/read_inventory

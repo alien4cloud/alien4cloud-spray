@@ -7,7 +7,8 @@
   debug:
     var: inventory_resource_slurped
 
-- set_fact:
+- name: Decode the inventory ressource content
+  set_fact:
     inventory_resource_content: "{{ inventory_resource_slurped['content'] | b64decode }}"
 
 - name: Here is the inventory ressource content
