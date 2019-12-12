@@ -1,0 +1,6 @@
+---
+
+- hosts: a4cfront
+  name: Try reading extras resource var.
+  roles:
+    - sandbox/read_extras_var
