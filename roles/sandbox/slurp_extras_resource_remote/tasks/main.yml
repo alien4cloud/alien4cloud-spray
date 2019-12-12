@@ -1,32 +1,25 @@
 
-- name: Create temporary folder
-  tempfile:
-    state: directory
-  register: temp_dir
-
-- name: Copy remote resource {{ resources_file_path }} on remote in {{ temp_dir.path }}/resources.yaml
-  copy:
-    src: "{{ resources_file_path }}"
-    dest: "{{ temp_dir.path  }}/resources.yaml"
-    remote_src: yes
-  ignore_errors: yes
-
-- name: "Stat {{ temp_dir.path }}/resources.yaml"
+- name: "Stat {{ resources_file_path }}"
   stat:
-    path: "{{ temp_dir.path }}/resources.yaml"
+    path: "{{ resources_file_path }}"
   register: resources_file
 
 - name: Slurp resources files
   slurp:
-    src: "{{ temp_dir.path }}/resources.yaml"
+    src: "{{ resources_file_path }}"
   register: resources_slurped
   when: resources_file.stat.exists
 
 - set_fact:
     resources_yaml: "{{resources_slurped['content'] | b64decode | from_yaml}}"
-  when: resources_file.stat.exists
+  when: (resources_file.stat.exists)
 
 - name: Here is the resource content
   debug:
     var: resources_yaml
   when: (resources_yaml is defined)
+
+- name: {{ resources_file_path }} can't be found on remote
+  debug:
+    msg: "{{ resources_file_path }} can't be found on remote"
+  when: (resources_file.stat.exists)
