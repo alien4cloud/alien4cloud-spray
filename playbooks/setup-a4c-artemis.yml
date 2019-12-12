@@ -17,6 +17,6 @@
     #     location_name: 'Default',
     #     location_type: 'OpenStack'
     #   }
-    - { role: 'roles/a4c/config/create_metaproperties',
+    - { role: 'a4c/config/create_metaproperties',
         resources_file_artifact: 'resources/metaproperties.yaml'
       }
