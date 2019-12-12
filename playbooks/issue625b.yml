@@ -1,6 +1,6 @@
 ---
 
-- hosts: front
+- hosts: a4cfront
   name: Try reading from inventory.
   roles:
     - sandbox/read_inventory
