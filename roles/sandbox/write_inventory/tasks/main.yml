@@ -1,3 +1,8 @@
+- name: Ensure inventory folder {{ inventory_dir }}/group_vars/all/ exists
+  file:
+    path: "{{ inventory_dir }}/group_vars/all/"
+    state: directory
+
 - name: Write a file in {{ inventory_dir }}
   copy:
     content: "World !"
