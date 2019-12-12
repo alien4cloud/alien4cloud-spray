@@ -4,9 +4,9 @@
     state: directory
   register: temp_dir
 
-- name: Upload resource {{resources_file_path}} on remote in {{ temp_dir.path }}/resources.yaml
+- name: Upload resource {{ resources_file_path }} on remote in {{ temp_dir.path }}/resources.yaml
   copy:
-    src: "{{ resources_file_artifact }}"
+    src: "{{ resources_file_path }}"
     dest: "{{ temp_dir.path  }}/resources.yaml"
 
 - name: "Stat {{ temp_dir.path }}/resources.yaml"
