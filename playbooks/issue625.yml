@@ -1,0 +1,12 @@
+---
+
+- hosts: consul
+  name: Try writing/reading into/from inventory.
+  roles:
+    - sandbox/write_inventory
+    - sandbox/read_inventory
+
+- hosts: front
+  name: Try reading from inventory.
+  roles:
+    - sandbox/read_inventory
