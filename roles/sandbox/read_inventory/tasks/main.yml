@@ -1,4 +1,6 @@
 - name: Slurp inventory file
+  delegate_to: localhost
+  run_once: True
   slurp:
     src: "{{ inventory_dir }}/{{ inventory_resource_path }}"
   register: inventory_resource_slurped

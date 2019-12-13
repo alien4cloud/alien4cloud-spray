@@ -1,4 +1,6 @@
 - name: Ensure inventory folder {{ inventory_dir }}/group_vars/all/ exists
+  delegate_to: localhost
+  run_once: True
   file:
     path: "{{ inventory_dir }}/group_vars/all/"
     state: directory
@@ -8,6 +10,8 @@
     var_content: "hello: World"
 
 - name: Write a file in {{ inventory_dir }}/group_vars/all/hello.yml
+  delegate_to: localhost
+  run_once: True
   copy:
     content: "{{ var_content }}"
     dest: "{{ inventory_dir }}/group_vars/all/hello.yml"
