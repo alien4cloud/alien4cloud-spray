@@ -47,6 +47,10 @@
     hostcert_file_path: "{{ consul_install_dir }}/ssl/{{ inventory_hostname }}-cert.pem"
   when: (consul_tls)
 
+- name: Just pause few seconds to let the node starting
+  pause:
+    seconds: 30
+
 - name: Loop over the consul group to join cluster
   shell: "{{ consul_install_dir }}/consul join -http-addr='https://{{inventory_hostname}}:8501' -ca-file={{ca_file_path}} -client-cert={{hostcert_file_path}} -client-key={{hostkey_file_path}} {{ item }}"
   with_items: "{{ groups['consul'] }}"
