@@ -289,7 +289,7 @@
     body_format: json
     status_code: 200
 
-- name: Wait for orchestrator to be started
+- name: Get the orchestrator state
   uri:
     url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}"
     method: GET
@@ -331,7 +331,6 @@
   retries: 10
   delay: 5
   ignore_errors: yes
-  when: (not orchestrator_connected)
 
 - name: Here is the orchestrator state
   set_fact:
