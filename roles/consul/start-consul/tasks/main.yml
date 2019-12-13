@@ -47,6 +47,7 @@
     hostcert_file_path: "{{ consul_install_dir }}/ssl/{{ inventory_hostname }}-cert.pem"
   when: (consul_tls)
 
+# TODO: should only be done in client mode
 - name: Just pause few seconds to let the node starting
   pause:
     seconds: 30
