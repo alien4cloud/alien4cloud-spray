@@ -4,9 +4,20 @@
   name: Try writing/reading into/from inventory.
   roles:
     - sandbox/write_inventory
-    - sandbox/read_inventory
+    - { role: 'sandbox/read_inventory',
+        inventory_resource_path: group_vars/all/hello.yml
+      }
 
 - hosts: a4cfront
   name: Try reading from inventory.
   roles:
-    - sandbox/read_inventory
+    - { role: 'sandbox/read_inventory',
+        inventory_resource_path: group_vars/all/hello.yml
+      }
+
+- hosts: a4cfront
+  name: Try reading from inventory (writted locally manually).
+  roles:
+    - { role: 'sandbox/read_inventory',
+        inventory_resource_path: group_vars/localinvotory.yml
+      }
