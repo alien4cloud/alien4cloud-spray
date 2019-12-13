@@ -342,4 +342,4 @@
 
 - fail:
     msg: "The orchestrator #{{ orchestratorName }} is not connected ({{ orchestrator_state }}), something went wrong !"
-  when: (not orchestrator_connected)
+  when: (result.json.data.state != 'CONNECTED')

@@ -21,17 +21,17 @@
 
 - set_fact:
     resources_yaml: "{{resources_slurped['content'] | b64decode | from_yaml}}"
-- debug:
-    var: resources_yaml
+# - debug:
+#     var: resources_yaml
 
 - set_fact:
     resources: "{{resources_yaml['metaproperties']}}"
 - debug:
     var: resources
 
-- debug:
-    msg: "{{item}}"
-  with_items: "{{resources}}"
+# - debug:
+#     msg: "{{item}}"
+#   with_items: "{{resources}}"
 
 - name: Create metaproperties
   uri:
@@ -47,6 +47,7 @@
     status_code: 200
   register: result
   with_items: "{{resources}}"
+  ignore_errors: yes
 
-- debug:
-    var: result
+# - debug:
+#     var: result

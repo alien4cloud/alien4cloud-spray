@@ -1,5 +1,37 @@
 ---
 
+- name: Get Locations for orchestrator
+  uri:
+    url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body_format: json
+    status_code: 200
+  register: result
+
+- name: Build the JSON query for searching location
+  set_fact:
+    query: "data[?location.name=='{{ location_name }}'].location"
+
+- name: Search location
+  set_fact:
+    # TODO: better query than doesn't fail when no location found
+    location: "{{ result.content | from_json | json_query(query) | first }}"
+  ignore_errors: yes
+
+- name: Get locationId
+  set_fact:
+    locationId: "{{ location.id }}"
+  when: (location is defined)
+
+- name: Location found, here is the locationId
+  debug:
+    var : locationId
+  when: (locationId is defined)
+
 - name: Create Location
   uri:
     url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations"
@@ -14,13 +46,17 @@
     body_format: json
     status_code: 201
   register: result
+  when: (locationId is not defined)
 
-- set_fact:
+- name: Parse request content to get locationId
+  set_fact:
     content: "{{ result.content }}"
+  when: (locationId is not defined)
 
 - name: Export locationId
   set_fact:
     locationId: "{{ content.data }}"
+  when: (locationId is not defined)
 
 - name: Populate locationIds
   set_fact:

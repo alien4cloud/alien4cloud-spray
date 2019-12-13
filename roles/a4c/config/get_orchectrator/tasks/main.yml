@@ -25,6 +25,8 @@
 
 - set_fact:
     orchestratorId: "{{ request_result.data[0]['id'] }}"
+  when: request_result.data | length > 0
 
 - debug:
     var: orchestratorId
+  when: (orchestratorId is defined)
