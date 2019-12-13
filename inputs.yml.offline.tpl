@@ -23,7 +23,7 @@ consul_gossip_encrypt: false
 # If Gossip is encrypted, the path where the key will be found
 # The key is generated on a consul node in the role roles/consul/configure-consul-gossip-keygen
 # It's copied in this local folder and used on all nodes
-consul_gossip_encrypt_key_path: /Users/xdegenne/work/src/alien4cloud-artemis-spray/certificates/consul_encrypt_key
+consul_gossip_encrypt_key_path: certificates/consul_encrypt_key
 # If true, consul http channels will be secured using TLS (certificates nedded)
 consul_tls: false
 

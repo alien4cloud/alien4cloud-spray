@@ -37,11 +37,11 @@
     var: consul_gossip_encrypt
 
 - name: Locally Check for consul key file
-  local_action: "stat path={{ consul_gossip_encrypt_key_path }}"
+  local_action: "stat path={{ inventory_dir }}/{{ consul_gossip_encrypt_key_path }}"
   register: stat_consul_gossip_encrypt_key_path
 
 - fail:
-    msg: "The consul Gossip exchange should be encrypted by no key can be found in {{ consul_gossip_encrypt_key_path }} !"
+    msg: "The consul Gossip exchange should be encrypted by no key can be found in {{ inventory_dir }}/{{ consul_gossip_encrypt_key_path }} !"
   when: (consul_gossip_encrypt) and (not stat_consul_gossip_encrypt_key_path.stat.exists)
 
 - name: Create temporary file to store consul key
@@ -53,7 +53,7 @@
 
 - name: Copy consul key file
   copy:
-    src: "{{ consul_gossip_encrypt_key_path }}"
+    src: "{{ inventory_dir }}/{{ consul_gossip_encrypt_key_path }}"
     dest: "{{ consul_key_file.path }}"
   when: (consul_gossip_encrypt)
 

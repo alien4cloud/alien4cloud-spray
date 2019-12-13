@@ -14,7 +14,7 @@
     var: consul_gossip_encrypt
 
 - name: Locally Check for consul key file
-  local_action: "stat path={{ consul_gossip_encrypt_key_path }}"
+  local_action: "stat path={{ inventory_dir }}/{{ consul_gossip_encrypt_key_path }}"
   register: stat_consul_gossip_encrypt_key_path
   when: (consul_gossip_encrypt)
 
@@ -25,7 +25,7 @@
 
 - name: Print a message if the consul encrypt key already exists
   debug:
-    msg: "The consul encrypt key can be found locally in {{ consul_gossip_encrypt_key_path }}, let's use it !"
+    msg: "The consul encrypt key can be found locally in {{ inventory_dir }}/{{ consul_gossip_encrypt_key_path }}, let's use it !"
   when: (consul_gossip_encrypt) and (consul_gossip_encrypt_key_file_exists)
 
 - name: Create temporary file to store consul key
@@ -51,7 +51,7 @@
 - name: Store consul key in a local file
   fetch:
     src: "{{ consul_key_file.path }}"
-    dest: "{{ consul_gossip_encrypt_key_path }}"
+    dest: "{{ inventory_dir }}/{{ consul_gossip_encrypt_key_path }}"
     flat: yes
     validate_checksum: no
   when: (consul_gossip_encrypt) and (not consul_gossip_encrypt_key_file_exists)
