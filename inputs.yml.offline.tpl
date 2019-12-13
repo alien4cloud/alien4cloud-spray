@@ -40,7 +40,7 @@ elasticsearch_tls: false
 
 # SSL TLS
 # The local path where certificates can be found for SSL configs on nodes
-certificates_path: /Users/xdegenne/work/src/alien4cloud-artemis-spray/certificates/
+certificates_path: certificates/
 ca_passphrase: dontChangeIt
 ssl_keystore_source_location: /var/folders/2d/3krvvvn538ggxjx8mtvwmj_c0000gn/T/tmp.vaCqIRYH/server-keystore.p12
 ssl_src_keystore_password: changeit

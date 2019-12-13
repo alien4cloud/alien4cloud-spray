@@ -55,30 +55,30 @@
   when: (a4c_ha_enabled)
 
 - name: Locally Check for CA file
-  local_action: "stat path={{ certificates_path }}/ca-cert.pem"
+  local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/ca-cert.pem"
   register: stat_cacert_path
   when: (consul_tls) and (a4c_ha_enabled)
 
 - fail:
-    msg: "The consul http communication should be secured by no CA file found in {{ certificates_path }}/ca-cert.pem ! Please provide CA certificate file."
+    msg: "The consul http communication should be secured by no CA file found in {{ inventory_dir }}/{{ certificates_path }}/ca-cert.pem ! Please provide CA certificate file."
   when: (consul_tls) and (a4c_ha_enabled) and (not stat_cacert_path.stat.exists)
 
 - name: Locally Check for Host key file
-  local_action: "stat path={{ certificates_path }}/{{ inventory_hostname }}-key.pem"
+  local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}-key.pem"
   register: stat_hostkey_path
   when: (consul_tls) and (a4c_ha_enabled)
 
 - fail:
-    msg: "The consul http communication should be secured by no host key file found in {{ certificates_path }}/{{ inventory_hostname }}-key.pem ! Please provide host key file."
+    msg: "The consul http communication should be secured by no host key file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}-key.pem ! Please provide host key file."
   when: (consul_tls) and (a4c_ha_enabled) and (not stat_hostkey_path.stat.exists)
 
 - name: Locally Check for Host cert file
-  local_action: "stat path={{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
+  local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
   register: stat_hostcert_path
   when: (consul_tls) and (a4c_ha_enabled)
 
 - fail:
-    msg: "The consul http communication should be secured by no host certificate file found in {{ certificates_path }}/{{ inventory_hostname }}-cert.pem ! Please provide host certificate file."
+    msg: "The consul http communication should be secured by no host certificate file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}-cert.pem ! Please provide host certificate file."
   when: (consul_tls) and (a4c_ha_enabled) and (not stat_hostcert_path.stat.exists)
 
 - name: Creates consul-template ssl directory
@@ -91,7 +91,7 @@
 
 - name: Copy CA cert file
   copy:
-    src: "{{ certificates_path }}/ca-cert.pem"
+    src: "{{ inventory_dir }}/{{ certificates_path }}/ca-cert.pem"
     dest: "/etc/consul_template/ssl/ca-cert.pem"
   become: true
   become_user: "{{ consul_template_user }}"
@@ -99,7 +99,7 @@
 
 - name: Copy host key file
   copy:
-    src: "{{ certificates_path }}/{{ inventory_hostname }}-key.pem"
+    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}-key.pem"
     dest: "/etc/consul_template/ssl/{{ inventory_hostname }}-key.pem"
   become: true
   become_user: "{{ consul_template_user }}"
@@ -107,7 +107,7 @@
 
 - name: Copy host cert file
   copy:
-    src: "{{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
+    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
     dest: "/etc/consul_template/ssl/{{ inventory_hostname }}-cert.pem"
   become: true
   become_user: "{{ consul_template_user }}"

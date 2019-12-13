@@ -101,7 +101,7 @@
 
 - name: Copy CA cert file
   copy:
-    src: "{{ certificates_path }}/ca-cert.pem"
+    src: "{{ inventory_dir }}/{{ certificates_path }}/ca-cert.pem"
     dest: "{{ a4c_install_dir }}/alien4cloud/config/ssl/ca-cert.pem"
   become: true
   become_user: "{{ a4c_user }}"
@@ -109,7 +109,7 @@
 
 - name: Copy host key file
   copy:
-    src: "{{ certificates_path }}/{{ inventory_hostname }}-key.pem"
+    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}-key.pem"
     dest: "{{ a4c_install_dir }}/alien4cloud/config/ssl/{{ inventory_hostname }}-key.pem"
   become: true
   become_user: "{{ a4c_user }}"
@@ -117,7 +117,7 @@
 
 - name: Copy host cert file
   copy:
-    src: "{{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
+    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
     dest: "{{ a4c_install_dir }}/alien4cloud/config/ssl/{{ inventory_hostname }}-cert.pem"
   become: true
   become_user: "{{ a4c_user }}"

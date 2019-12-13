@@ -80,7 +80,7 @@
 
 - name: Copy CA cert file
   copy:
-    src: "{{ certificates_path }}/ca-cert.pem"
+    src: "{{ inventory_dir }}/{{ certificates_path }}/ca-cert.pem"
     dest: "{{ ca_file_path }}"
   become: true
   when: (elasticsearch_tls)
@@ -92,7 +92,7 @@
 
 - name: Copy host key file
   copy:
-    src: "{{ certificates_path }}/{{ inventory_hostname }}-key.pem"
+    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}-key.pem"
     dest: "{{ hostkey_file_path }}"
   become: true
   when: (elasticsearch_tls)
@@ -104,7 +104,7 @@
 
 - name: Copy host cert file
   copy:
-    src: "{{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
+    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
     dest: "{{ hostcert_file_path }}"
   become: true
   when: (elasticsearch_tls)
