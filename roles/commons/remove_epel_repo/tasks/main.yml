@@ -1,5 +1,15 @@
+- name: Install epel-release
+  yum:
+    pkg: epel-release
+    state: present
+    update_cache: true
+  become: true
+  ignore_errors: yes
+  when: (not offline)
+
 - name: "FIXME : remove /etc/yum.repos.d/epel.repo"
   become: true
   file:
     path: /etc/yum.repos.d/epel.repo
     state: absent
+  when: (not offline)
