@@ -5,13 +5,13 @@
 
   roles:
     - a4c/config/define_a4c_url
+    - { role: a4c/config/get_orchectrator,
+        orchestratorName: 'Yorc'
+      }
     - { role: a4c/config/create_orchestrator,
         orchestratorName: 'Yorc',
         pluginId: 'alien4cloud-yorc-provider',
         pluginBean: 'yorc-orchestrator-factory'
-      }
-    - { role: a4c/config/get_orchectrator,
-        orchestratorName: 'Yorc'
       }
     - { role: a4c/config/create_location,
         location_name: 'Default',
