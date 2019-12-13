@@ -18,12 +18,15 @@
     body_format: json
     status_code: 201
   register: result
+  when: (orchestratorId is not defined)
 
 - set_fact:
     content: "{{ result.content }}"
+  when: (orchestratorId is not defined)
 
 - set_fact:
     orchestratorId: "{{ content.data }}"
+  when: (orchestratorId is not defined)
 
 - name: Get orchestrator configuration
   uri:
@@ -286,6 +289,23 @@
     body_format: json
     status_code: 200
 
+- name: Wait for orchestrator to be started
+  uri:
+    url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+      Content-Type: "application/json"
+    status_code: 200
+  register: result
+  ignore_errors: yes
+
+- name: Define orchestrator_connected indicator
+  set_fact:
+    orchestrator_connected: "{{ result.json.data.state == 'CONNECTED' }}"
+
 - name: Activate orchestrator
   uri:
     url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/instance"
@@ -294,6 +314,7 @@
     headers:
       Cookie: "{{ session_id }}"
       Content-Type: "application/json"
+  when: (not orchestrator_connected)
 
 - name: Wait for orchestrator to be started
   uri:
@@ -310,13 +331,16 @@
   retries: 10
   delay: 5
   ignore_errors: yes
+  when: (not orchestrator_connected)
 
-- set_fact:
+- name: Here is the orchestrator state
+  set_fact:
     orchestrator_state: "{{ result.json.data.state }}"
 
-- debug:
+- name: Here is the orchestrator state
+  debug:
     msg: "Orchestrator {{ result.json.data.id }} is in state {{ orchestrator_state }}"
 
 - fail:
-    msg: "The orchestrator # {{ cfy_user }}:{{ cfy_password }}@{{ cfy_url }} is not connected ({{ orchestrator_state }}), something went wrong !"
-  when: orchestrator_state != "CONNECTED"
+    msg: "The orchestrator #{{ orchestratorName }} is not connected ({{ orchestrator_state }}), something went wrong !"
+  when: (not orchestrator_connected)
