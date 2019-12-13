@@ -1,5 +1,7 @@
 
 - name: Here is the my_name var content
+  delegate_to: localhost
+  run_once: True
   debug:
     var: my_name
   when: (my_name is defined)
