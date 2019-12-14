@@ -17,48 +17,59 @@
     state: present
     update_cache: true
   become: true
+  when: (ha_enabled)
 
 - name: Ensure working_directory variable is defined
   set_fact:
     working_directory: "{{ lookup('vars', '{{ ha_group }}_working_dir') }}"
+  when: (ha_enabled)
 
 - name: Here is the working directory
   debug:
     var: working_directory
+  when: (ha_enabled)
 
 - name: Get the parent dir of the working directory
   shell: "echo $(dirname \"{{ working_directory }}\")"
   register: dirname_command_output
+  when: (ha_enabled)
 
 - name:
   set_fact:
     mount_directory: "{{ dirname_command_output.stdout }}"
+  when: (ha_enabled)
 
 - name: Here is the mount directory
   debug:
     var: mount_directory
+  when: (ha_enabled)
 
 - name: Creates NFS mount directory
   become: true
   file:
     path: "{{ mount_directory }}"
     state: directory
+  when: (ha_enabled)
 
 - name: UnMount NFS share
   become: true
   ignore_errors: yes
   shell: "umount {{ mount_directory }}"
+  when: (ha_enabled)
 
 - name: Mount NFS share
   become: true
   shell: "mount {{ nfs_share }} {{ mount_directory }}"
+  when: (ha_enabled)
 
 - name: Ensure working directory exists
   become: true
   file:
     path: "{{ working_directory }}"
     state: directory
+  when: (ha_enabled)
 
 - name: Clean the working directory
   become: true
   shell: "rm -rf {{ working_directory }}/*"
+  when: (ha_enabled)
