@@ -28,6 +28,11 @@
     path: "{{ mount_directory }}"
     state: directory
 
+- name: UnMount NFS share
+  become: true
+  ignore_errors: yes
+  shell: "umount {{ mount_directory }}"
+
 - name: Mount NFS share
   become: true
   shell: "mount {{ nfs_share }} {{ mount_directory }}"
