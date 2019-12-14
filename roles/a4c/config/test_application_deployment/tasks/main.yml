@@ -233,7 +233,6 @@
   retries: 10
   delay: 30
   ignore_errors: yes
-  when: (deploymentId is defined)
 
 - name: Here is the deployment status
   debug:
@@ -242,3 +241,35 @@
 - fail:
     msg: "The test deployment did not finish successfully, something went wrong !"
   when: (result.json.data!= 'DEPLOYED')
+
+- name: Undeploy
+  uri:
+    url: "{{ alien_url }}/rest/latest/applications/{{ applicationId }}/environments/{{ environmentId }}/deployment"
+    method: DELETE
+    return_content: no
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    status_code: 200
+
+- name: Wait for undeployment success
+  uri:
+    url: "{{ alien_url }}/rest/latest/deployments/{{ deploymentId }}/status"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+      Content-Type: "application/json"
+    status_code: 200
+  register: result
+  until: result.json.data == "UNDEPLOYED"
+  retries: 10
+  delay: 30
+  ignore_errors: yes
+
+
+# DELETE /rest/latest/applications/${applicationName}/environments/${environmentId}/deployment
+
+
+# DELETE /rest/latest/applications/${applicationName}

@@ -18,7 +18,9 @@
     paths: "{{ temp_dir.path }}/"
     patterns: "*.zip"
   register: cars_files
+  when: (csar_urls is defined)
 
 - name: Upload CSAR archive to A4C
   shell: "curl -k -X POST -H 'cookie: {{ session_id }}' -F file=@{{ item.path }} '{{ alien_url }}/rest/latest/csars'"
   with_items: "{{ cars_files.files | sort(attribute='path') | list }}"
+  when: (csar_urls is defined)
