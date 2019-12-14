@@ -1,0 +1,39 @@
+
+- name: Install nfs-utils
+  yum:
+    pkg: nfs-utils
+    state: present
+    update_cache: true
+  become: true
+
+- name: Here is the working directory
+  debug:
+    var: working_directory
+
+- name: Get the parent dir of the working directory
+  command: "echo $(dirname \"{{ working_directory }}\")"
+  register: dirname_command_output
+
+- name:
+  set_fact:
+    mount_directory: consul_key_command_output.stdout
+
+- name: Here is the mount directory
+  debug:
+    var: mount_directory
+
+- name: Creates NFS mount directory
+  become: true
+  file:
+    path: "{{ mount_directory }}"
+    state: directory
+
+- name: Mount NFS share
+  become: true
+  shell: "mount {{ nfs_share }} {{ mount_directory }}"
+
+- name: Ensure working directory exists
+  become: true
+  file:
+    path: "{{ working_directory }}"
+    state: directory

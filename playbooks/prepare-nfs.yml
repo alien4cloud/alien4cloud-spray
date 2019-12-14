@@ -1,0 +1,16 @@
+---
+- hosts: a4c
+  gather_facts: no
+  name: Install NFS and mount shared volume for A4C.
+  roles:
+    - { role: commons/prepare_nfs,
+        working_directory: '/mnt/nfs/a4c'
+      }
+
+- hosts: yorc
+  gather_facts: no
+  name: Install NFS and mount shared volume for Yorc.
+  roles:
+    - { role: commons/prepare_nfs,
+        working_directory: '/mnt/nfs/yorc'
+      }
