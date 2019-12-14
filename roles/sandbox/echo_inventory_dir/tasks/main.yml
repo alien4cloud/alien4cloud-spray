@@ -1,0 +1,5 @@
+- name: Here is the inventory_dir
+  delegate_to: localhost
+  run_once: True
+  debug:
+    var: inventory_dir
