@@ -28,17 +28,17 @@
     state: directory
     owner: "{{ a4c_user }}"
 
-- name: Ensure the 'a4c_runtime_dir' exists
+- name: Ensure the 'a4c_working_dir' exists
   set_fact :
-    a4c_runtime_dir: "{{ a4c_install_dir }}/runtime"
-  when: a4c_runtime_dir is not defined
+    a4c_working_dir: "{{ a4c_install_dir }}/runtime"
+  when: a4c_working_dir is not defined
 
 - name: Ensure a4c runtime directory exists
   become: true
   # we must become_user instead of use onwer since we don't want the rights to be changes (in case of samba share)
   become_user: "{{ a4c_user }}"
   file:
-    path: "{{ a4c_runtime_dir }}"
+    path: "{{ a4c_working_dir }}"
     state: directory
 
 - name: Check if a4c is already installed

@@ -6,14 +6,14 @@
 
 - name: Get the yorc work directory
   set_fact :
-    yorc_work_dir: "{{ yorc_install_dir }}/work"
-  when: yorc_work_dir is not defined
+    yorc_working_dir: "{{ yorc_install_dir }}/work"
+  when: yorc_working_dir is not defined
 
 - name: Ensure the work directory exists
   become: true
   become_user: "{{ yorc_user }}"
   file:
-    path: "{{ yorc_work_dir }}"
+    path: "{{ yorc_working_dir }}"
     state: directory
 
 - name: Default Yorc location file
