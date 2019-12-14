@@ -99,6 +99,14 @@ In the example below, a 2 nodes cluster for consul and elasticsearch, 2 nodes ha
 192.168.0.1
 ```
 
+# HA
+
+HA is enable be having multiple hosts in a4c and/or yorc group:
+* To enable HA for A4C, you just need to have more than one host in `a4c` host group and one host in the `a4cfront` host group. A4C need that the folder defined by `a4c_runtime_dir` var is shared between every a4c hosts (NFS or other distributed FS).
+* To enable HA for Yorc, put more than one host in `yorc` host group. Yorc needs that the folder defined `yorc_work_dir` var is shared between every Yorc hosts (NFS or other distributed FS).
+
+You can use the playbook `install-samba.yml` in order to setup a Samba server (on the `samba` host). It will mount respectively `a4c_runtime_dir` and `yorc_work_dir` folders on `a4c` and `yorc` hosts. This playvbook is hare as an example but should not be used in a production environment.
+
 ## SSL Certificates
 
 If you want to securize the components of your stack, you will need to have some certificates for each concerned hosts.
