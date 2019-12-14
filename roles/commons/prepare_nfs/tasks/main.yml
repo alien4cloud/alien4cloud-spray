@@ -42,3 +42,7 @@
   file:
     path: "{{ working_directory }}"
     state: directory
+
+- name: Clean the working directory
+  become: true
+  shell: "rm -rf {{ working_directory }}/*"
