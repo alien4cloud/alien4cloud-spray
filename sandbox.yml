@@ -1,0 +1,14 @@
+---
+
+- hosts: a4cfront
+  name: Try writing/reading into/from inventory.
+  roles:
+    - sandbox/echo_inventory_dir
+    # - sandbox/read_extras
+    # - sandbox/write_inventory
+    # - sandbox/read_inventory
+
+# - hosts: yorc
+#   name: Try reading from inventory.
+#   roles:
+#     - sandbox/read_inventory

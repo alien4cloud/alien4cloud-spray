@@ -20,3 +20,4 @@
     - { role: 'a4c/config/create_metaproperties',
         resources_file_artifact: 'resources/metaproperties.yaml'
       }
+    - a4c/config/download_upload_csars

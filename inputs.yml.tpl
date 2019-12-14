@@ -90,3 +90,7 @@ AWS_SECRET_KEY:
 AWS_REGION: eu-west-1
 
 dev_projects_path: /Users/xdegenne/work/src
+# These CSARs will be downloaded and uploaded to A4C
+csar_urls:
+  - http://somewhere/csar1.zip
+  - http://somewhere/csar2.zip
