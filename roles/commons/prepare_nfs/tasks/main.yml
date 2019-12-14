@@ -16,7 +16,7 @@
 
 - name:
   set_fact:
-    mount_directory: consul_key_command_output.stdout
+    mount_directory: "{{ dirname_command_output.stdout }}"
 
 - name: Here is the mount directory
   debug:
