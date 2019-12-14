@@ -11,7 +11,7 @@
     var: working_directory
 
 - name: Get the parent dir of the working directory
-  command: "echo $(dirname \"{{ working_directory }}\")"
+  shell: "echo $(dirname \"{{ working_directory }}\")"
   register: dirname_command_output
 
 - name:
