@@ -28,7 +28,7 @@ server {
 {{ '{{' }} else {{ '}}' }}
 server {
         listen {{ a4c_front_port }}{{ ' default ssl' if securize_nginx else '' }};
-        listen [::]:{{ a4c_front_port }}ipv6only=on;
+        listen [::]:{{ a4c_front_port }} ipv6only=on;
 
 {% if (securize_nginx) %}
         ssl on;
