@@ -2,6 +2,7 @@
 - hosts: all
   name: Install all common dependencies.
   roles:
+    - commons/check-distrib
     - commons/install-common-dependencies
 
 - hosts: consul

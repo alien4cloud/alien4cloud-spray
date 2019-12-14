@@ -1,8 +1,4 @@
 
-- name: Fail when trying to use these plays on non centos compatible distribution
-  fail:
-    msg: "These playbook are only working for 'CentOS' or 'Red Hat Enterprise Linux' distributions"
-  when: (ansible_distribution != 'CentOS') and (ansible_distribution != 'Red Hat Enterprise Linux')
 
 - name: Ensure the 'offline' variable is defined
   set_fact :
