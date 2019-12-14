@@ -27,6 +27,11 @@
   command: systemctl status consul
   ignore_errors: false
 
+- name: Just pause few seconds to let the node starting
+  pause:
+    seconds: 30
+  when: (CONSUL_HOST_COUNT > 1) and (not consul_tls)
+
 - name: Loop over the consul group to join cluster
   shell: "{{ consul_install_dir }}/consul join {{ item }}"
   with_items: "{{ groups['consul'] }}"
@@ -51,6 +56,7 @@
 - name: Just pause few seconds to let the node starting
   pause:
     seconds: 30
+  when: (CONSUL_HOST_COUNT > 1) and (consul_tls)
 
 - name: Loop over the consul group to join cluster
   shell: "{{ consul_install_dir }}/consul join -http-addr='https://{{inventory_hostname}}:8501' -ca-file={{ca_file_path}} -client-cert={{hostcert_file_path}} -client-key={{hostkey_file_path}} {{ item }}"
