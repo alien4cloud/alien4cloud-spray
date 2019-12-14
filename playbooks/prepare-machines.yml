@@ -1,5 +1,6 @@
 ---
 - hosts: all
+  gather_facts: no
   name: Install all common dependencies.
   roles:
     - commons/install-common-dependencies
