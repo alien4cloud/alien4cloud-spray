@@ -1,0 +1,244 @@
+---
+- name: "Search application {{ applicationName }}"
+  uri:
+    url: "{{ alien_url }}/rest/latest/applications/search"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body:
+      from: 0
+      query: "{{ applicationName }}"
+      size: 1
+    body_format: json
+    status_code: 200
+  register: result
+
+- name: Parse search application result
+  set_fact:
+    content: "{{ result.content | from_json }}"
+
+- name: Get applicationId
+  set_fact:
+    applicationId: "{{ content.data.data[0].id }}"
+  when: (content.data.data is defined) and (content.data.data | length > 0)
+
+- name: Here is the applicationId
+  debug:
+    var: applicationId
+  when: (applicationId is defined)
+
+- name: "Create application {{ applicationName }}"
+  uri:
+    url: "{{ alien_url }}/rest/latest/applications"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body:
+      name: "{{ applicationName }}"
+      archiveName: "{{ applicationName }}"
+      topologyTemplateVersionId: "{{ topologyTemplateVersionId }}"
+    body_format: json
+    status_code: 201
+  register: result
+  when: (applicationId is not defined)
+
+- name: Get the created applicationId
+  set_fact:
+    applicationId: "{{ result.json.data }}"
+  when: (applicationId is not defined)
+
+- name: Here is the applicationId
+  debug:
+    var: applicationId
+  when: (applicationId is defined)
+
+- name: "Get default environment id for application {{ applicationId }}"
+  uri:
+    url: "{{ alien_url }}/rest/latest/applications/{{ applicationId }}/environments/search"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body:
+      query: ""
+      from: 0
+      size: 1
+    body_format: json
+    status_code: 200
+  register: result
+
+- name: Parse search environment result
+  set_fact:
+    content: "{{ result.content | from_json }}"
+
+- name: Get environmentId
+  set_fact:
+    environmentId: "{{ content.data.data[0].id }}"
+  when: (content.data.data is defined) and (content.data.data | length > 0)
+
+- name: Here is the environmentId
+  debug:
+    var: environmentId
+  when: (environmentId is defined)
+
+- name: "Get active deployment for application {{ applicationId }}"
+  uri:
+    url: "{{ alien_url }}/rest/latest/applications/{{ applicationId }}/environments/{{ environmentId }}/active-deployment"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body_format: json
+    status_code: 200
+  register: result
+  ignore_errors: yes
+
+- name: Parse search deployment result
+  set_fact:
+    content: "{{ result.content | from_json }}"
+
+- name: Here is the content
+  debug:
+    var: content
+
+- name: Get deploymentId
+  set_fact:
+    deploymentId: "{{ content.data.id }}"
+  when: (content.data is defined) and (content.data.id is defined)
+
+- name: Here is the deploymentId
+  debug:
+    var: deploymentId
+  when: (deploymentId is defined)
+
+- name: Match Location
+  uri:
+    url: "{{ alien_url }}/rest/latest/topologies/{{ applicationId }}:0.1.0-SNAPSHOT/locations"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body:
+      environmentId: "{{ environmentId }}"
+    body_format: json
+    status_code: 200
+  register: result
+  when: (deploymentId is not defined)
+
+- name: Parse match location result
+  set_fact:
+    content: "{{ result.content | from_json }}"
+  when: (deploymentId is not defined)
+
+- name: Get orchestratorId
+  set_fact:
+    orchestratorId: "{{ content.data[0].orchestrator.id }}"
+  when: (deploymentId is not defined) and (content.data is defined) and (content.data | length > 0)
+
+- name: Here is the orchestratorId
+  debug:
+    var: orchestratorId
+  when: (orchestratorId is defined)
+
+- name: Get locationId
+  set_fact:
+    locationId: "{{ content.data[0].location.id }}"
+  when: (deploymentId is not defined) and (content.data is defined) and (content.data | length > 0)
+
+- name: Here is the locationId
+  debug:
+    var: locationId
+  when: (locationId is defined)
+
+- name: "Create deployment"
+  uri:
+    url: "{{ alien_url }}/rest/latest/applications/{{ applicationId }}/environments/{{ environmentId }}/deployment-topology/location-policies"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body:
+      orchestratorId: "{{ orchestratorId }}"
+      groupsToLocations: "{'_A4C_ALL':'{{ locationId }}'}"
+    body_format: json
+    status_code: 200
+  register: result
+  when: (deploymentId is not defined) and (orchestratorId is defined) and (locationId is defined)
+
+- name: "Deploy"
+  uri:
+    url: "{{ alien_url }}/rest/latest/applications/deployment"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body:
+      applicationId: "{{ applicationId }}"
+      applicationEnvironmentId: "{{ environmentId }}"
+    body_format: json
+    status_code: 200
+  register: result
+  when: (deploymentId is not defined) and (orchestratorId is defined) and (locationId is defined)
+
+- name: "Get active deployment for application {{ applicationId }}"
+  uri:
+    url: "{{ alien_url }}/rest/latest/applications/{{ applicationId }}/environments/{{ environmentId }}/active-deployment"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body_format: json
+    status_code: 200
+  register: result
+  ignore_errors: yes
+  when: (deploymentId is not defined)
+
+- name: Parse search deployment result
+  set_fact:
+    content: "{{ result.content | from_json }}"
+  when: (deploymentId is not defined)
+
+- name: Get deploymentId
+  set_fact:
+    deploymentId: "{{ content.data.id }}"
+  when: (deploymentId is not defined) and (content.data is defined)
+
+- name: Here is the deploymentId
+  debug:
+    var: deploymentId
+  when: (deploymentId is defined)
+
+- name: Wait for deployment success
+  uri:
+    url: "{{ alien_url }}/rest/latest/deployments/{{ deploymentId }}/status"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+      Content-Type: "application/json"
+    status_code: 200
+  register: result
+  until: result.json.data == "DEPLOYED"
+  retries: 10
+  delay: 30
+  ignore_errors: yes
+  when: (deploymentId is defined)
+
+- name: Here is the deployment status
+  debug:
+    var: result.json.data
+
+- fail:
+    msg: "The test deployment did not finish successfully, something went wrong !"
+  when: (result.json.data!= 'DEPLOYED')
