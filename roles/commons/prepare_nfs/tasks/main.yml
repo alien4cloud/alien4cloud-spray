@@ -1,4 +1,16 @@
 
+- name: Ensure ha_enabled variable is defined
+  set_fact:
+    ha_enabled: "{{ groups[ha_group] | length > 1 }}"
+
+- name: Is the HA enabled ?
+  debug:
+    msg: "{{ groups[ha_group] }}"
+
+- name: Is the HA enabled ?
+  debug:
+    var: ha_enabled
+
 - name: Install nfs-utils
   yum:
     pkg: nfs-utils
