@@ -229,7 +229,7 @@
       Content-Type: "application/json"
     status_code: 200
   register: result
-  until: result.json.data == "DEPLOYED"
+  until: (result.json.data == "DEPLOYED") or (result.json.data == "FAILED")
   retries: 10
   delay: 30
   ignore_errors: yes
