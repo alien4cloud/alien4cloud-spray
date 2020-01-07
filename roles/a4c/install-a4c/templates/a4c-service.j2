@@ -1,6 +1,7 @@
 [Unit]
 Description=Alien4Cloud Webapp
-After=yorc.service
+Requires=network-online.target
+After=network-online.target
 
 [Service]
 User={{ a4c_user }}

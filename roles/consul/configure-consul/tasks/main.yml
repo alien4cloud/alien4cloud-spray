@@ -186,18 +186,19 @@
 
 - set_fact:
     consul_host_array: []
-  when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
+  # when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
 
 - name: Loop over the consul group
   set_fact:
     consul_host_array: "{{ consul_host_array + [item] }}"
   with_items: "{{ groups['consul'] }}"
-  when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
+  when: inventory_hostname != item
+  # when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
 
 - name: Add 'start_join' to consul config
   set_fact:
-    consul_config: "{{ consul_config|combine({'start_join': consul_host_array}) }}"
-  when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
+    consul_config: "{{ consul_config|combine({'retry_join': consul_host_array}) }}"
+  # when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
 
 - name: Detecting host private IP address
   set_fact:
