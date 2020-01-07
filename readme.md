@@ -6,6 +6,8 @@ It supports cluster mode for Elasticsearch and Consul. Comming soon: cluster mod
 
 # Prerequisites
 
+Ansible >= 2.8.3 
+
 You need some linux boxes with centos (tried on a EC2 ami-3548444c t2.medium)
 
 You need the following vars:

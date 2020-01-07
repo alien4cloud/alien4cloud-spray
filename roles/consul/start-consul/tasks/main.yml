@@ -37,20 +37,20 @@
 #   with_items: "{{ groups['consul'] }}"
 #   when: inventory_hostname != item and CONSUL_HOST_COUNT > 1 and (not consul_tls)
 
-- name: Define CA file path
-  set_fact:
-    ca_file_path: "{{ consul_install_dir }}/ssl/ca-cert.pem"
-  when: (consul_tls)
-
-- name: Define host key file path
-  set_fact:
-    hostkey_file_path: "{{ consul_install_dir }}/ssl/{{ inventory_hostname }}-key.pem"
-  when: (consul_tls)
-
-- name: Define host cert file path
-  set_fact:
-    hostcert_file_path: "{{ consul_install_dir }}/ssl/{{ inventory_hostname }}-cert.pem"
-  when: (consul_tls)
+# - name: Define CA file path
+#   set_fact:
+#     ca_file_path: "{{ consul_install_dir }}/ssl/ca-cert.pem"
+#   when: (consul_tls)
+#
+# - name: Define host key file path
+#   set_fact:
+#     hostkey_file_path: "{{ consul_install_dir }}/ssl/{{ inventory_hostname }}-key.pem"
+#   when: (consul_tls)
+#
+# - name: Define host cert file path
+#   set_fact:
+#     hostcert_file_path: "{{ consul_install_dir }}/ssl/{{ inventory_hostname }}-cert.pem"
+#   when: (consul_tls)
 
 # TODO: should only be done in client mode
 # - name: Just pause few seconds to let the node starting
