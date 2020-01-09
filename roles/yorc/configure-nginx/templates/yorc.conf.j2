@@ -20,5 +20,12 @@
 
         location / {
             proxy_pass {{ 'https' if yorc_tls else 'http' }}://yorc;
+            # the A4C/Yorc plugin make long polling request to Yorc server
+            # we need to ensure the timeout is > 'socketTimeout' orchestrator configuration
+            # to avoid 504 errors
+            proxy_connect_timeout      1000;
+            proxy_send_timeout         1000;
+            proxy_read_timeout         1000;
+            send_timeout               1000;
         }
     }
