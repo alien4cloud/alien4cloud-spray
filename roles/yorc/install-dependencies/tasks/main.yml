@@ -159,7 +159,7 @@
     dest: /usr/local/bin/
     mode: '0777'
   with_items: "{{ yorc_dependencies_usr_urls }}"
-  when: (not offline)
+  when: (not offline) and (yorc_dependencies_usr_urls is defined)
 
 - name: Install usr binaries
   copy:
