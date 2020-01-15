@@ -24,8 +24,9 @@
     update_cache: true
   become: true
   when: (not offline)
+  ignore_errors: yes
 
-- name: Install epel-release
+- name: Install nginx
   yum:
     pkg: nginx
     state: present

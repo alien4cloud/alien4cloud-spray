@@ -2,7 +2,7 @@
 - hosts: a4crepo
   name: Install Nginx
   roles:
-    - commons/remove_epel_repo
+    # - commons/remove_epel_repo
     - nginx/stop-nginx
     - nginx/install-nginx
     - nginx/start-nginx

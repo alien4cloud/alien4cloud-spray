@@ -6,7 +6,7 @@
   roles:
     - commons/install-common-dependencies
     - commons/add_dns_server
-    - commons/remove_epel_repo
+    # - commons/remove_epel_repo
 
 - hosts: a4c
   name: Install and configure A4C.

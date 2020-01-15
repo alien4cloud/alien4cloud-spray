@@ -4,9 +4,18 @@
     offline: false
   when: offline is not defined
 
-- name: Instal the needed package
+- name: Instal epel-release
   yum:
-    pkg: ['epel-release', 'python']
+    pkg: epel-release
+    state: present
+    update_cache: true
+  become: true
+  when: (not offline)
+  ignore_errors: yes
+
+- name: Instal python
+  yum:
+    pkg: python
     state: present
     update_cache: true
   become: true
