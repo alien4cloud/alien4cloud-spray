@@ -35,6 +35,9 @@
   register: consul_key_file
   when: (consul_gossip_encrypt) and (not consul_gossip_encrypt_key_file_exists)
 
+
+# TODO: if a {{ consul_install_dir }}/data/serf/local.keyring file exists it may contain a key
+
 - name: Generate Consul key
   command: "{{ consul_install_dir }}/consul keygen"
   register: consul_key_command_output

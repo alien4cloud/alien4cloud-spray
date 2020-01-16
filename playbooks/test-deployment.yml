@@ -6,6 +6,6 @@
   roles:
     - a4c/config/define_a4c_url
     - { role: 'a4c/config/test_application_deployment',
-        topologyTemplateVersionId: '3MockWithRel:2.1.0-SNAPSHOT',
+        topologyTemplateVersionId: '1TinyMock:2.1.0-SNAPSHOT',
         applicationName: 'SetupTestApp'
       }
