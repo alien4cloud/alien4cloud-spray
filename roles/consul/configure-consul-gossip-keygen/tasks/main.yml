@@ -35,17 +35,43 @@
   register: consul_key_file
   when: (consul_gossip_encrypt) and (not consul_gossip_encrypt_key_file_exists)
 
+- name: Check if consul key file already exists on server
+  stat:
+    path: "{{ consul_install_dir }}/data/serf/local.keyring"
+  become: true
+  register: remote_consul_key_stat_result
+  when: (consul_gossip_encrypt) and (not consul_gossip_encrypt_key_file_exists)
 
-# TODO: if a {{ consul_install_dir }}/data/serf/local.keyring file exists it may contain a key
+- name: Slurp the remote consul key file
+  slurp:
+    src: "{{ consul_install_dir }}/data/serf/local.keyring"
+  become: true
+  register: remote_consul_key_file_content
+  when: (consul_gossip_encrypt) and (not consul_gossip_encrypt_key_file_exists) and (remote_consul_key_stat_result.stat.exists)
+
+- name: Extract remote consul key
+  set_fact:
+    remote_consul_key: "{{ remote_consul_key_file_content['content'] | b64decode | from_json | first }}"
+  when: (consul_gossip_encrypt) and (not consul_gossip_encrypt_key_file_exists) and (remote_consul_key_stat_result.stat.exists)
+  ignore_errors: yes
+
+- name: Debug the remote consul key
+  debug:
+    var: remote_consul_key
+  when: (remote_consul_key is defined)
+
+- name: Echo remote Consul key into a file
+  shell: "echo '{\"encrypt\" : \"{{ remote_consul_key }}\"}' >> {{ consul_key_file.path }}"
+  when: (consul_gossip_encrypt) and (not consul_gossip_encrypt_key_file_exists) and (remote_consul_key is defined)
 
 - name: Generate Consul key
   command: "{{ consul_install_dir }}/consul keygen"
   register: consul_key_command_output
-  when: (consul_gossip_encrypt) and (not consul_gossip_encrypt_key_file_exists)
+  when: (consul_gossip_encrypt) and (not consul_gossip_encrypt_key_file_exists) and (remote_consul_key is not defined)
 
-- name: Echo Consul key into a file
+- name: Echo generated Consul key into a file
   shell: "echo '{\"encrypt\" : \"{{ consul_key_command_output.stdout }}\"}' >> {{ consul_key_file.path }}"
-  when: (consul_gossip_encrypt) and (not consul_gossip_encrypt_key_file_exists)
+  when: (consul_gossip_encrypt) and (not consul_gossip_encrypt_key_file_exists) and (remote_consul_key is not defined)
 
 - name: Debug Consul key
   command: "cat {{ consul_key_file.path }}"
