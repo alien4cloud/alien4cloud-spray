@@ -15,15 +15,19 @@
   debug:
     var: ES_HOST_COUNT
 
+# - name: Define elasticsearch hosts
+#   set_fact :
+#     cluster_host_list: "[\"127.0.0.1\""
+
 - name: Define elasticsearch hosts
   set_fact :
-    cluster_host_list: "[\"127.0.0.1\""
+    cluster_host_list: "["
 
 - name: Loop over the elasticsearch group
   set_fact:
     cluster_host_list: "{{ cluster_host_list }}, \"{{ item }}\""
   with_items: "{{ groups['elasticsearch'] }}"
-  when: inventory_hostname != item
+  # when: inventory_hostname != item
 
 - name: Count elasticsearch hosts
   set_fact :
