@@ -15,13 +15,13 @@
   debug:
     var: ES_HOST_COUNT
 
-- name: Define elasticsearch hosts
-  set_fact :
-    cluster_host_list: "[\"127.0.0.1\""
-
 # - name: Define elasticsearch hosts
 #   set_fact :
-#     cluster_host_list: "["
+#     cluster_host_list: "[\"127.0.0.1\""
+
+- name: Define elasticsearch hosts
+  set_fact :
+    cluster_host_list: "[\"{{ inventory_hostname }}\""
 
 - name: Loop over the elasticsearch group to fill elasticsearch hosts
   set_fact:
