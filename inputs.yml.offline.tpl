@@ -1,5 +1,7 @@
 # Define if the installation should be done in offline mode (no access to internet from the hosts)
 offline: true
+# optionnal domain to add to host names in private communications
+#private_domain_name: alien4cloud.priv
 
 # A4C
 a4c_user: a4c

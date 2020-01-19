@@ -1,3 +1,8 @@
+
+- name: Debuging host private IP address
+  debug:
+    msg: "{{ ansible_all_ipv4_addresses }}"
+
 - name: Ensure elasticsearch_tls variable is defined
   set_fact:
     elasticsearch_tls: false
@@ -17,15 +22,25 @@
 
 # - name: Define elasticsearch hosts
 #   set_fact :
-#     cluster_host_list: "[\"127.0.0.1\""
+#     private_domain_name: "[\"127.0.0.1\""
+
+- name: Ensure private_domain_name variable is defined
+  set_fact:
+    private_domain_name: ""
+  when: private_domain_name is not defined
+
+- name: Ensure private_domain_name variable is defined and start by a '.'
+  set_fact:
+    private_domain_name: ".{{ private_domain_name }}"
+  when: private_domain_name is defined
 
 - name: Define elasticsearch hosts
   set_fact :
-    cluster_host_list: "[\"{{ inventory_hostname }}\""
+    cluster_host_list: "[\"{{ inventory_hostname }}{{ private_domain_name }}\""
 
 - name: Loop over the elasticsearch group to fill elasticsearch hosts
   set_fact:
-    cluster_host_list: "{{ cluster_host_list }}, \"{{ item }}\""
+    cluster_host_list: "{{ cluster_host_list }}, \"{{ item }}{{ private_domain_name }}\""
   with_items: "{{ groups['elasticsearch'] }}"
   when: inventory_hostname != item
 
