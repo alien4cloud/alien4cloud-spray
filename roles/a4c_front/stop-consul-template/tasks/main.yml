@@ -1,5 +1,5 @@
 
-- name: Start a4c-front service
+- name: Stop a4c-front service
   service:
     name: a4c-front
     state: stopped
