@@ -18,6 +18,7 @@
 # - hosts: yorc
 #   name: Install configure and start Yorc.
 #   roles:
+#     - commons/define_commons_vars
 #     - yorc/stop-yorc
 #     - consul/stop-consul
 #     - yorc/install-dependencies
@@ -41,6 +42,7 @@
 # - hosts: a4c
 #   name: Install and configure A4C.
 #   roles:
+#     - commons/define_commons_vars    
 #     - consul/stop-consul
 #     - a4c/stop-a4c
 #     - install-java

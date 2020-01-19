@@ -11,6 +11,7 @@
 - hosts: yorc
   name: Install configure and start Yorc.
   roles:
+    - commons/define_commons_vars        
     - yorc/stop-yorc
     - consul/stop-consul
     - yorc/install-dependencies

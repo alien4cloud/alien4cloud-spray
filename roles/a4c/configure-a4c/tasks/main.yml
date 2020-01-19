@@ -66,15 +66,15 @@
 
 - name: Loop over the elasticsearch group
   set_fact:
-    es_node_list: "{{ es_node_list + [ item + ':9300' ] }}"
+    es_node_list: "{{ es_node_list + [ item + appendable_private_domain_name + ':9300' ] }}"
   with_items: "{{ groups['elasticsearch'] }}"
-  when: inventory_hostname != item
+  # when: inventory_hostname != item
 
-- name: Loop over the elasticsearch group (only for localhost)
-  set_fact:
-    es_node_list: "{{ es_node_list + [ 'localhost:9300' ] }}"
-  with_items: "{{ groups['elasticsearch'] }}"
-  when: inventory_hostname == item
+# - name: Loop over the elasticsearch group (only for localhost)
+#   set_fact:
+#     es_node_list: "{{ es_node_list + [ 'localhost:9300' ] }}"
+#   with_items: "{{ groups['elasticsearch'] }}"
+#   when: inventory_hostname == item
 
 - name: Configure A4C
   template:

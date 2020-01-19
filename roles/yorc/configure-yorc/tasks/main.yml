@@ -203,7 +203,7 @@
 
 - name: Define consul agent address
   set_fact:
-    consul_agent_address: "{{ inventory_hostname }}:8501"
+    consul_agent_address: "{{ inventory_hostname }}{{ appendable_private_domain_name }}:8501"
   when: (consul_tls)
 
 - name: Add 'address' to yorc consul config
