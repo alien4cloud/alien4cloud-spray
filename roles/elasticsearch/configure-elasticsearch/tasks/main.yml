@@ -34,6 +34,10 @@
     private_domain_name: ".{{ private_domain_name }}"
   when: private_domain_name is defined
 
+- name: Here is the 'private_domain_name' var value
+  debug:
+    var: private_domain_name
+
 - name: Define elasticsearch hosts
   set_fact :
     cluster_host_list: "[\"{{ inventory_hostname }}{{ private_domain_name }}\""
