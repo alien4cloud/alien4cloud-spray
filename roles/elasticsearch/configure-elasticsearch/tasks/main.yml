@@ -3,6 +3,10 @@
   debug:
     msg: "{{ ansible_all_ipv4_addresses }}"
 
+- name: Debuging host priv IP address
+  debug:
+    var: ansible_priv.ipv4.address
+
 - name: Ensure elasticsearch_tls variable is defined
   set_fact:
     elasticsearch_tls: false
