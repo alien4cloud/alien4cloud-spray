@@ -162,7 +162,7 @@ ttl:
 
 ha:
   ha_enabled: {{ 'true' if a4c_ha_enabled else 'false' }}
-  consulAgentIp: localhost
+  consulAgentIp: {{ inventory_hostname }}{{ appendable_private_domain_name }}
   consulAgentPort: {{ '8501' if consul_tls else '8500' }}
   # the ip that will be given to consul for health check (can be a private ip)
   instanceIp: {{ inventory_hostname }}{{ appendable_private_domain_name }}
