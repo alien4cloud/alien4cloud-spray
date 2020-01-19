@@ -25,7 +25,7 @@
 
 - name: Detecting host private IP address
   set_fact:
-    private_ip_address: "{{ private_interface.ipv4.address }}"
+    private_ip_address: "{{ private_interface }}.ipv4.address"
   when: private_interface_name is defined
 
 # - name: Detecting host private IP address
