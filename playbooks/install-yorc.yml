@@ -11,7 +11,7 @@
 - hosts: yorc
   name: Install configure and start Yorc.
   roles:
-    - commons/define_commons_vars        
+    - commons/define_commons_vars
     - yorc/stop-yorc
     - consul/stop-consul
     - yorc/install-dependencies
@@ -25,6 +25,7 @@
 - hosts: yorcfront
   name: Install Yorc front (Nginx).
   roles:
+    - commons/define_commons_vars            
     - nginx/stop-nginx
     - nginx/install-nginx
     - yorc/configure-nginx
