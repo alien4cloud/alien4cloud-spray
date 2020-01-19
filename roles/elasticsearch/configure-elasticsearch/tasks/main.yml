@@ -1,12 +1,4 @@
 
-- name: Debuging host private IP address
-  debug:
-    msg: "{{ ansible_all_ipv4_addresses }}"
-
-- name: Debuging host priv IP address
-  debug:
-    var: ansible_priv.ipv4.address
-
 - name: Ensure elasticsearch_tls variable is defined
   set_fact:
     elasticsearch_tls: false
@@ -27,20 +19,6 @@
 # - name: Define elasticsearch hosts
 #   set_fact :
 #     private_domain_name: "[\"127.0.0.1\""
-
-- name: Ensure appendable_private_domain_name variable is defined
-  set_fact:
-    appendable_private_domain_name: ""
-  when: private_domain_name is not defined
-
-- name: Ensure appendable_private_domain_name variable is defined and start by a '.'
-  set_fact:
-    appendable_private_domain_name: ".{{ private_domain_name }}"
-  when: private_domain_name is defined
-
-- name: Here is the 'appendable_private_domain_name' var value
-  debug:
-    var: appendable_private_domain_name
 
 - name: Define elasticsearch hosts
   set_fact :

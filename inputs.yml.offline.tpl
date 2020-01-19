@@ -2,6 +2,8 @@
 offline: true
 # optionnal domain to add to host names in private communications
 #private_domain_name: alien4cloud.priv
+# optionnal interface name to detect relevant private ip_address
+#private_interface_name: priv
 
 # A4C
 a4c_user: a4c

@@ -1,80 +1,82 @@
 ---
-- hosts: all
-  name: Install all common dependencies.
-  roles:
-    - commons/check-distrib
-    - commons/install-common-dependencies
+# - hosts: all
+#   name: Install all common dependencies.
+#   roles:
+#     - commons/check-distrib
+#     - commons/install-common-dependencies
 
 - hosts: consul
   name: Install configure and start consul.
   roles:
-    - consul/stop-consul
-    - consul/install-consul
+    - commons/define_commons_vars
+    # - consul/stop-consul
+    # - consul/install-consul
     - consul/configure-consul-gossip-keygen
-    - { role: consul/configure-consul, consul_mode: 'server' }
-    - consul/start-consul
+    # - { role: consul/configure-consul, consul_mode: 'server' }
+    # - consul/start-consul
 
-- hosts: yorc
-  name: Install configure and start Yorc.
-  roles:
-    - yorc/stop-yorc
-    - consul/stop-consul
-    - yorc/install-dependencies
-    - consul/install-consul
-    - { role: consul/configure-consul, consul_mode: 'client' }
-    - yorc/install-yorc
-    - yorc/configure-yorc
-    - consul/start-consul
-    - yorc/start-yorc
-
-- hosts: elasticsearch
-  name: Install configure and start Elasticsearch.
-  roles:
-    - elasticsearch/stop-elasticsearch
-    - install-java
-    - elasticsearch/install-elasticsearch
-    - elasticsearch/configure-elasticsearch
-    - elasticsearch/start-elasticsearch
-
-- hosts: a4c
-  name: Install and configure A4C.
-  roles:
-    - consul/stop-consul
-    - a4c/stop-a4c
-    - install-java
-    - a4c/install-a4c
-    - consul/install-consul
-    - { role: consul/configure-consul, consul_mode: 'client' }
-    - a4c/configure-a4c
-    - consul/start-consul
-
-- hosts: a4c
-  name: Start A4C.
-  # we want each A4C to be started sequencially in case of HA
-  serial: 1
-  roles:
-    - a4c/start-a4c
-
-- hosts: a4cfront
-  name: Install A4C front (Nginx, consul and consul-template).
-  roles:
-    - nginx/stop-nginx
-    - a4c_front/stop-consul-template
-    - consul/stop-consul
-    - nginx/install-nginx
-    - consul/install-consul
-    - { role: consul/configure-consul, consul_mode: 'client' }
-    - a4c_front/configure-nginx
-    - a4c_front/install-consul-template
-    - a4c_front/configure-consul-template
-    - consul/start-consul
-    - nginx/start-nginx
-    - a4c_front/start-consul-template
-
-- hosts: yorcfront
-  name: Install Yorc front (Nginx).
-  roles:
-    - nginx/stop-nginx
-    - nginx/install-nginx
-    - yorc/configure-nginx
-    - nginx/start-nginx
+# - hosts: yorc
+#   name: Install configure and start Yorc.
+#   roles:
+#     - yorc/stop-yorc
+#     - consul/stop-consul
+#     - yorc/install-dependencies
+#     - consul/install-consul
+#     - { role: consul/configure-consul, consul_mode: 'client' }
+#     - yorc/install-yorc
+#     - yorc/configure-yorc
+#     - consul/start-consul
+#     - yorc/start-yorc
+#
+# - hosts: elasticsearch
+#   name: Install configure and start Elasticsearch.
+#   roles:
+#     - commons/define_commons_vars
+#     - elasticsearch/stop-elasticsearch
+#     - install-java
+#     - elasticsearch/install-elasticsearch
+#     - elasticsearch/configure-elasticsearch
+#     - elasticsearch/start-elasticsearch
+#
+# - hosts: a4c
+#   name: Install and configure A4C.
+#   roles:
+#     - consul/stop-consul
+#     - a4c/stop-a4c
+#     - install-java
+#     - a4c/install-a4c
+#     - consul/install-consul
+#     - { role: consul/configure-consul, consul_mode: 'client' }
+#     - a4c/configure-a4c
+#     - consul/start-consul
+#
+# - hosts: a4c
+#   name: Start A4C.
+#   # we want each A4C to be started sequencially in case of HA
+#   serial: 1
+#   roles:
+#     - a4c/start-a4c
+#
+# - hosts: a4cfront
+#   name: Install A4C front (Nginx, consul and consul-template).
+#   roles:
+#     - nginx/stop-nginx
+#     - a4c_front/stop-consul-template
+#     - consul/stop-consul
+#     - nginx/install-nginx
+#     - consul/install-consul
+#     - { role: consul/configure-consul, consul_mode: 'client' }
+#     - a4c_front/configure-nginx
+#     - a4c_front/install-consul-template
+#     - a4c_front/configure-consul-template
+#     - consul/start-consul
+#     - nginx/start-nginx
+#     - a4c_front/start-consul-template
+#
+# - hosts: yorcfront
+#   name: Install Yorc front (Nginx).
+#   roles:
+#     - nginx/stop-nginx
+#     - nginx/install-nginx
+#     - yorc/configure-nginx
+#     - nginx/start-nginx

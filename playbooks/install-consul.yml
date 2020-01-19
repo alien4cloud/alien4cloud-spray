@@ -9,6 +9,7 @@
 - hosts: consul
   name: Install configure and start consul.
   roles:
+    - commons/define_commons_vars
     - consul/stop-consul
     - consul/install-consul
     - consul/configure-consul-gossip-keygen

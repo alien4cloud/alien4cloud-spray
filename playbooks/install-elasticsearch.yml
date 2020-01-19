@@ -9,6 +9,7 @@
 - hosts: elasticsearch
   name: Install configure and start Elasticsearch.
   roles:
+    - commons/define_commons_vars
     - elasticsearch/stop-elasticsearch
     - install-java
     - elasticsearch/install-elasticsearch

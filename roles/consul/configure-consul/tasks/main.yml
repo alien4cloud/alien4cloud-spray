@@ -190,7 +190,7 @@
 
 - name: Loop over the consul group
   set_fact:
-    consul_host_array: "{{ consul_host_array + [item] }}"
+    consul_host_array: "{{ consul_host_array + [item + appendable_private_domain_name] }}"
   with_items: "{{ groups['consul'] }}"
   when: inventory_hostname != item
   # when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
@@ -199,11 +199,6 @@
   set_fact:
     consul_config: "{{ consul_config|combine({'retry_join': consul_host_array}) }}"
   # when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
-
-- name: Detecting host private IP address
-  set_fact:
-    # FIXME: is there a risk that we use the wrong one using first ?
-    private_ip_address: "{{ ansible_all_ipv4_addresses | ipaddr('private') | first }}"
 
 - name: Add 'advertise_addr' to consul config
   set_fact:

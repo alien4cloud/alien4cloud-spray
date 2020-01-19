@@ -1,0 +1,28 @@
+
+- name: Ensure appendable_private_domain_name variable is defined
+  set_fact:
+    appendable_private_domain_name: ""
+  when: private_domain_name is not defined
+
+- name: Ensure appendable_private_domain_name variable is defined and start by a '.'
+  set_fact:
+    appendable_private_domain_name: ".{{ private_domain_name }}"
+  when: private_domain_name is defined
+
+- name: Here is the 'appendable_private_domain_name' var value
+  debug:
+    var: appendable_private_domain_name
+
+- name: Detecting host private IP address
+  set_fact:
+    private_ip_address: "{{ ansible_all_ipv4_addresses | ipaddr('private') | first }}"
+  when: private_interface_name is not defined
+
+- name: Detecting host private IP address
+  set_fact:
+    private_ip_address: "{{ lookup('vars', 'ansible_{{ private_interface_name }}.ipv4.address') }}"
+  when: private_interface_name is defined
+
+- name: Here is the 'private_ip_address' var value
+  debug:
+    var: private_ip_address
