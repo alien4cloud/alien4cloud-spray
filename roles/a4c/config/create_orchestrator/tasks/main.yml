@@ -88,10 +88,10 @@
   set_fact:
     yorc_host: "{{ groups['yorc'][0] }}"
 
-- name: Use 'localhost' if a4c and yorc are single and co-hosted
-  set_fact:
-    yorc_host: "localhost"
-  when: "{{ yorc_host == inventory_hostname }} and (groups['yorc'] | length == 1) and (groups['a4c'] | length == 1)"
+# - name: Use 'localhost' if a4c and yorc are single and co-hosted
+#   set_fact:
+#     yorc_host: "localhost"
+#   when: "{{ yorc_host == inventory_hostname }} and (groups['yorc'] | length == 1) and (groups['a4c'] | length == 1)"
 
 - name: Use 'yorcfront' if exists
   set_fact:
@@ -100,7 +100,7 @@
 
 - name: Define yorc url
   set_fact:
-    yorc_url: "{{ yorc_scheme }}://{{ yorc_host }}:8800"
+    yorc_url: "{{ yorc_scheme }}://{{ yorc_host }}{{ appendable_private_domain_name }}:8800"
 
 - name: Add 'urlYorc' to orchestrator config
   set_fact:
