@@ -49,7 +49,7 @@
     var: working_uid
   when: (ha_enabled)
 
-- name: Add the user '{{ working_user }}' specifying uid
+- name: "Add the user '{{ working_user }}' specifying uid"
   user:
     name: "{{ working_user }}"
     uid: "{{ working_uid }}"
