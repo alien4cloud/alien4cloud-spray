@@ -54,10 +54,10 @@
     name: "{{ working_user }}"
     uid: "{{ working_uid }}"
     # Ansible need a home for the yorc running user
-    create_home: yes
+    create_home: {{ create_home }}
     state: present
   become: true
-  when: yorc_user is defined and yorc_uid is defined
+  when: working_user is defined and working_user != "root" && working_uid is defined
 
 - name: Get the parent dir of the working directory
   shell: "echo $(dirname \"{{ working_directory }}\")"

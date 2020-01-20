@@ -4,7 +4,8 @@
   name: Install NFS and mount shared volume for A4C.
   roles:
     - { role: commons/prepare_nfs,
-        ha_group: 'a4c'
+        ha_group: 'a4c',
+        create_home: 'no'
       }
 
 - hosts: yorc
@@ -12,5 +13,6 @@
   name: Install NFS and mount shared volume for Yorc.
   roles:
     - { role: commons/prepare_nfs,
-        ha_group: 'yorc'
+        ha_group: 'yorc',
+        create_home: 'yes'
       }
