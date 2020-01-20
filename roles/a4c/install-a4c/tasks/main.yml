@@ -3,6 +3,10 @@
     offline: false
   when: offline is not defined
 
+- fail:
+    msg: "You can not specify an uid for a4c user that is root !"
+  when: a4c_user is defined and a4c_user == "root" and a4c_uid is defined
+
 - name: Add the user '{{ a4c_user }}' specifying uid
   user:
     name: "{{ a4c_user }}"
@@ -10,7 +14,7 @@
     uid: "{{ a4c_uid }}"
     state: present
   become: true
-  when: a4c_user is defined and a4c_uid is defined
+  when: a4c_user is defined and a4c_user != "root" and a4c_uid is defined
 
 - name: Add the user '{{ a4c_user }}'
   user:

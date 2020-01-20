@@ -4,6 +4,10 @@
     offline: false
   when: offline is not defined
 
+- fail:
+    msg: "You can not specify an uid for yorc user that is root !"
+  when: yorc_user is defined and yorc_user == "root" and yorc_uid is defined
+
 - name: Add the user '{{ yorc_user }}' specifying uid
   user:
     name: "{{ yorc_user }}"
@@ -12,7 +16,7 @@
     create_home: yes
     state: present
   become: true
-  when: yorc_user is defined and yorc_uid is defined
+  when: yorc_user is defined and yorc_user != "root" and yorc_uid is defined
 
 - name: Add the user '{{ yorc_user }}'
   user:
