@@ -54,7 +54,7 @@
     name: "{{ working_user }}"
     uid: "{{ working_uid }}"
     # Ansible need a home for the yorc running user
-    create_home: {{ create_home }}
+    create_home: "{{ create_home }}"
     state: present
   become: true
   when: working_user is defined and working_user != "root" && working_uid is defined
