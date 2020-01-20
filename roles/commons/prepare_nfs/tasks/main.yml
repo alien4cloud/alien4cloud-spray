@@ -76,10 +76,10 @@
 
 - name: Creates NFS mount directory
   become: true
-  become_user: "{{ working_user }}"
   file:
     path: "{{ mount_directory }}"
     state: directory
+    owner: "{{ working_user }}"
   when: (ha_enabled)
 
 - name: UnMount NFS share
