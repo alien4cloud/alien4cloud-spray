@@ -7,6 +7,8 @@ offline: false
 
 # A4C
 a4c_user: a4c
+# optionnally specify the uid for the a4c user (we have to use a fixed one for NFS mount)
+#a4c_uid: 1010
 a4c_install_dir: /opt/a4c
 # This is the work folder for a4c, should be a mount point (shared volume) in case of HA
 #a4c_working_dir: /mnt/a4c/runtime
@@ -32,6 +34,8 @@ consul_gossip_encrypt_key_path: certificates/consul_encrypt_key
 consul_tls: false
 
 yorc_user: yorc
+# optionnally specify the uid for the yorc user (we have to use a fixed one for NFS mount)
+#yorc_uid: 1011
 yorc_install_dir: /opt/yorc
 # This is the work folder for yorc, should be a mount point (shared volume) in case of HA
 #yorc_working_dir: /mnt/yorc/work

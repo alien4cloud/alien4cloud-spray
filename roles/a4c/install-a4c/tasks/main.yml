@@ -3,13 +3,22 @@
     offline: false
   when: offline is not defined
 
+- name: Add the user '{{ a4c_user }}' specifying uid
+  user:
+    name: "{{ a4c_user }}"
+    create_home: false
+    uid: "{{ a4c_uid }}"
+    state: present
+  become: true
+  when: a4c_user is defined and a4c_uid is defined
+
 - name: Add the user '{{ a4c_user }}'
   user:
     name: "{{ a4c_user }}"
     create_home: false
     state: present
   become: true
-  when: a4c_user is defined
+  when: a4c_user is defined and u4c_uid is not defined
 
 - name: Get the current user
   set_fact :

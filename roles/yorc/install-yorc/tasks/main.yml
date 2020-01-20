@@ -4,6 +4,16 @@
     offline: false
   when: offline is not defined
 
+- name: Add the user '{{ yorc_user }}' specifying uid
+  user:
+    name: "{{ yorc_user }}"
+    uid: "{{ yorc_uid }}"
+    # Ansible need a home for the yorc running user
+    create_home: yes
+    state: present
+  become: true
+  when: yorc_user is defined and yorc_uid is defined
+
 - name: Add the user '{{ yorc_user }}'
   user:
     name: "{{ yorc_user }}"
@@ -11,7 +21,7 @@
     create_home: yes
     state: present
   become: true
-  when: yorc_user is defined
+  when: yorc_user is defined and yorc_uid is not defined
 
 - name: Get the current user
   set_fact :

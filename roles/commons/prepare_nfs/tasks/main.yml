@@ -29,6 +29,36 @@
     var: working_directory
   when: (ha_enabled)
 
+- name: Ensure working_user variable is defined
+  set_fact:
+    working_user: "{{ lookup('vars', '{{ ha_group }}_user') }}"
+  when: (ha_enabled)
+
+- name: Here is the working user
+  debug:
+    var: working_user
+  when: (ha_enabled)
+
+- name: Ensure working_uid variable is defined
+  set_fact:
+    working_uid: "{{ lookup('vars', '{{ ha_group }}_uid') }}"
+  when: (ha_enabled)
+
+- name: Here is the working user uid
+  debug:
+    var: working_uid
+  when: (ha_enabled)
+
+- name: Add the user '{{ working_user }}' specifying uid
+  user:
+    name: "{{ working_user }}"
+    uid: "{{ working_uid }}"
+    # Ansible need a home for the yorc running user
+    create_home: yes
+    state: present
+  become: true
+  when: yorc_user is defined and yorc_uid is defined
+
 - name: Get the parent dir of the working directory
   shell: "echo $(dirname \"{{ working_directory }}\")"
   register: dirname_command_output
@@ -46,6 +76,7 @@
 
 - name: Creates NFS mount directory
   become: true
+  become_user: "{{ working_user }}"
   file:
     path: "{{ mount_directory }}"
     state: directory
@@ -53,6 +84,7 @@
 
 - name: UnMount NFS share
   become: true
+  become_user: "{{ working_user }}"
   ignore_errors: yes
   shell: "umount {{ mount_directory }}"
   when: (ha_enabled)
@@ -61,7 +93,7 @@
   become: true
   lineinfile:
     path: "/etc/fstab"
-    line: "{{ nfs_share }} {{ mount_directory }} nfs rw 0 0"
+    line: "{{ nfs_share }} {{ mount_directory }} nfs rw,user,uid={{ working_uid }} 0 0"
   when: (ha_enabled)
 
 - name: Mount NFS share
@@ -71,6 +103,7 @@
 
 - name: Ensure working directory exists
   become: true
+  become_user: "{{ working_user }}"
   file:
     path: "{{ working_directory }}"
     state: directory
@@ -78,5 +111,6 @@
 
 - name: Clean the working directory
   become: true
+  become_user: "{{ working_user }}"
   shell: "rm -rf {{ working_directory }}/*"
   when: (ha_enabled)
