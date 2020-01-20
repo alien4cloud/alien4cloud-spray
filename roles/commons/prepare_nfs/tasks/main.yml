@@ -93,7 +93,7 @@
   become: true
   lineinfile:
     path: "/etc/fstab"
-    line: "{{ nfs_share }} {{ mount_directory }} nfs rw,user,uid={{ working_uid }} 0 0"
+    line: "{{ nfs_share }} {{ mount_directory }} nfs rw,user 0 0"
   when: (ha_enabled)
 
 - name: Mount NFS share
