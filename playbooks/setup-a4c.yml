@@ -4,7 +4,7 @@
   become: false
 
   roles:
-    - commons/define_commons_vars    
+    - commons/define_commons_vars
     - a4c/config/define_a4c_url
     - { role: a4c/config/get_orchectrator,
         orchestratorName: 'Yorc'
@@ -17,6 +17,42 @@
     - { role: a4c/config/create_location,
         location_name: 'Default',
         location_type: 'OpenStack'
+      }
+    - { role: 'roles/a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-datagouv_mls-plugin',
+        beanName: 'datagouv_mls-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 1
+      }
+    - { role: 'roles/a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-kubernetes-plugin',
+        beanName: 'kubernetes-adapter-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 2
+      }
+    - { role: 'roles/a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-consul-publisher-plugin',
+        beanName: 'consul-publisher',
+        phase: 'post-matched-node-setup',
+        modifier_position: 3
+      }
+    - { role: 'roles/a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-ssi-network_policy-plugin',
+        beanName: 'ssi-network_policy-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 4
+      }
+    - { role: 'roles/a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-k8s-spark-jobs',
+        beanName: 'k8s-spark-jobs-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 5
+      }
+    - { role: 'roles/a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-supervision',
+        beanName: 'kubernetes-supervision-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 6
       }
     - { role: 'a4c/config/create_metaproperties',
         resources_file_artifact: 'resources/metaproperties.yaml'
