@@ -43,6 +43,10 @@
   set_fact:
     query: "[? pluginId=='{{ pluginId }}' && beanName=='{{ beanName }}' && phase=='{{ phase }}']"
 
+- name: override plugin_modifier to null
+  set_fact:
+    plugin_modifier:
+
 - name: Search for modifier
   set_fact:
     # TODO: better query than doesn't fail when no location found
