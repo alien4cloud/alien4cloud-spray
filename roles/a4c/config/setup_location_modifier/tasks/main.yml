@@ -32,7 +32,7 @@
     location_modifiers: |
       {% set result = [] -%}
       {% for modifier in location_modifiers.data -%}
-        {% set ignored = result.extend([{'pluginId': modifier['pluginId'], 'beanName': modifier['beanName'], 'phase': modifier['phase'], 'index': loop.index}]) -%}
+        {% set ignored = result.extend([{'pluginId': modifier['pluginId'], 'beanName': modifier['beanName'], 'phase': modifier['phase'], 'index': loop.index - 1}]) -%}
       {%- endfor %}
       {{ result }}
 
