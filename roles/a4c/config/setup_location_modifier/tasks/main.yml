@@ -12,10 +12,11 @@
     status_code: 200
   register: result
 
-- set_fact:
+- name: Parse the modifier list as JSON
+  set_fact:
     location_modifiers: "{{ result.content | from_json }}"
 
-# - name: Just to add array index as a property
+# - name: Just to add array index as a property (using namespace)
 #   set_fact:
 #     location_modifiers: |
 #       {% set result = [] -%}
@@ -35,23 +36,25 @@
       {%- endfor %}
       {{ result }}
 
-# - debug:
-#     var: location_modifiers
+- debug:
+    var: location_modifiers
 
 - name: Build the JSON query for searching location modifier for this plugin
   set_fact:
     query: "[? pluginId=='{{ pluginId }}' && beanName=='{{ beanName }}' && phase=='{{ phase }}']"
 
-- name: Search modifier
+- name: Search for modifier
   set_fact:
     # TODO: better query than doesn't fail when no location found
     plugin_modifier: "{{ location_modifiers | json_query(query) | first }}"
   ignore_errors: yes
 
-- debug:
+- name: Here is the modifier
+  debug:
     var: plugin_modifier
+  when: (plugin_modifier is defined)
 
-- name: "Create location modifier since it can not be found"
+- name: Create location modifier since it can not be found
   uri:
     url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/modifiers"
     method: POST
@@ -65,7 +68,7 @@
       phase: "{{ phase }}"
     body_format: json
     status_code: 200
-  when: plugin_modifier is not defined
+  when: (plugin_modifier is not defined)
 
 - name: Get modifiers for orchestrator/location
   uri:
@@ -78,11 +81,12 @@
     body_format: json
     status_code: 200
   register: result
-  when: plugin_modifier is not defined
+  when: (plugin_modifier is not defined)
 
-- set_fact:
+- name: Parse modifier list as JSON
+  set_fact:
     location_modifiers: "{{ result.content | from_json }}"
-  when: plugin_modifier is not defined
+  when: (plugin_modifier is not defined)
 
 - name: Just to add array index as a property
   set_fact:
@@ -96,13 +100,13 @@
       {{ result }}
   when: plugin_modifier is not defined
 
-- name: Search modifier
+- name: Search modifier using JSON query
   set_fact:
     # TODO: better query than doesn't fail when no location found
     plugin_modifier: "{{ location_modifiers | json_query(query) | first }}"
-  when: plugin_modifier is not defined
+  when: (plugin_modifier is not defined)
 
-- name: "Change location modifiers orders"
+- name: Change location modifiers orders
   uri:
     url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/modifiers/from/{{ plugin_modifier.index }}/to/{{ modifier_position }}"
     method: PUT
@@ -111,4 +115,4 @@
     headers:
       Cookie: "{{ session_id }}"
     status_code: 200
-  when: plugin_modifier.index != modifier_position
+  when: (plugin_modifier.index != modifier_position)
