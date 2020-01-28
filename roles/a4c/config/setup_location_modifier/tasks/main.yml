@@ -43,20 +43,25 @@
   set_fact:
     query: "[? pluginId=='{{ pluginId }}' && beanName=='{{ beanName }}' && phase=='{{ phase }}']"
 
+# This is important since this role can be played several times in the same play
+# that's also why we test (plugin_modifier is defined) and (plugin_modifier.pluginId is defined) below
 - name: override plugin_modifier to null
   set_fact:
     plugin_modifier:
 
 - name: Search for modifier
   set_fact:
-    # TODO: better query than doesn't fail when no location found
-    plugin_modifier: "{{ location_modifiers | json_query(query) | first }}"
-  ignore_errors: yes
+    plugin_modifiers: "{{ location_modifiers | json_query(query) }}"
+
+- name: Get the first in the list
+  set_fact:
+    plugin_modifier: "{{ plugin_modifiers | first }}"
+  when: plugin_modifiers | length > 1
 
 - name: Here is the modifier
   debug:
     var: plugin_modifier
-  when: (plugin_modifier is defined)
+  when: (plugin_modifier is defined) and (plugin_modifier.pluginId is defined)
 
 - name: Create location modifier since it can not be found
   uri:
@@ -72,7 +77,7 @@
       phase: "{{ phase }}"
     body_format: json
     status_code: 200
-  when: (plugin_modifier is not defined)
+  when: (plugin_modifier is not defined) or (plugin_modifier.pluginId is not defined)
 
 - name: Get modifiers for orchestrator/location
   uri:
@@ -85,12 +90,12 @@
     body_format: json
     status_code: 200
   register: result
-  when: (plugin_modifier is not defined)
+  when: (plugin_modifier is not defined) or (plugin_modifier.pluginId is not defined)
 
 - name: Parse modifier list as JSON
   set_fact:
     location_modifiers: "{{ result.content | from_json }}"
-  when: (plugin_modifier is not defined)
+  when: (plugin_modifier is not defined) or (plugin_modifier.pluginId is not defined)
 
 - name: Just to add array index as a property
   set_fact:
@@ -102,13 +107,12 @@
         {% set count.value = count.value + 1 -%}
       {%- endfor %}
       {{ result }}
-  when: plugin_modifier is not defined
+  when: (plugin_modifier is not defined) or (plugin_modifier.pluginId is not defined)
 
 - name: Search modifier using JSON query
   set_fact:
-    # TODO: better query than doesn't fail when no location found
     plugin_modifier: "{{ location_modifiers | json_query(query) | first }}"
-  when: (plugin_modifier is not defined)
+  when: (plugin_modifier is not defined) or (plugin_modifier.pluginId is not defined)
 
 - name: Change location modifiers orders
   uri:
