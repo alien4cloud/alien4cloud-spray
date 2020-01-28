@@ -1,31 +1,3 @@
-# - name: Get the current user's home
-#   set_fact :
-#     a4c_install_dir: "{{ ansible_env.HOME }}/a4c"
-#   when: a4c_install_dir is not defined
-#
-# - name: Create temporary folder
-#   tempfile:
-#     state: directory
-#   register: temp_dir
-
-# - name: Copy server keystore
-#   copy:
-#     src: "{{ ssl_keystore_source_location }}"
-#     dest: "{{ temp_dir.path }}/server-keystore.p12"
-#     mode: 0600
-#   when: a4c_protocol == 'https'
-#
-# - name: Creates SSL directory
-#   file:
-#     path: "{{ a4c_install_dir }}/alien4cloud/ssl"
-#     state: directory
-#   when: a4c_protocol == 'https'
-
-# - name: Generate key store
-#   shell:
-#     cmd: "keytool -importkeystore -destkeystore {{ a4c_install_dir }}/alien4cloud/ssl/server-keystore.jks -srckeystore {{ temp_dir.path }}/server-keystore.p12 -srcstoretype pkcs12 -alias server -deststorepass {{ ssl_dest_keystore_password }} -srckeypass {{ ssl_key_password }} -srcstorepass {{ ssl_src_keystore_password }}"
-#   become: true
-#   when: a4c_protocol == 'https'
 
 - name: Ensure a4c_ha_enabled variable is defined
   set_fact:
@@ -75,6 +47,16 @@
 #     es_node_list: "{{ es_node_list + [ 'localhost:9300' ] }}"
 #   with_items: "{{ groups['elasticsearch'] }}"
 #   when: inventory_hostname == item
+
+- name: Ensure a4c_config_added variable exists
+  set_fact:
+    a4c_config_added: ""
+  when: (a4c_config_addons is not defined)
+
+- name: Feed a4c_config_added variable
+  set_fact:
+    a4c_config_added: "{{ a4c_config_addons | to_nice_yaml(indent=2) }}"
+  when: (a4c_config_addons is defined)
 
 - name: Configure A4C
   template:
@@ -195,8 +177,3 @@
     path: "{{ a4c_install_dir }}/alien4cloud/alien4cloud.sh"
     insertbefore: '^\$JAVA \$JAVA_OPTIONS \$JAVA_EXT_OPTIONS.*'
     line: "JAVA_EXT_OPTIONS=\"$JAVA_EXT_OPTIONS -Dlog4j.configurationFile=log4j2.xml\""
-
-# - name: Remove temporary folder
-#   file:
-#     path: "{{ temp_dir.path }}"
-#     state: absent
