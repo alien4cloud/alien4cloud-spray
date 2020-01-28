@@ -1,0 +1,39 @@
+---
+- hosts: a4c
+  name: Stop Consul & A4C.
+  roles:
+    - consul/stop-consul
+    - a4c/stop-a4c
+
+- hosts: a4cfront
+  name: Stop A4C front (Nginx, consul and consul-template).
+  roles:
+    - commons/define_commons_vars
+    - nginx/stop-nginx
+    - a4c_front/stop-consul-template
+    - consul/stop-consul
+
+- hosts: yorc
+  name: Stop Yorc.
+  roles:
+    - commons/define_commons_vars
+    - yorc/stop-yorc
+    - consul/stop-consul
+
+- hosts: yorcfront
+  name: Stop Yorc front (Nginx).
+  roles:
+    - commons/define_commons_vars
+    - nginx/stop-nginx
+
+- hosts: consul
+  name: Stop consul.
+  roles:
+    - commons/define_commons_vars
+    - consul/stop-consul
+
+- hosts: elasticsearch
+  name: Stop Elasticsearch.
+  roles:
+    - commons/define_commons_vars
+    - elasticsearch/stop-elasticsearch

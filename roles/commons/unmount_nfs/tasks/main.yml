@@ -1,0 +1,44 @@
+
+- name: Ensure ha_enabled variable is defined
+  set_fact:
+    ha_enabled: "{{ groups[ha_group] | length > 1 }}"
+
+- name: Is the HA enabled ?
+  debug:
+    msg: "{{ groups[ha_group] }}"
+
+- name: Is the HA enabled ?
+  debug:
+    var: ha_enabled
+
+- name: Ensure working_directory variable is defined
+  set_fact:
+    working_directory: "{{ lookup('vars', '{{ ha_group }}_working_dir') }}"
+  when: (ha_enabled)
+
+- name: Here is the working directory
+  debug:
+    var: working_directory
+  when: (ha_enabled)
+
+- name: Get the parent dir of the working directory
+  shell: "echo $(dirname \"{{ working_directory }}\")"
+  register: dirname_command_output
+  when: (ha_enabled)
+
+- name:
+  set_fact:
+    mount_directory: "{{ dirname_command_output.stdout }}"
+  when: (ha_enabled)
+
+- name: Here is the mount directory
+  debug:
+    var: mount_directory
+  when: (ha_enabled)
+
+- name: UnMount NFS share
+  become: true
+  become_user: "{{ working_user }}"
+  ignore_errors: yes
+  shell: "umount {{ mount_directory }}"
+  when: (ha_enabled)
