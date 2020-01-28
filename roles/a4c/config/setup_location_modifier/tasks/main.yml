@@ -15,14 +15,23 @@
 - set_fact:
     location_modifiers: "{{ result.content | from_json }}"
 
+# - name: Just to add array index as a property
+#   set_fact:
+#     location_modifiers: |
+#       {% set result = [] -%}
+#       {% set count = namespace(value=0) -%}
+#       {% for modifier in location_modifiers.data -%}
+#         {% set ignored = result.extend([{'pluginId': modifier['pluginId'], 'beanName': modifier['beanName'], 'phase': modifier['phase'], 'index': count.value}]) -%}
+#         {% set count.value = count.value + 1 -%}
+#       {%- endfor %}
+#       {{ result }}
+
 - name: Just to add array index as a property
   set_fact:
     location_modifiers: |
       {% set result = [] -%}
-      {% set count = namespace(value=0) -%}
       {% for modifier in location_modifiers.data -%}
-        {% set ignored = result.extend([{'pluginId': modifier['pluginId'], 'beanName': modifier['beanName'], 'phase': modifier['phase'], 'index': count.value}]) -%}
-        {% set count.value = count.value + 1 -%}
+        {% set ignored = result.extend([{'pluginId': modifier['pluginId'], 'beanName': modifier['beanName'], 'phase': modifier['phase'], 'index': loop.index}]) -%}
       {%- endfor %}
       {{ result }}
 
