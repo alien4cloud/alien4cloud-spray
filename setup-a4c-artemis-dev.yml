@@ -7,6 +7,7 @@
   become: false
 
   roles:
+    - roles/a4c/config/login_a4c
     # - { role: 'roles/create_metaproperties',
     #     resources_file_artifact: 'resources/metaproperties.yaml'
     #   }
@@ -18,27 +19,27 @@
     #     plugin_artifact: 'alien4cloud-premium-workspace/target/alien4cloud-premium-workspace-2.1.0-SNAPSHOT.zip',
     #     INSTANCE: 'local'
     #   }
-    - { role: roles/git,
-        repositoryUrl: 'https://github.com/alien4cloud/tosca-normative-types.git',
-        repositoryUsername: '',
-        repositoryPassword: '',
-        branchId: '2.1.0-SNAPSHOT',
-        subPath: ''
-      }
-    - { role: roles/git,
-        repositoryUrl: 'https://github.com/alien4cloud/alien4cloud-extended-types.git',
-        repositoryUsername: '',
-        repositoryPassword: '',
-        branchId: '2.1.0-SNAPSHOT',
-        subPath: 'alien-base-types'
-      }
-    - { role: roles/git,
-        repositoryUrl: 'https://github.com/alien4cloud/docker-tosca-types.git',
-        repositoryUsername: '',
-        repositoryPassword: '',
-        branchId: '2.1.0-SNAPSHOT',
-        subPath: 'docker-types'
-      }
+    # - { role: roles/git,
+    #     repositoryUrl: 'https://github.com/alien4cloud/tosca-normative-types.git',
+    #     repositoryUsername: '',
+    #     repositoryPassword: '',
+    #     branchId: '2.1.0-SNAPSHOT',
+    #     subPath: ''
+    #   }
+    # - { role: roles/git,
+    #     repositoryUrl: 'https://github.com/alien4cloud/alien4cloud-extended-types.git',
+    #     repositoryUsername: '',
+    #     repositoryPassword: '',
+    #     branchId: '2.1.0-SNAPSHOT',
+    #     subPath: 'alien-base-types'
+    #   }
+    # - { role: roles/git,
+    #     repositoryUrl: 'https://github.com/alien4cloud/docker-tosca-types.git',
+    #     repositoryUsername: '',
+    #     repositoryPassword: '',
+    #     branchId: '2.1.0-SNAPSHOT',
+    #     subPath: 'docker-types'
+    #   }
     # - { role: roles/git,
     #     repositoryUrl: 'https://git.artemis.public/artemis_use_cases/service_applicatif.git',
     #     repositoryUsername: 'service_applicatif',
@@ -46,14 +47,14 @@
     #     branchId: 'develop',
     #     subPath: ''
     #   }
-    - { role: roles/upload_plugin,
-        plugin_artifact: 'alien4cloud-kubernetes-plugin/target/alien4cloud-kubernetes-plugin-2.1.0-SNAPSHOT.zip',
-        INSTANCE: 'local'
-      }
-    - { role: roles/upload_plugin,
-        plugin_artifact: 'alien4cloud-yorc-provider/target/alien4cloud-yorc-provider-2.2.0-SNAPSHOT.zip',
-        INSTANCE: 'local'
-      }
+    # - { role: roles/upload_plugin,
+    #     plugin_artifact: 'alien4cloud-kubernetes-plugin/target/alien4cloud-kubernetes-plugin-2.1.0-SNAPSHOT.zip',
+    #     INSTANCE: 'local'
+    #   }
+    # - { role: roles/upload_plugin,
+    #     plugin_artifact: 'alien4cloud-yorc-provider/target/alien4cloud-yorc-provider-2.2.0-SNAPSHOT.zip',
+    #     INSTANCE: 'local'
+    #   }
     # - { role: roles/upload_plugin,
     #     plugin_artifact: 'yorc-a4c-plugin/alien4cloud-yorc-plugin/target/alien4cloud-yorc-plugin-3.0.0-SNAPSHOT.zip',
     #     INSTANCE: 'local'
@@ -63,9 +64,13 @@
     #     pluginId: 'alien4cloud-yorc-plugin',
     #     pluginBean: 'yorc-orchestrator-factory'
     #   }
-    # - { role: 'roles/a4c/config/get_orchectrator',
-    #     orchestratorName: 'Yorc'
-    #   }
+    - { role: 'roles/a4c/config/get_orchectrator',
+        orchestratorName: 'Yorc'
+      }
+    - { role: 'roles/a4c/config/create_location',
+        location_name: 'Default',
+        location_type: 'OpenStack'
+      }
     # # ROEM
     # - { role: 'roles/create_location',
     #     location_name: 'ROEM2',
@@ -74,7 +79,43 @@
     # - { role: 'roles/create_location_resources',
     #     resources_file_artifact: 'resources/a4c/config/locations/ROEM/location_resources.yaml'
     #   }
-    # - { role: 'roles/add_location_modifiers',
+    - { role: 'roles/a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-datagouv_mls-plugin',
+        beanName: 'datagouv_mls-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 1
+      }
+    - { role: 'roles/a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-kubernetes-plugin',
+        beanName: 'kubernetes-adapter-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 2
+      }
+    - { role: 'roles/a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-consul-publisher-plugin',
+        beanName: 'consul-publisher',
+        phase: 'post-matched-node-setup',
+        modifier_position: 3
+      }
+    - { role: 'roles/a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-ssi-network_policy-plugin',
+        beanName: 'ssi-network_policy-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 4
+      }
+    - { role: 'roles/a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-k8s-spark-jobs',
+        beanName: 'k8s-spark-jobs-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 5
+      }
+    - { role: 'roles/a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-supervision',
+        beanName: 'kubernetes-supervision-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 6
+      }
+    # - { role: 'roles/a4c/config/add_location_modifiers',
     #     resources_file_artifact: 'resources/location_modifiers.yaml'
     #   }
     # - { role: 'roles/remove_services',
