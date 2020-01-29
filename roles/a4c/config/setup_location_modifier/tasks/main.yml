@@ -1,5 +1,33 @@
 ---
 
+- name: Initialize a variable indicating if the plugin was found
+  set_fact:
+    plugin_found: false
+
+- name: Search for plugin
+  uri:
+    url: "{{ alien_url }}/rest/latest/plugins?from=0&query={{ pluginId }}&size=1"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body_format: json
+    status_code: 200
+  register: plugin_list_result
+
+- name: Parse the plugin list as JSON
+  set_fact:
+    plugin_list: "{{ plugin_list_result.content | from_json }}"
+
+- name: Define a variable indicating if the plugin was found
+  set_fact:
+    plugin_found: "{{ plugin_list.data.totalResults > 0 }}"
+
+- name: Is the plugin found ?
+  debug:
+    var: plugin_found
+
 - name: Get modifiers for orchestrator/location
   uri:
     url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/modifiers"
@@ -11,10 +39,12 @@
     body_format: json
     status_code: 200
   register: result
+  when: (plugin_found)
 
 - name: Parse the modifier list as JSON
   set_fact:
     location_modifiers: "{{ result.content | from_json }}"
+  when: (plugin_found)
 
 # - name: Just to add array index as a property (using namespace)
 #   set_fact:
@@ -35,33 +65,43 @@
         {% set ignored = result.extend([{'pluginId': modifier['pluginId'], 'beanName': modifier['beanName'], 'phase': modifier['phase'], 'index': loop.index0 }]) -%}
       {%- endfor %}
       {{ result }}
+  when: (plugin_found)
 
 - debug:
     var: location_modifiers
+  when: (plugin_found)
 
 - name: Build the JSON query for searching location modifier for this plugin
   set_fact:
     query: "[? pluginId=='{{ pluginId }}' && beanName=='{{ beanName }}' && phase=='{{ phase }}']"
+  when: (plugin_found)
 
 # This is important since this role can be played several times in the same play
 # that's also why we test (plugin_modifier is defined) and (plugin_modifier.pluginId is defined) below
 - name: override plugin_modifier to null
   set_fact:
     plugin_modifier:
+  when: (plugin_found)
 
 - name: Search for modifier
   set_fact:
     plugin_modifiers: "{{ location_modifiers | json_query(query) }}"
+  when: (plugin_found)
+
+- name: Here is the plugin_modifiers length
+  debug:
+    msg: "{{ plugin_modifiers | length }}"
+  when: (plugin_found)
 
 - name: Get the first in the list
   set_fact:
     plugin_modifier: "{{ plugin_modifiers | first }}"
-  when: plugin_modifiers | length > 1
+  when: (plugin_found) and (plugin_modifiers | length > 0)
 
 - name: Here is the modifier
   debug:
     var: plugin_modifier
-  when: (plugin_modifier is defined) and (plugin_modifier.pluginId is defined)
+  when: (plugin_found) and (plugin_modifier is defined) and (plugin_modifier.pluginId is defined)
 
 - name: Create location modifier since it can not be found
   uri:
@@ -77,7 +117,7 @@
       phase: "{{ phase }}"
     body_format: json
     status_code: 200
-  when: (plugin_modifier is not defined) or (plugin_modifier.pluginId is not defined)
+  when: (plugin_found) and ((plugin_modifier is not defined) or (plugin_modifier.pluginId is not defined))
 
 - name: Get modifiers for orchestrator/location
   uri:
@@ -90,12 +130,12 @@
     body_format: json
     status_code: 200
   register: result
-  when: (plugin_modifier is not defined) or (plugin_modifier.pluginId is not defined)
+  when: (plugin_found) and ((plugin_modifier is not defined) or (plugin_modifier.pluginId is not defined))
 
 - name: Parse modifier list as JSON
   set_fact:
     location_modifiers: "{{ result.content | from_json }}"
-  when: (plugin_modifier is not defined) or (plugin_modifier.pluginId is not defined)
+  when: (plugin_found) and ((plugin_modifier is not defined) or (plugin_modifier.pluginId is not defined))
 
 - name: Just to add array index as a property
   set_fact:
@@ -105,12 +145,12 @@
         {% set ignored = result.extend([{'pluginId': modifier['pluginId'], 'beanName': modifier['beanName'], 'phase': modifier['phase'], 'index': loop.index0 }]) -%}
       {%- endfor %}
       {{ result }}
-  when: (plugin_modifier is not defined) or (plugin_modifier.pluginId is not defined)
+  when: (plugin_found) and ((plugin_modifier is not defined) or (plugin_modifier.pluginId is not defined))
 
 - name: Search modifier using JSON query
   set_fact:
     plugin_modifier: "{{ location_modifiers | json_query(query) | first }}"
-  when: (plugin_modifier is not defined) or (plugin_modifier.pluginId is not defined)
+  when: (plugin_found) and ((plugin_modifier is not defined) or (plugin_modifier.pluginId is not defined))
 
 - name: Change location modifiers orders
   uri:
@@ -121,4 +161,4 @@
     headers:
       Cookie: "{{ session_id }}"
     status_code: 200
-  when: (plugin_modifier.index != modifier_position)
+  when: (plugin_found) and (plugin_modifier.index != modifier_position)
