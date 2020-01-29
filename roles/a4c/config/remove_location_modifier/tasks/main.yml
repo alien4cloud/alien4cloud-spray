@@ -56,7 +56,7 @@
 - name: Get the first in the list
   set_fact:
     plugin_modifier: "{{ plugin_modifiers | first }}"
-  when: plugin_modifiers | length > 1
+  when: plugin_modifiers | length > 0
 
 - name: Here is the modifier
   debug:
