@@ -1,0 +1,41 @@
+---
+
+- name: Initialize a variable indicating if the plugin was found
+  set_fact:
+    plugin_found: false
+
+- name: Search for plugin
+  uri:
+    url: "{{ alien_url }}/rest/latest/plugins?from=0&query={{ pluginId }}&size=1"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body_format: json
+    status_code: 200
+  register: plugin_list_result
+
+- name: Parse the plugin list as JSON
+  set_fact:
+    plugin_list: "{{ plugin_list_result.content | from_json }}"
+
+- name: Define a variable indicating if the plugin was found
+  set_fact:
+    plugin_found: "{{ plugin_list.data.totalResults > 0 }}"
+
+- name: Is the plugin found ?
+  debug:
+    var: plugin_found
+
+- name: Enable plugin
+  uri:
+    url: "{{ alien_url }}/rest/latest/plugins/{{ pluginId }}/enable"
+    method: GET
+    return_content: no
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    status_code: 200
+  register: result
+  when: (plugin_found)

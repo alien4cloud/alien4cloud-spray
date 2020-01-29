@@ -1,0 +1,75 @@
+---
+
+- name: Get modifiers for orchestrator/location
+  uri:
+    url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/modifiers"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body_format: json
+    status_code: 200
+  register: result
+
+- name: Parse the modifier list as JSON
+  set_fact:
+    location_modifiers: "{{ result.content | from_json }}"
+
+# - name: Just to add array index as a property (using namespace)
+#   set_fact:
+#     location_modifiers: |
+#       {% set result = [] -%}
+#       {% set count = namespace(value=0) -%}
+#       {% for modifier in location_modifiers.data -%}
+#         {% set ignored = result.extend([{'pluginId': modifier['pluginId'], 'beanName': modifier['beanName'], 'phase': modifier['phase'], 'index': count.value}]) -%}
+#         {% set count.value = count.value + 1 -%}
+#       {%- endfor %}
+#       {{ result }}
+
+- name: Just to add array index as a property
+  set_fact:
+    location_modifiers: |
+      {% set result = [] -%}
+      {% for modifier in location_modifiers.data -%}
+        {% set ignored = result.extend([{'pluginId': modifier['pluginId'], 'beanName': modifier['beanName'], 'phase': modifier['phase'], 'index': loop.index0 }]) -%}
+      {%- endfor %}
+      {{ result }}
+
+- debug:
+    var: location_modifiers
+
+- name: Build the JSON query for searching location modifier for this plugin
+  set_fact:
+    query: "[? pluginId=='{{ pluginId }}' && beanName=='{{ beanName }}' && phase=='{{ phase }}']"
+
+# This is important since this role can be played several times in the same play
+# that's also why we test (plugin_modifier is defined) and (plugin_modifier.pluginId is defined) below
+- name: override plugin_modifier to null
+  set_fact:
+    plugin_modifier:
+
+- name: Search for modifier
+  set_fact:
+    plugin_modifiers: "{{ location_modifiers | json_query(query) }}"
+
+- name: Get the first in the list
+  set_fact:
+    plugin_modifier: "{{ plugin_modifiers | first }}"
+  when: plugin_modifiers | length > 1
+
+- name: Here is the modifier
+  debug:
+    var: plugin_modifier
+  when: (plugin_modifier is defined) and (plugin_modifier.pluginId is defined)
+
+- name: Delete location modifier
+  uri:
+    url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/modifiers/{{ plugin_modifier.index }}"
+    method: DELETE
+    return_content: no
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    status_code: 200
+  when: (plugin_modifier is defined) and (plugin_modifier.pluginId is defined)

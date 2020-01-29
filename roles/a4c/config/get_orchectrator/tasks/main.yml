@@ -1,8 +1,5 @@
 ---
 
-- set_fact:
-    url: "{{ alien_url }}/rest/latest/orchestrators"
-
 - name: "Get Orchestrator {{ orchestratorName }}"
   uri:
     url: "{{ alien_url }}/rest/latest/orchestrators?query={{ orchestratorName }}&connectedOnly=true"
