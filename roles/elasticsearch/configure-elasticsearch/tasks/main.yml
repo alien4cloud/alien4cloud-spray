@@ -117,9 +117,18 @@
 - name: Setup elasticsearch security (transport.ssl.enabled)
   lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?xpack.security.transport.ssl.enabled:.*'
     line: "xpack.security.transport.ssl.enabled: true"
   become: true
   when: (elasticsearch_tls)
+
+- name: Setup elasticsearch security (transport.ssl.enabled)
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?xpack.security.transport.ssl.enabled:.*'
+    line: "xpack.security.transport.ssl.enabled: false"
+  become: true
+  when: (not elasticsearch_tls)
 
 - name: Setup elasticsearch security (transport.ssl.verification_mode)
   lineinfile:
@@ -152,9 +161,18 @@
 - name: Setup elasticsearch security (http.ssl.enabled)
   lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?xpack.security.http.ssl.enabled:.*'
     line: "xpack.security.http.ssl.enabled: true"
   become: true
   when: (elasticsearch_tls)
+
+- name: Setup elasticsearch security (http.ssl.enabled)
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?xpack.security.http.ssl.enabled:.*'
+    line: "xpack.security.http.ssl.enabled: false"
+  become: true
+  when: (not elasticsearch_tls)
 
 - name: Setup elasticsearch security (http.ssl.verification_mode)
   lineinfile:
