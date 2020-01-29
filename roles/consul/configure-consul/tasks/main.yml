@@ -281,7 +281,7 @@
 
 - name: Serialize consul config into ({{ consul_install_dir }}/server-config.json)
   copy:
-    content: "{{ consul_config }}"
+    content: "{{ consul_config | to_nice_json(indent=2) }}"
     dest: "{{ consul_install_dir }}/server-config.json"
   become: true
   become_user: "{{ consul_user }}"

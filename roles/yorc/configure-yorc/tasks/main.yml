@@ -222,7 +222,7 @@
 
 - name: Serialize Yorc config into {{ yorc_install_dir }}/config.yorc.json
   copy:
-    content: "{{ yorc_config }}"
+    content: "{{ yorc_config | to_nice_json(indent=2) }}"
     dest: "{{ yorc_install_dir }}/config.yorc.json"
   become: true
   become_user: "{{ yorc_user }}"
