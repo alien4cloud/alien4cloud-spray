@@ -25,10 +25,15 @@
   debug:
     var: consul_tls
 
-- name: Creates logs directory
+- name: Ensure the 'a4c_log_dir' exists
+  set_fact :
+    a4c_log_dir: "{{ a4c_install_dir }}/alien4cloud/logs"
+  when: a4c_log_dir is not defined
+
+- name: Ensure logs directory exists
   become: true
   file:
-    path: "{{ a4c_install_dir }}/alien4cloud/logs"
+    path: "{{ a4c_log_dir }}"
     state: directory
     owner: "{{ a4c_user }}"
 
@@ -62,6 +67,14 @@
   template:
     src: alien4cloud-config.yml.j2
     dest: "{{ a4c_install_dir }}/alien4cloud/config/alien4cloud-config.yml"
+    force: yes
+  become: true
+  become_user: "{{ a4c_user }}"
+
+- name: Configure A4C logs
+  template:
+    src: log4j2.xml.j2
+    dest: "{{ a4c_install_dir }}/alien4cloud/config/log4j2.xml"
     force: yes
   become: true
   become_user: "{{ a4c_user }}"

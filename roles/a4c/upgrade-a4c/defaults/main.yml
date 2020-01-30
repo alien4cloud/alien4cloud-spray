@@ -1,0 +1,7 @@
+# When set to true, old wars and plugins are backuped before beeing replaced
+a4c_update_backup: true
+
+# The list of pluginId to upgrade / install:
+# - If this is empty, no plugin will be upgraded
+# - If this is not defined (commented), all plugins will be upgraded
+#a4c_upgrade_plugins: []
