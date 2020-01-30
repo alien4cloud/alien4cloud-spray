@@ -1,37 +1,79 @@
 ---
+
+- name: Locally Check for metaproperties resource file
+  local_action: "stat path={{ inventory_dir }}/{{ resources_file_artifact }}"
+  register: local_metaproperties_file_stat
+
 - name: Create temporary folder
   tempfile:
     state: directory
   register: temp_dir
+  when: (local_metaproperties_file_stat.stat.exists)
 
 - name: "Upload artifact {{ inventory_dir }}/{{ resources_file_artifact }} on remote in {{ temp_dir.path }}/resources.yaml"
   copy:
     src: "{{ inventory_dir }}/{{ resources_file_artifact }}"
     dest: "{{ temp_dir.path }}/resources.yaml"
+  when: (local_metaproperties_file_stat.stat.exists)
 
-- name: "Stat {{ temp_dir.path }}/resources.yaml"
-  stat: path="{{ temp_dir.path }}/resources.yaml"
-  register: resources_file
-
-- name: Slurp resources files
+- name: Slurp metaproperties resource file
   slurp:
     src: "{{ temp_dir.path }}/resources.yaml"
-  register: resources_slurped
-  when: resources_file.stat.exists
+  register: metaproperties_resources_slurped
+  when: (local_metaproperties_file_stat.stat.exists)
 
-- set_fact:
-    resources_yaml: "{{resources_slurped['content'] | b64decode | from_yaml}}"
-# - debug:
-#     var: resources_yaml
-
-- set_fact:
-    resources: "{{resources_yaml['metaproperties']}}"
-- debug:
-    var: resources
+- name: Parse metaproperties resource file
+  set_fact:
+    metaproperties_resources_yaml: "{{metaproperties_resources_slurped['content'] | b64decode | from_yaml}}"
+  when: (local_metaproperties_file_stat.stat.exists)
 
 # - debug:
-#     msg: "{{item}}"
-#   with_items: "{{resources}}"
+#     var: metaproperties_resources_yaml
+
+- name: Get metaproperties
+  set_fact:
+    metaproperties_to_create: "{{metaproperties_resources_yaml['metaproperties']}}"
+  when: (local_metaproperties_file_stat.stat.exists)
+
+- name: Here are the metaproperties to create (before filtering)
+  debug:
+    var: metaproperties_to_create
+  when: (local_metaproperties_file_stat.stat.exists)
+
+- name: Search for existing metaproperties
+  uri:
+    url: "{{ alien_url }}/rest/latest/metaproperties/search"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body:
+      query: ""
+      from: 0
+      size: 500
+    body_format: json
+    status_code: 200
+  register: search_metaproperties_result
+  when: (metaproperties_to_create is defined)
+
+- name: Filter metaproperties (remove exiting one from the list, based on name and target)
+  set_fact:
+    metaproperties_to_create: |
+      {% set result = [] -%}
+      {% for metaproperty_to_create in metaproperties_to_create -%}
+        {% set query = "data.data[? name=='" + metaproperty_to_create.name |replace("'", "\\'") + "' && target=='" + metaproperty_to_create.target + "']" -%}
+        {% if search_metaproperties_result.content | from_json | json_query(query) | length == 0 -%}
+          {% set ignored = result.extend([metaproperty_to_create]) -%}
+        {%- endif %}
+      {%- endfor %}
+      {{ result }}
+  when: (metaproperties_to_create is defined)
+
+- name: Here are the metaproperties to create (after filtering)
+  debug:
+    var: metaproperties_to_create
+  when: (metaproperties_to_create is defined)
 
 - name: Create metaproperties
   uri:
@@ -46,8 +88,12 @@
     body_format: json
     status_code: 200
   register: result
-  with_items: "{{resources}}"
+  with_items: "{{metaproperties_to_create}}"
   ignore_errors: yes
+  when: (local_metaproperties_file_stat.stat.exists)
 
-# - debug:
-#     var: result
+- name: Finally remove temporary folder
+  file:
+    path: "{{ temp_dir.path }}"
+    state: absent
+  when: (local_metaproperties_file_stat.stat.exists)

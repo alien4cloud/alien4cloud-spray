@@ -1,6 +1,6 @@
 ---
 
-- name: Locally Check for consul key file
+- name: Locally Check for services resource file
   local_action: "stat path={{ inventory_dir }}/{{ resources_file_artifact }}"
   register: local_services_file_artifact_stat
 
@@ -89,7 +89,7 @@
     services_to_create: |
       {% set result = [] -%}
       {% for service_to_create in services_to_create -%}
-        {% set query = "data.data[? name=='" + service_to_create.name + "' && nodeInstance.nodeTemplate.type=='" + service_to_create.nodeType + "' && nodeInstance.typeVersion=='" + service_to_create.nodeTypeVersion + "']" -%}
+        {% set query = "data.data[? name=='" + service_to_create.name | replace("'", "\\'") + "' && nodeInstance.nodeTemplate.type=='" + service_to_create.nodeType + "' && nodeInstance.typeVersion=='" + service_to_create.nodeTypeVersion + "']" -%}
         {% if search_services_result.content | from_json | json_query(query) | length == 0 -%}
           {% set ignored = result.extend([service_to_create]) -%}
         {%- endif %}
