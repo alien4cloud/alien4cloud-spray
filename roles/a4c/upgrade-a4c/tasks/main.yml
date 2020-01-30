@@ -111,7 +111,7 @@
     var: a4c_installed
 
 - name: Backup old war files
-  command: "cp {{ item.path }} {{ item.path }}.bck{{ ansible_date_time.iso8601 | replace(':', "") }}"
+  command: "cp {{ item.path }} {{ item.path }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
   with_items: "{{ war_files.files }}"
 # copier les wars dans tmp avec le même nom
 # utiliser la liste des plugins à mettre à jour et mettre à jour les plugins sur place (et dans l'init)
