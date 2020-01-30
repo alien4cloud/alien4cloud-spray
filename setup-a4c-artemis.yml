@@ -20,9 +20,9 @@
         pluginId: 'alien4cloud-yorc-provider',
         pluginBean: 'yorc-orchestrator-factory'
       }
-    # - { role: 'roles/a4c/config/create_metaproperties',
-    #     resources_file_artifact: 'resources/metaproperties.yaml'
-    #   }
+    - { role: 'roles/a4c/config/create_metaproperties',
+        resources_file_artifact: 'resources/metaproperties.yaml'
+      }
     # - { role: roles/git-ssl }
     # - { role: roles/git,
     #     repositoryUrl: 'https://34.242.16.28/artemis_use_cases/service_applicatif.git',
@@ -46,76 +46,22 @@
         location_name: 'Default',
         location_type: 'OpenStack'
       }
-    # - { role: 'roles/create_location_resources',
-    #     resources_file_artifact: 'resources/a4c/config/locations/ROEM/location_resources.yaml'
-    #   }
-    # - { role: 'roles/a4c/config/add_location_modifiers',
-    #     resources_file_artifact: 'resources/location_modifiers.yaml'
-    #   }
-    # - { role: 'roles/remove_services',
-    #     resources_file_artifact: 'resources/a4c/config/locations/ROEM/services.yaml'
-    #   }
-    # - { role: 'roles/create_services',
-    #     resources_file_artifact: 'resources/services.yaml'
-    #   }
-    # - { role: roles/a4c/config/upload_csars }
-    # - { role: 'roles/create_location_policies',
-    #     resources_file_artifact: 'resources/a4c/config/locations/ROEM/policies.yaml'
-    #   }
-    # AIS
-    # - { role: 'roles/create_location',
-    #     location_name: 'AIS',
-    #     location_type: 'OpenStack'
-    #   }
-    # - { role: 'roles/create_location_resources',
-    #     resources_file_artifact: 'resources/a4c/config/locations/AIS/location_resources.yaml'
-    #   }
-    # - { role: 'roles/add_location_modifiers',
-    #     resources_file_artifact: 'resources/location_modifiers.yaml'
-    #   }
-    # - { role: 'roles/remove_services',
-    #     resources_file_artifact: 'resources/a4c/config/locations/AIS/services.yaml'
-    #   }
-    # - { role: 'roles/create_services',
-    #     resources_file_artifact: 'resources/a4c/config/locations/AIS/services.yaml'
-    #   }
-    # - { role: 'roles/create_location_policies',
-    #     resources_file_artifact: 'resources/a4c/config/locations/AIS/policies.yaml'
-    #   }
-    # LID2
-    # - { role: 'roles/create_location',
-    #     location_name: 'LID2',
-    #     location_type: 'OpenStack'
-    #   }
-    # - { role: 'roles/create_location_resources',
-    #     resources_file_artifact: 'resources/a4c/config/locations/LID2/location_resources.yaml'
-    #   }
-    # - { role: 'roles/add_location_modifiers',
-    #     resources_file_artifact: 'resources/location_modifiers.yaml'
-    #   }
-    # - { role: 'roles/remove_services',
-    #     resources_file_artifact: 'resources/a4c/config/locations/LID2/services.yaml'
-    #   }
-    # - { role: 'roles/create_services',
-    #     resources_file_artifact: 'resources/a4c/config/locations/LID2/services.yaml'
-    #   }
-    # Similimages
-    # - { role: 'roles/create_location',
-    #     location_name: 'Similimages',
-    #     location_type: 'OpenStack'
-    #   }
-    # - { role: 'roles/create_location_resources',
-    #     resources_file_artifact: 'resources/a4c/config/locations/Similimages/location_resources.yaml'
-    #   }
-    # - { role: 'roles/add_location_modifiers',
-    #     resources_file_artifact: 'resources/location_modifiers.yaml'
-    #   }
-    # - { role: 'roles/remove_services',
-    #     resources_file_artifact: 'resources/a4c/config/locations/Similimages/services.yaml'
-    #   }
-    # - { role: 'roles/create_services',
-    #     resources_file_artifact: 'resources/a4c/config/locations/Similimages/services.yaml'
-    #   }
-    # - { role: 'roles/create_location_policies',
-    #     resources_file_artifact: 'resources/a4c/config/locations/Similimages/policies.yaml'
-    #   }
+    - { role: 'a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-kubernetes-plugin',
+        beanName: 'kubernetes-adapter-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 1
+      }
+    - { role: 'a4c/config/disable_plugin',
+        pluginId: 'alien4cloud-datagouv_mls-plugin'
+      }
+    - { role: 'a4c/config/disable_plugin',
+        pluginId: 'alien4cloud-ssi-network_policy-plugin'
+      }
+    - { role: 'a4c/config/disable_plugin',
+        pluginId: 'alien4cloud-consul-publisher-plugin'
+      }
+    - { role: 'a4c/config/disable_plugin',
+        pluginId: 'alien4cloud-supervision'
+      }
+    - a4c/config/upload_csars

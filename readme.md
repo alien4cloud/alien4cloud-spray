@@ -6,7 +6,7 @@ It supports cluster mode for Elasticsearch and Consul. Comming soon: cluster mod
 
 # Prerequisites
 
-Ansible >= 2.8.3 
+Ansible >= 2.8.3
 
 You need some linux boxes with centos (tried on a EC2 ami-3548444c t2.medium)
 
@@ -174,12 +174,17 @@ Il you need some additional CSARs library, place the zip files in the `resources
 This playbook will configure the orchestrator, a location, and services on the A4C instance :
 
 ```
-ansible-playbook -i hosts playbooks/setup-a4c-artemis.yml --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v
+ansible-playbook -i hosts setup-a4c-artemis.yml --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v
 ```
 
 That's all folk, the full system should be available.
 
 # Tests
+
+```
+ansible-playbook -i hosts test-a4c-artemis.yml --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v
+```
+
 
 To test the integration between A4C and Yorc:
  1. Go to 'Application' / 'Nouvelle Application'
