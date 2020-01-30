@@ -1,54 +1,106 @@
 ---
-- set_fact:
-    alien_url: "{{ a4c_protocol }}://{{ a4c_ip }}:{{ a4c_port }}"
+
+- name: Locally Check for consul key file
+  local_action: "stat path={{ inventory_dir }}/{{ resources_file_artifact }}"
+  register: local_services_file_artifact_stat
 
 - name: Create temporary folder
   tempfile:
     state: directory
   register: temp_dir
+  when: (local_services_file_artifact_stat.stat.exists)
 
+# - name: "Upload artifact {{ inventory_dir }}/{{ resources_file_artifact }} on remote in {{ temp_dir.path }}/resources.yaml"
+#   copy:
+#     src: "{{ inventory_dir }}/{{ resources_file_artifact }}"
+#     dest: "{{ temp_dir.path }}/resources.yaml"
 - name: "Upload artifact {{ inventory_dir }}/{{ resources_file_artifact }} on remote in {{ temp_dir.path }}/resources.yaml"
-  copy:
+  template:
     src: "{{ inventory_dir }}/{{ resources_file_artifact }}"
     dest: "{{ temp_dir.path }}/resources.yaml"
-
-- name: "Stat {{ temp_dir.path }}/resources.yaml"
-  stat: path="{{ temp_dir.path }}/resources.yaml"
-  register: resources_file
+  when: (local_services_file_artifact_stat.stat.exists)
 
 - name: Slurp resources files
   slurp:
     src: "{{ temp_dir.path }}/resources.yaml"
-  register: resources_slurped
-  when: resources_file.stat.exists
+  register: services_resources_slurped
+  when: (local_services_file_artifact_stat.stat.exists)
 
-- set_fact:
-    resources_yaml: "{{resources_slurped['content'] | b64decode | from_yaml}}"
-- debug:
-    var: resources_yaml
+- name: Decode resource
+  set_fact:
+    services_resources_yaml: "{{services_resources_slurped['content'] | b64decode | from_yaml}}"
+  when: (local_services_file_artifact_stat.stat.exists)
 
-- set_fact:
-    resources: "{{resources_yaml['services']}}"
-- debug:
-    var: resources
+# - name: Here is the decoded resource
+#   debug:
+#     var: services_resources_yaml
+#   when: (local_services_file_artifact_stat.stat.exists)
 
-- debug:
-    msg: "{{item}}"
-  with_items: "{{resources}}"
+- name: Get the services
+  set_fact:
+    services_to_create: "{{services_resources_yaml['services']}}"
+  when: (local_services_file_artifact_stat.stat.exists)
 
-- name: login
+# - name: Here are the services
+#   debug:
+#     var: services_to_create
+#   when: (services_to_create is defined)
+
+- name: Search for existing services
   uri:
-    url: "{{ alien_url }}/login?username={{ a4c_admin_usr }}&password={{ a4c_admin_pwd }}&submit=Login"
+    url: "{{ alien_url }}/rest/latest/services/adv/search"
     method: POST
     return_content: yes
     validate_certs: no
-    status_code: 302
     headers:
-      Content-Type: "application/x-www-form-urlencoded"
-  register: login
+      Cookie: "{{ session_id }}"
+    body:
+      query: ""
+      from: 0
+      size: 500
+    body_format: json
+    status_code: 200
+  register: search_services_result
+  when: (services_to_create is defined)
 
-- set_fact:
-    session_id: "{{ login.set_cookie.split(';')[0] }}"
+# - name: Build the JSON query do define if a service already exist
+#   set_fact:
+#     query: "data.data[? name=='{{ name }}' && nodeInstance.nodeTemplate.type=='{{ type }}' && nodeInstance.typeVersion=='{{ typeVersion }}']"
+
+# # TODO: here we should filter existing services
+# - name: Define an array containing 1 or 0 depending if the service to create already exists
+#   set_fact:
+#     existing_service_indexed: []
+#
+# - name: Iterating over services to create to see if they already exist
+#   set_fact:
+#     existing_service_indexed: "{{ existing_service_indexed }}  + ['{{ search_services_result.content | from_json | json_query(query) | length }}']"
+#   with_items: "{{ services_to_create }}"
+#   vars:
+#     # This is the query we exec on the existing services result
+#     query: "data.data[? name=='{{ item.name }}' && nodeInstance.nodeTemplate.type=='{{ item.nodeType }}' && nodeInstance.typeVersion=='{{ item.nodeTypeVersion }}']"
+#
+# - name: Here are the services
+#   debug:
+#     var: existing_service_indexed
+
+- name: Filter services (remove exiting services from the list, based on name, nodeTemplate.type and nodeInstance.typeVersion)
+  set_fact:
+    services_to_create: |
+      {% set result = [] -%}
+      {% for service_to_create in services_to_create -%}
+        {% set query = "data.data[? name=='" + service_to_create.name + "' && nodeInstance.nodeTemplate.type=='" + service_to_create.nodeType + "' && nodeInstance.typeVersion=='" + service_to_create.nodeTypeVersion + "']" -%}
+        {% if search_services_result.content | from_json | json_query(query) | length == 0 -%}
+          {% set ignored = result.extend([service_to_create]) -%}
+        {%- endif %}
+      {%- endfor %}
+      {{ result }}
+  when: (services_to_create is defined)
+
+# - name: Here is filtered_services_to_create
+#   debug:
+#     var: filtered_services_to_create
+#   when: (services_to_create is defined)
 
 - name: Create services
   uri:
@@ -56,7 +108,8 @@
     method: POST
     return_content: yes
     validate_certs: no
-    HEADER_cookie: "{{ session_id }}"
+    headers:
+      Cookie: "{{ session_id }}"
     body:
       nodeType: "{{ item['nodeType'] }}"
       nodeTypeVersion: "{{ a4c_version if item['nodeTypeVersion'] == 'a4c_version' else item['nodeTypeVersion'] }}"
@@ -64,34 +117,44 @@
       version: "{{ item['version'] }}"
     body_format: json
     status_code: 201
-  register: result
-  with_items: "{{resources}}"
+  register: services_creation_result
+  with_items: "{{ services_to_create }}"
+  when: (services_to_create is defined)
 
-- debug:
-    var: result
+# - name: Here is the service creation result
+#   debug:
+#     var: services_creation_result
+#   when: (services_to_create is defined)
 
 # TODO: get id and patch services with attribute values
 
-- set_fact:
+- name: Define an array for resourceIds
+  set_fact:
     resourceIds: []
+  when: (services_to_create is defined)
+
 - name: Populate resourceIds
   set_fact:
     resourceIds: "{{ resourceIds }}  + ['{{item['json']['data']['id']}}']"
-  with_items: "{{result['results']}}"
+  with_items: "{{services_creation_result['results']}}"
+  when: (services_to_create is defined)
 
 # Build a map with resourceId as key and resource config as entry
 - set_fact:
     identifiedResourcesMap: {}
 - set_fact:
-    identifiedResourcesMap: "{{identifiedResourcesMap |combine({item.1: resources[item.0]})}}"
+    identifiedResourcesMap: "{{identifiedResourcesMap |combine({item.1: services_to_create[item.0]})}}"
   with_indexed_items: "{{resourceIds}}"
+  when: (services_to_create is defined)
 
-- debug:
-    var: identifiedResourcesMap
+# - debug:
+#     var: identifiedResourcesMap
+#   when: (services_to_create is defined)
 
-- debug:
-    var: identifiedResourcesMap[item]['nodeInstance']['capabilities']
-  with_items: "{{ identifiedResourcesMap }}"
+# - debug:
+#     var: identifiedResourcesMap[item]['nodeInstance']['capabilities']
+#   with_items: "{{ identifiedResourcesMap }}"
+#   when: (services_to_create is defined)
 
 - name: "Patch service #{{ item }}"
   uri:
@@ -99,13 +162,15 @@
     method: PATCH
     return_content: yes
     validate_certs: no
-    HEADER_cookie: "{{ session_id }}"
+    headers:
+      Cookie: "{{ session_id }}"
     body: "{{ identifiedResourcesMap[item] | to_json }}"
         # attributeValues: "{{ identifiedResourcesMap[item]['nodeInstance']['attributeValues'] }}"
     body_format: json
     status_code: 200
-  register: result
+  register: services_path_result
   with_items: "{{ identifiedResourcesMap }}"
+  when: (services_to_create is defined)
 
 - name: Path service to allow locations
   uri:
@@ -113,13 +178,20 @@
     method: PATCH
     return_content: yes
     validate_certs: no
-    HEADER_cookie: "{{ session_id }}"
+    headers:
+      Cookie: "{{ session_id }}"
     body:
       locationIds: "[\"{{item[1]}}\"]"
     body_format: json
     status_code: 200
-  register: result
+  register: allow_location_result
   with_nested:
     - "{{resourceIds}}"
     - "{{locationIds}}"
-  when: locationIds is defined
+  when: (locationIds is defined) and (services_to_create is defined)
+
+- name: Finally remove temporary folder
+  file:
+    path: "{{ temp_dir.path }}"
+    state: absent
+  when: (local_services_file_artifact_stat.stat.exists)

@@ -58,3 +58,9 @@
         resources_file_artifact: 'resources/metaproperties.yaml'
       }
     - a4c/config/download_upload_csars
+    - { role: 'roles/commons/parse_kubeconfig',
+        resources_file_artifact: 'resources/kubeconfig'
+      }
+    - { role: 'roles/a4c/config/create_services',
+        resources_file_artifact: 'resources/services.yaml'
+      }    

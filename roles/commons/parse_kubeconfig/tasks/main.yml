@@ -1,0 +1,30 @@
+
+- name: Create temporary folder
+  tempfile:
+    state: directory
+  register: temp_dir
+
+- name: "Upload artifact {{ inventory_dir }}/{{ resources_file_artifact }} on remote in {{ temp_dir.path }}/resources.yaml"
+  copy:
+    src: "{{ inventory_dir }}/{{ resources_file_artifact }}"
+    dest: "{{ temp_dir.path }}/resources.yaml"
+
+# - name: "Upload artifact {{ inventory_dir }}/{{ resources_file_artifact }} on remote in {{ temp_dir.path }}/resources.yaml"
+#   template:
+#     src: "{{ inventory_dir }}/{{ resources_file_artifact }}"
+#     dest: "{{ temp_dir.path }}/resources.yaml"
+
+- name: "Stat {{ temp_dir.path }}/resources.yaml"
+  stat: path="{{ temp_dir.path }}/resources.yaml"
+  register: resources_file
+
+- name: Slurp resources files
+  slurp:
+    src: "{{ temp_dir.path }}/resources.yaml"
+  register: resources_slurped
+  when: resources_file.stat.exists
+
+- set_fact:
+    kube_config: "{{ resources_slurped['content'] | b64decode }}"
+- debug:
+    var: kube_config

@@ -1,9 +1,35 @@
 services:
 
   - nodeType: "org.alien4cloud.kubernetes.api.types.nodes.KubeCluster"
-    nodeTypeVersion: "a4c_version"
+    nodeTypeVersion: "{{ a4c_version }}"
+    name: "KubeCluster2"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      properties:
+        config: KubeCluster2
+      attributeValues:
+        capabilities.db.ip_address: "KubeCluster2"
+        state: "started"
+
+  - nodeType: "org.alien4cloud.kubernetes.api.types.nodes.KubeCluster"
+    nodeTypeVersion: "{{ a4c_version }}"
+    name: "KubeCluster3"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      properties:
+        config: KubeCluster3
+      attributeValues:
+        capabilities.db.ip_address: "KubeCluster3"
+        state: "started"
+
+  - nodeType: "org.alien4cloud.kubernetes.api.types.nodes.KubeCluster"
+    nodeTypeVersion: "{{ a4c_version }}"
     name: "KubeCluster"
     version: "1.0-SNAPSHOT"
+    nodeInstance:
+      properties:
+        config: |
+{{ kube_config | indent( width=10, indentfirst=True) }}
     # nodeInstance:
     #   capabilities:
     #     db:
