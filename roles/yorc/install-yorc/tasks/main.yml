@@ -114,7 +114,7 @@
 
 - name: Creates yorc logs directory
   file:
-    path: "{{ yorc_install_dir }}/logs"
+    path: "{{ yorc_log_dir }}"
     state: directory
     owner: "{{ yorc_user }}"
   become: true
