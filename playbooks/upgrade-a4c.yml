@@ -1,0 +1,17 @@
+---
+
+- hosts: a4c
+  name: Upgrade A4C.
+  roles:
+    - commons/define_commons_vars
+    # - consul/stop-consul
+    # - a4c/stop-a4c
+    - a4c/upgrade-a4c
+    # - consul/start-consul
+
+# - hosts: a4c
+#   name: Start A4C.
+#   # we want each A4C to be started sequencially in case of HA
+#   serial: 1
+#   roles:
+#     - a4c/start-a4c

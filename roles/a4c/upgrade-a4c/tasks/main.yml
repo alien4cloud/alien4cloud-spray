@@ -1,0 +1,117 @@
+- name: Ensure the 'offline' variable is defined
+  set_fact :
+    offline: false
+  when: offline is not defined
+
+- fail:
+    msg: "You can not specify an uid for a4c user that is root !"
+  when: a4c_user is defined and a4c_user == "root" and a4c_uid is defined
+
+- name: Add the user '{{ a4c_user }}' specifying uid
+  user:
+    name: "{{ a4c_user }}"
+    create_home: false
+    uid: "{{ a4c_uid }}"
+    state: present
+  become: true
+  when: a4c_user is defined and a4c_user != "root" and a4c_uid is defined
+
+- name: Add the user '{{ a4c_user }}'
+  user:
+    name: "{{ a4c_user }}"
+    create_home: false
+    state: present
+  become: true
+  when: a4c_user is defined and u4c_uid is not defined
+
+- name: Get the current user
+  set_fact :
+    a4c_user: "{{ ansible_user }}"
+  when: a4c_user is not defined
+
+- name: Get the a4c install directory
+  set_fact :
+    a4c_install_dir: "{{ ansible_env.HOME }}/a4c"
+  when: a4c_install_dir is not defined
+
+- name: Ensure a4c directory exists
+  become: true
+  file:
+    path: "{{ a4c_install_dir }}"
+    state: directory
+    owner: "{{ a4c_user }}"
+
+- name: Ensure the 'a4c_working_dir' exists
+  set_fact :
+    a4c_working_dir: "{{ a4c_install_dir }}/runtime"
+  when: a4c_working_dir is not defined
+
+- name: Ensure a4c runtime directory exists
+  become: true
+  # we must become_user instead of use onwer since we don't want the rights to be changes (in case of samba share)
+  become_user: "{{ a4c_user }}"
+  file:
+    path: "{{ a4c_working_dir }}"
+    state: directory
+
+- name: Check if a4c is already installed
+  stat:
+    path: "{{ a4c_install_dir }}/alien4cloud/alien4cloud.sh"
+  register: a4c_stat_result
+  become: true
+  become_user: "{{ a4c_user }}"
+
+- name: Register a boolean indicating if A4C is already installed
+  set_fact:
+    a4c_installed: "{{ a4c_stat_result.stat.exists }}"
+
+- debug:
+    var: a4c_installed
+
+- name: Fail when A4C is not installed
+  fail:
+    msg: "A4C does'nt seem te be installed, you cant' upgrade it !"
+  when: (not a4c_installed)
+
+- name: Create temporary folder
+  tempfile:
+    state: directory
+  register: temp_dir
+
+- name: Extract alien4cloud archive from remote source
+  unarchive:
+    src: "{{ ALIEN_DIST_URL }}"
+    dest: "{{ temp_dir }}"
+    mode: 0755
+    remote_src: yes
+  become: true
+  become_user: "{{ a4c_user }}"
+  when: (not offline)
+
+- name: Extract alien4cloud archive from local source
+  unarchive:
+    src: "{{ ALIEN_DIST_URL }}"
+    dest: "{{ temp_dir }}"
+    mode: 0755
+    remote_src: no
+  become: true
+  become_user: "{{ a4c_user }}"
+  when: (offline)
+
+# trouver les war et les renommer
+
+- name: Find A4C wars
+  find:
+    paths: "{{ a4c_install_dir }}/alien4cloud/"
+    patterns: "*.war"
+  register: war_files
+
+- name: Here are the inplace war files
+  debug:
+    var: a4c_installed
+
+- name: Backup old war files
+  command: "cp {{ item.path }} {{ item.path }}.bck{{ ansible_date_time.iso8601 | replace(':', "") }}"
+  with_items: "{{ war_files.files }}"
+# copier les wars dans tmp avec le même nom
+# utiliser la liste des plugins à mettre à jour et mettre à jour les plugins sur place (et dans l'init)
