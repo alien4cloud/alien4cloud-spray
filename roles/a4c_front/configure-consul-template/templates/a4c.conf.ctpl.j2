@@ -5,8 +5,8 @@ server {
 
 {% if (securize_nginx) %}
         ssl_session_timeout 10m;
-        ssl_certificate /etc/nginx/ssl/{{ inventory_hostname }}-cert.pem;
-        ssl_certificate_key /etc/nginx/ssl/{{ inventory_hostname }}-key.pem;
+        ssl_certificate /etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }};
+        ssl_certificate_key /etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }};
         ssl_verify_client off;
         ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;
         ssl_ciphers RC4:HIGH:!aNULL:!MD5;
@@ -32,8 +32,8 @@ server {
 
 {% if (securize_nginx) %}
         ssl on;
-        ssl_certificate /etc/nginx/ssl/{{ inventory_hostname }}-cert.pem;
-        ssl_certificate_key /etc/nginx/ssl/{{ inventory_hostname }}-key.pem;
+        ssl_certificate /etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }};
+        ssl_certificate_key /etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }};
         ssl_session_cache shared:SSL:10m;
 {% endif %}
 

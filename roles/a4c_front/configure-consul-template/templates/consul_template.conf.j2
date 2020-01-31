@@ -8,9 +8,9 @@ consul {
   ssl {
     enabled = {{ 'true' if consul_tls else 'false' }}
     verify = true
-    cert = "/etc/consul_template/ssl/{{ inventory_hostname }}-cert.pem"
-    key = "/etc/consul_template/ssl/{{ inventory_hostname }}-key.pem"
-    ca_cert = "/etc/consul_template/ssl/ca-cert.pem"
+    cert = "/etc/consul_template/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+    key = "/etc/consul_template/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+    ca_cert = "/etc/consul_template/ssl/{{ ssl_ca_cert_name }}"
   }
 }
 

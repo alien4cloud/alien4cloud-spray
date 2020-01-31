@@ -26,3 +26,18 @@
 - name: Here is the 'private_ip_address' var value
   debug:
     var: private_ip_address
+
+- name: Ensure ssl_ca_cert_name variable is defined
+  set_fact:
+    ssl_ca_cert_name: "ca-cert.pem"
+  when: ssl_ca_cert_name is not defined
+
+- name: Ensure ssl_host_key_suffix variable is defined
+  set_fact:
+    ssl_host_key_suffix: "-key.pem"
+  when: ssl_host_key_suffix is not defined
+
+- name: Ensure ssl_host_cert_suffix variable is defined
+  set_fact:
+    ssl_host_cert_suffix: "-cert.pem"
+  when: ssl_host_cert_suffix is not defined

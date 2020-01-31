@@ -80,36 +80,36 @@
 
 - name: Define CA file path
   set_fact:
-    ca_file_path: "/etc/elasticsearch/ssl/ca-cert.pem"
+    ca_file_path: "/etc/elasticsearch/ssl/{{ ssl_ca_cert_name }}"
   when: (elasticsearch_tls)
 
 - name: Copy CA cert file
   copy:
-    src: "{{ inventory_dir }}/{{ certificates_path }}/ca-cert.pem"
+    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
     dest: "{{ ca_file_path }}"
   become: true
   when: (elasticsearch_tls)
 
 - name: Define host key file path
   set_fact:
-    hostkey_file_path: "/etc/elasticsearch/ssl/{{ inventory_hostname }}-key.pem"
+    hostkey_file_path: "/etc/elasticsearch/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
   when: (elasticsearch_tls)
 
 - name: Copy host key file
   copy:
-    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}-key.pem"
+    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
     dest: "{{ hostkey_file_path }}"
   become: true
   when: (elasticsearch_tls)
 
 - name: Define host cert file path
   set_fact:
-    hostcert_file_path: "/etc/elasticsearch/ssl/{{ inventory_hostname }}-cert.pem"
+    hostcert_file_path: "/etc/elasticsearch/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
   when: (elasticsearch_tls)
 
 - name: Copy host cert file
   copy:
-    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}-cert.pem"
+    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
     dest: "{{ hostcert_file_path }}"
   become: true
   when: (elasticsearch_tls)

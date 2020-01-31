@@ -54,6 +54,8 @@ ssl_keystore_source_location: /var/folders/2d/3krvvvn538ggxjx8mtvwmj_c0000gn/T/t
 ssl_src_keystore_password: changeit
 ssl_dest_keystore_password: changeit
 ssl_key_password: changeit
+ssl_host_key_suffix: ".technique.artemis.crt.txt"
+ssl_host_cert_suffix: ".technique.artemis.pem.txt"
 
 # Download urls in online mode
 elasticsearch_rmp_url:- http://10.10.0.49/elasticsearch-6.6.2.rpm

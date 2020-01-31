@@ -210,8 +210,8 @@ languages:
 consul:
   url: {{ 'https' if consul_tls else 'http' }}://{{ inventory_hostname }}{{ appendable_private_domain_name }}:{{ '8501' if consul_tls else '8500' }}
 {% if (consul_tls) %}
-  key: {{ a4c_install_dir }}/alien4cloud/config/ssl/{{ inventory_hostname }}-key.pem
-  certificate: {{ a4c_install_dir }}/alien4cloud/config/ssl/{{ inventory_hostname }}-cert.pem
+  key: {{ a4c_install_dir }}/alien4cloud/config/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}
+  certificate: {{ a4c_install_dir }}/alien4cloud/config/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}
 {% endif %}
 
 {{ a4c_config_added }}

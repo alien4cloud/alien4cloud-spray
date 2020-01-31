@@ -10,8 +10,8 @@
 {% if (yorc_tls) %}
         listen {{ yorc_port }} ssl http2;
         listen [::]:{{ yorc_port }} ssl http2;
-        ssl_certificate /etc/nginx/ssl/{{ inventory_hostname }}-cert.pem;
-        ssl_certificate_key /etc/nginx/ssl/{{ inventory_hostname }}-key.pem;
+        ssl_certificate /etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }};
+        ssl_certificate_key /etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }};
         ssl_session_cache shared:SSL:10m;
 {% else %}
         listen {{ yorc_port }};

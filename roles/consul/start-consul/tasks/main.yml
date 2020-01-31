@@ -39,17 +39,17 @@
 
 # - name: Define CA file path
 #   set_fact:
-#     ca_file_path: "{{ consul_install_dir }}/ssl/ca-cert.pem"
+#     ca_file_path: "{{ consul_install_dir }}/ssl/{{ ssl_ca_cert_name }}"
 #   when: (consul_tls)
 #
 # - name: Define host key file path
 #   set_fact:
-#     hostkey_file_path: "{{ consul_install_dir }}/ssl/{{ inventory_hostname }}-key.pem"
+#     hostkey_file_path: "{{ consul_install_dir }}/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
 #   when: (consul_tls)
 #
 # - name: Define host cert file path
 #   set_fact:
-#     hostcert_file_path: "{{ consul_install_dir }}/ssl/{{ inventory_hostname }}-cert.pem"
+#     hostcert_file_path: "{{ consul_install_dir }}/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
 #   when: (consul_tls)
 
 # TODO: should only be done in client mode
