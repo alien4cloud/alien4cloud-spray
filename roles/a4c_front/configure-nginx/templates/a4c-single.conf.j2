@@ -1,7 +1,8 @@
 
 server {
         listen {{ a4c_front_port }}{{ ' default ssl' if securize_nginx else '' }};
-        server_name {{ inventory_hostname }};
+        #server_name {{ inventory_hostname }};
+        server_name {{ a4c_front_server_name if (a4c_front_server_name is defined) else inventory_hostname }};
 
 {% if (securize_nginx) %}
         ssl_session_timeout 10m;
