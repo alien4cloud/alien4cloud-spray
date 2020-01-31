@@ -10,7 +10,7 @@
 - name: Add the user '{{ a4c_user }}' specifying uid
   user:
     name: "{{ a4c_user }}"
-    create_home: false
+    create_home: true
     uid: "{{ a4c_uid }}"
     state: present
   become: true
@@ -19,7 +19,7 @@
 - name: Add the user '{{ a4c_user }}'
   user:
     name: "{{ a4c_user }}"
-    create_home: false
+    create_home: true
     state: present
   become: true
   when: a4c_user is defined and u4c_uid is not defined
@@ -28,6 +28,14 @@
   set_fact :
     a4c_user: "{{ ansible_user }}"
   when: a4c_user is not defined
+
+- name: Disable SSL verifications for a4c_user
+  become: true
+  become_user: "{{ a4c_user }}"
+  template:
+    src: gitconfig.j2
+    dest: ~/.gitconfig
+    force: yes
 
 - name: Get the a4c install directory
   set_fact :

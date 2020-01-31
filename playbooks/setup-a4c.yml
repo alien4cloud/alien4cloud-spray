@@ -64,3 +64,17 @@
     - { role: 'a4c/config/create_services',
         resources_file_artifact: 'resources/services.yaml'
       }
+    - { role: a4c/config/git,
+        repositoryUrl: 'https://gitlab.artemis.public/infostructure/socle/service-applicatif/a4c-standardtypes',
+        repositoryUsername: '',
+        repositoryPassword: '',
+        branchId: 'develop',
+        subPath: ''
+      }
+    - { role: a4c/config/git,
+        repositoryUrl: 'https://gitlab.artemis.public/temp/labs_a4c',
+        repositoryUsername: '',
+        repositoryPassword: '',
+        branchId: 'develop',
+        subPath: ''
+      }

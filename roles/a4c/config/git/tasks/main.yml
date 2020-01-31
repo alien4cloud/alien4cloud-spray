@@ -1,10 +1,5 @@
 ---
 
-#- name: Add repository
-#  yum:
-#   name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-#   state: present
-
 - name: Install pip
   yum: pkg=python-pip state=present
 
@@ -13,20 +8,6 @@
     name: httplib2
     state: present
   become: true
-
-- name: Login on A4C
-  uri:
-    url: "{{ alien_url }}/login?username={{ a4c_admin_usr }}&password={{ a4c_admin_pwd }}&submit=Login"
-    method: POST
-    return_content: yes
-    status_code: 302
-    validate_certs: no
-    headers:
-      Content-Type: "application/x-www-form-urlencoded"
-  register: login
-
-- set_fact:
-    session_id: "{{ login.set_cookie.split(';')[0] }}"
 
 - name: Create CSAR GIT repository
   uri:
