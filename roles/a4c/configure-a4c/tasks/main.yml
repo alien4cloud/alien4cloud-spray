@@ -58,6 +58,61 @@
     a4c_config_added: "{{ a4c_config_addons | to_nice_yaml(indent=2) }}"
   when: (a4c_config_addons is defined)
 
+
+# Parser la conf si elle exists
+# trouver directories.alien
+# si elle est différent du actual a4c_install_dir
+#   alors: tout copier dans le nouveau (ou move)
+
+
+- name: Check if a4c condif already exist
+  stat:
+    path: "{{ a4c_install_dir }}/alien4cloud/config/alien4cloud-config.yml"
+  register: a4c_conf_result
+  become: true
+  become_user: "{{ a4c_user }}"
+
+- name: Slurp the consul config file
+  become: true
+  become_user: "{{ a4c_user }}"
+  slurp:
+    src: "{{ a4c_install_dir }}/alien4cloud/config/alien4cloud-config.yml"
+  register: a4c_config
+  when: a4c_conf_result.stat.exists
+
+- name: Decode a4c config
+  set_fact:
+    a4c_config: "{{ a4c_config['content'] | b64decode | from_yaml }}"
+  when: a4c_conf_result.stat.exists
+
+- name: Get the actual working directory
+  set_fact:
+    actual_a4c_working_dir: "{{ a4c_config.directories.alien }}"
+  when: a4c_conf_result.stat.exists
+
+- name: Here is the actual a4c working directory
+  debug:
+    var: actual_a4c_working_dir
+
+- name: Ensure the 'a4c_working_dir' exists
+  set_fact :
+    a4c_working_dir: "{{ a4c_install_dir }}/runtime"
+  when: a4c_working_dir is not defined
+
+- name: "Copy actual working directory content '{{ actual_a4c_working_dir }}/' to expected one '{{ a4c_working_dir }}'"
+  become: true
+  become_user: "{{ a4c_user }}"
+  copy:
+    src: "{{ actual_a4c_working_dir }}/"
+    dest: "{{ a4c_working_dir }}"
+    mode: preserve
+    backup: yes
+  when: a4c_working_dir != actual_a4c_working_dir
+
+- name: Here is the actual a4c working directory
+  debug:
+    msg: "Actual working directory '{{ actual_a4c_working_dir }}/' is as expected '{{ a4c_working_dir }}' (nothing to do !)"
+
 - name: Configure A4C
   template:
     src: alien4cloud-config.yml.j2
