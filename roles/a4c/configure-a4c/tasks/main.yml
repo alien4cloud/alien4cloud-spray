@@ -99,6 +99,13 @@
     a4c_working_dir: "{{ a4c_install_dir }}/runtime"
   when: a4c_working_dir is not defined
 
+- name: Check if a4c actual working directory exist
+  stat:
+    path: "{{ actual_a4c_working_dir }}"
+  register: actual_working_directory_stat
+  become: true
+  become_user: "{{ a4c_user }}"
+
 - name: "Copy actual working directory content '{{ actual_a4c_working_dir }}' to expected one '{{ a4c_working_dir }}'"
   become: true
   become_user: "{{ a4c_user }}"
@@ -108,12 +115,12 @@
     dest: "{{ a4c_working_dir }}"
     mode: preserve
     backup: no
-  when: (a4c_conf_result.stat.exists) and (a4c_working_dir != actual_a4c_working_dir)
+  when: (a4c_conf_result.stat.exists) and (a4c_working_dir != actual_a4c_working_dir) and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir)
 
 - name: Clean the old working directory
   become: true
   shell: "rm -rf {{ actual_a4c_working_dir }}/*"
-  when: (a4c_conf_result.stat.exists) and (a4c_working_dir != actual_a4c_working_dir)
+  when: (a4c_conf_result.stat.exists) and (a4c_working_dir != actual_a4c_working_dir) and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir)
 
 - name: Actual working directory is as expected
   debug:
