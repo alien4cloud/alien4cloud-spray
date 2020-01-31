@@ -116,4 +116,4 @@
 - name: Clean the working directory
   become: true
   shell: "rm -rf {{ working_directory }}/*"
-  when: (ha_enabled)
+  when: (ha_enabled) and (should_clean_share)

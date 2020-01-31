@@ -29,11 +29,11 @@
   become: true
 
 - set_fact:
-    alien_url: "{{ a4c_protocol }}://localhost:{{ a4c_port }}/rest/admin/health"
+    alien_health_url: "{{ a4c_protocol }}://localhost:{{ a4c_port }}/rest/admin/health"
 
-- name: "Wait for a4c to be reachable at {{ alien_url }}"
+- name: "Wait for a4c to be reachable at {{ alien_health_url }}"
   uri:
-    url: "{{ alien_url }}"
+    url: "{{ alien_health_url }}"
     method: GET
     return_content: yes
     validate_certs: no
@@ -44,9 +44,9 @@
   delay: 30
   ignore_errors: yes
 
-- name: Fail when A4C is not reachable at {{ alien_url }}
+- name: Fail when A4C is not reachable at {{ alien_health_url }}
   fail:
-    msg: "Not able to reach A4C at {{ alien_url }} after 10 retries !"
+    msg: "Not able to reach A4C at {{ alien_health_url }} after 10 retries !"
   when: (result.status != 200)
 
 # - name: Check if init directory exists

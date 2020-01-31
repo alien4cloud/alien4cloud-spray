@@ -30,6 +30,8 @@
     headers:
       Content-Type: "application/x-www-form-urlencoded"
   register: login
+  when: should_login
 
 - set_fact:
     session_id: "{{ login.set_cookie.split(';')[0] }}"
+  when: should_login

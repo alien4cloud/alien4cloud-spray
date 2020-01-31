@@ -1,0 +1,28 @@
+---
+
+- set_fact:
+    url: "{{ alien_url }}/login?username={{ a4c_admin_usr }}&password={{ a4c_admin_pwd }}&submit=Login"
+
+- name: Finally use this url to reach a4c
+  debug:
+    var: alien_url
+
+- name: "Login onto A4C using {{url}}"
+  uri:
+    url: "{{url}}"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    status_code: 302
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+  register: login
+  until: result.status == 302
+  retries: 30
+  delay: 30
+  ignore_errors: yes
+
+- name: Fail when fully started A4C is not reachable at {{ alien_url }}
+  fail:
+    msg: "Not able to login on A4C at {{ alien_url }} after 30 retries !"
+  when: (result.status != 302)

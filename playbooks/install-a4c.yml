@@ -21,14 +21,6 @@
     - a4c/configure-a4c
     - consul/start-consul
 
-- hosts: a4c
-  name: Start A4C
-  gather_facts: no
-  # we want each A4C to be started sequencially in case of HA
-  serial: 1
-  roles:
-    - a4c/start-a4c
-
 - hosts: a4cfront
   name: Install A4C front (Nginx, consul and consul-template)
   roles:
@@ -45,3 +37,13 @@
     - consul/start-consul
     - nginx/start-nginx
     - a4c_front/start-consul-template
+
+- hosts: a4c
+  name: Start A4C
+  gather_facts: no
+  # we want each A4C to be started sequencially in case of HA
+  serial: 1
+  roles:
+    - { role: a4c/config/define_a4c_url, should_login: false }
+    - a4c/start-a4c
+    - a4c/config/wait_a4c_fullstart
