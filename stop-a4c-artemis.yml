@@ -1,13 +1,37 @@
 ---
+
+- hosts: a4cfront
+  name: Stop A4C front (Nginx, consul and consul-template).
+  roles:
+    - nginx/stop-nginx
+    - a4c_front/stop-consul-template
+    - consul/stop-consul
+
+- hosts: a4c
+  name: Stop A4C.
+  roles:
+    - consul/stop-consul
+    - a4c/stop-a4c
+
+- hosts: yorcfront
+  name: Stop Yorc front (Nginx).
+  roles:
+    - nginx/stop-nginx
+
 - hosts: yorc
   name: Stop Yorc
   become: false
   roles:
-    - stop-yorc
-    - stop-consul
+    - yorc/stop-yorc
+    - consul/stop-consul
 
 - hosts: consul
   name: Stop Consul
   become: false
   roles:
-    - stop-consul
+    - consul/stop-consul
+
+- hosts: elasticsearch
+  name: Stop Elasticsearch
+  roles:
+    - elasticsearch/stop-elasticsearch

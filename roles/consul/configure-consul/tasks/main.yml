@@ -67,6 +67,12 @@
     consul_key_config: "{{ consul_key_slurped['content'] | b64decode | from_json }}"
   when: (consul_gossip_encrypt)
 
+- name: Finally remove temporary folder containing consul key
+  become: true
+  file:
+    path: "{{ consul_key_file.path }}"
+    state: absent
+
 - name: Ensure consul_tls variable is defined
   set_fact:
     consul_tls: false
@@ -120,6 +126,7 @@
   copy:
     src: "{{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
     dest: "{{ ca_file_path }}"
+    mode: "0600"
   become: true
   become_user: "{{ consul_user }}"
   when: (consul_tls)
@@ -133,6 +140,7 @@
   copy:
     src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
     dest: "{{ hostkey_file_path }}"
+    mode: "0600"
   become: true
   become_user: "{{ consul_user }}"
   when: (consul_tls)
@@ -146,6 +154,7 @@
   copy:
     src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
     dest: "{{ hostcert_file_path }}"
+    mode: "0600"
   become: true
   become_user: "{{ consul_user }}"
   when: (consul_tls)

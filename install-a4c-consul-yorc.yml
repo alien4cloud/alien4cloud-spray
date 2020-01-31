@@ -47,6 +47,7 @@
     - a4c/stop-a4c
     - install-java
     - a4c/install-a4c
+    - consul/configure-consul-gossip-keygen
     - consul/install-consul
     - { role: consul/configure-consul, consul_mode: 'client' }
     - a4c/configure-a4c
@@ -66,6 +67,7 @@
     - a4c_front/stop-consul-template
     - consul/stop-consul
     - nginx/install-nginx
+    - consul/configure-consul-gossip-keygen
     - consul/install-consul
     - { role: consul/configure-consul, consul_mode: 'client' }
     - a4c_front/configure-nginx

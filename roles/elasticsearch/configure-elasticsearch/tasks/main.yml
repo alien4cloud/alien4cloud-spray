@@ -74,6 +74,8 @@
 - name: Creates elasticsearch ssl directory
   file:
     path: "/etc/elasticsearch/ssl"
+    owner: "{{ elasticsearch_user }}"
+    group: "{{ elasticsearch_group }}"
     state: directory
   become: true
   when: (elasticsearch_tls)
@@ -87,6 +89,9 @@
   copy:
     src: "{{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
     dest: "{{ ca_file_path }}"
+    owner: "{{ elasticsearch_user }}"
+    group: "{{ elasticsearch_group }}"
+    mode: "0600"
   become: true
   when: (elasticsearch_tls)
 
@@ -99,6 +104,9 @@
   copy:
     src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
     dest: "{{ hostkey_file_path }}"
+    owner: "{{ elasticsearch_user }}"
+    group: "{{ elasticsearch_group }}"
+    mode: "0600"
   become: true
   when: (elasticsearch_tls)
 
@@ -111,6 +119,9 @@
   copy:
     src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
     dest: "{{ hostcert_file_path }}"
+    owner: "{{ elasticsearch_user }}"
+    group: "{{ elasticsearch_group }}"
+    mode: "0600"    
   become: true
   when: (elasticsearch_tls)
 
@@ -133,6 +144,7 @@
 - name: Setup elasticsearch security (transport.ssl.verification_mode)
   lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?xpack.security.transport.ssl.verification_mode:.*'
     line: "xpack.security.transport.ssl.verification_mode: certificate"
   become: true
   when: (elasticsearch_tls)
@@ -140,6 +152,7 @@
 - name: Setup elasticsearch security (transport.ssl.key)
   lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?xpack.security.transport.ssl.key:.*'
     line: "xpack.security.transport.ssl.key: {{hostkey_file_path}}"
   become: true
   when: (elasticsearch_tls)
@@ -147,6 +160,7 @@
 - name: Setup elasticsearch security (transport.ssl.certificate)
   lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?xpack.security.transport.ssl.certificate:.*'
     line: "xpack.security.transport.ssl.certificate: {{hostcert_file_path}}"
   become: true
   when: (elasticsearch_tls)
@@ -154,6 +168,7 @@
 - name: Setup elasticsearch security (transport.ssl.certificate_authorities)
   lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?xpack.security.transport.ssl.certificate_authorities:.*'
     line: "xpack.security.transport.ssl.certificate_authorities: [\"{{ca_file_path}}\"]"
   become: true
   when: (elasticsearch_tls)
@@ -177,6 +192,7 @@
 - name: Setup elasticsearch security (http.ssl.verification_mode)
   lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?xpack.security.http.ssl.verification_mode:.*'
     line: "xpack.security.http.ssl.verification_mode: certificate"
   become: true
   when: (elasticsearch_tls)
@@ -184,6 +200,7 @@
 - name: Setup elasticsearch security (http.ssl.key)
   lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?xpack.security.http.ssl.key:.*'
     line: "xpack.security.http.ssl.key: {{hostkey_file_path}}"
   become: true
   when: (elasticsearch_tls)
@@ -191,6 +208,7 @@
 - name: Setup elasticsearch security (http.ssl.certificate)
   lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?xpack.security.http.ssl.certificate:.*'
     line: "xpack.security.http.ssl.certificate: {{hostcert_file_path}}"
   become: true
   when: (elasticsearch_tls)
@@ -198,6 +216,7 @@
 - name: Setup elasticsearch security (http.ssl.certificate_authorities)
   lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?xpack.security.http.ssl.certificate_authorities:.*'
     line: "xpack.security.http.ssl.certificate_authorities: [\"{{ca_file_path}}\"]"
   become: true
   when: (elasticsearch_tls)
@@ -205,6 +224,7 @@
 - name: Setup elasticsearch security (http.ssl.certificate_authorities)
   lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?xpack.security.authc.anonymous.roles:.*'
     line: "xpack.security.authc.anonymous.roles: superuser"
   become: true
   when: (elasticsearch_tls)

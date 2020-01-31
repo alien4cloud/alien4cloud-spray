@@ -93,22 +93,21 @@
     msg: "A4C does'nt seem te be installed, you cant' upgrade it !"
   when: (not a4c_installed)
 
-- name: Create temporary folder
-  become: true
-  become_user: "{{ a4c_user }}"
-  file:
-    path: "/tmp/upgradeA4C"
-    state: directory
-    owner: "{{ a4c_user }}"
-  register: temp_dir
-
 # - name: Create temporary folder
 #   become: true
 #   become_user: "{{ a4c_user }}"
-#   tempfile:
+#   file:
+#     path: "/tmp/upgradeA4C"
 #     state: directory
-#     suffix: upgrade_a4c
+#     owner: "{{ a4c_user }}"
 #   register: temp_dir
+- name: Create temporary folder
+  become: true
+  become_user: "{{ a4c_user }}"
+  tempfile:
+    state: directory
+    suffix: upgrade_a4c
+  register: temp_dir
 
 - name: Extract alien4cloud archive from remote source
   unarchive:
@@ -373,8 +372,8 @@
   with_items: "{{ upgradePluginMap.keys() }}"
   when: (upgradePluginMap[item].inplace is not defined)
 
-# - name: Finally remove temporary folder
-#   become: true
-#   file:
-#     path: "{{ temp_dir.path }}"
-#     state: absent
+- name: Finally remove temporary folder
+  become: true
+  file:
+    path: "{{ temp_dir.path }}"
+    state: absent
