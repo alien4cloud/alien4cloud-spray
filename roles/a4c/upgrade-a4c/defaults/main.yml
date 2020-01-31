@@ -1,3 +1,5 @@
+a4c_log_dir: /var/log/a4c
+
 # When set to true, old wars and plugins are backuped before beeing replaced
 a4c_update_backup: true
 
