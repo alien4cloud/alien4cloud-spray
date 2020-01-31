@@ -1,6 +1,7 @@
 ---
 - hosts: a4cconfig
   name: Test the setup deploying an application based on mocks.
+  gather_facts: no
   become: false
 
   roles:
