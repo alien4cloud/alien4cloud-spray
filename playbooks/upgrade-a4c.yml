@@ -6,6 +6,7 @@
     - commons/define_commons_vars
     - a4c/stop-a4c
     - a4c/upgrade-a4c
+    - a4c/configure-a4c
 
 - hosts: a4c
   name: Start A4C.
