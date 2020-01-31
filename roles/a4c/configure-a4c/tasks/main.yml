@@ -103,6 +103,7 @@
   become: true
   become_user: "{{ a4c_user }}"
   copy:
+    remote_src: yes
     src: "{{ actual_a4c_working_dir }}/"
     dest: "{{ a4c_working_dir }}"
     mode: preserve
