@@ -106,7 +106,12 @@
     src: "{{ actual_a4c_working_dir }}/"
     dest: "{{ a4c_working_dir }}"
     mode: preserve
-    backup: yes
+    backup: no
+  when: (a4c_conf_result.stat.exists) and (a4c_working_dir != actual_a4c_working_dir)
+
+- name: Clean the old working directory
+  become: true
+  shell: "rm -rf {{ actual_a4c_working_dir }}/*"
   when: (a4c_conf_result.stat.exists) and (a4c_working_dir != actual_a4c_working_dir)
 
 - name: Actual working directory is as expected

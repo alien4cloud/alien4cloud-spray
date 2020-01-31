@@ -115,6 +115,5 @@
 
 - name: Clean the working directory
   become: true
-  become_user: "{{ working_user }}"
   shell: "rm -rf {{ working_directory }}/*"
   when: (ha_enabled)
