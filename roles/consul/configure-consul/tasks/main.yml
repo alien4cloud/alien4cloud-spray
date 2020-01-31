@@ -265,12 +265,17 @@
 
 - name: Add 'http' to consul ports config
   set_fact:
+    consul_port_config: "{{consul_port_config |combine({'http': consul_http_port})}}"
+  when: (not consul_tls)
+
+- name: Add 'http' to consul ports config
+  set_fact:
     consul_port_config: "{{consul_port_config |combine({'http': -1})}}"
   when: (consul_tls)
 
 - name: Add 'https' to consul ports config
   set_fact:
-    consul_port_config: "{{consul_port_config |combine({'https': 8501})}}"
+    consul_port_config: "{{consul_port_config |combine({'https': consul_https_port})}}"
   when: (consul_tls)
 
 - name: Add 'ports' to consul config
