@@ -84,3 +84,8 @@
     flat: yes
     validate_checksum: no
   when: (consul_gossip_encrypt) and (not consul_gossip_encrypt_key_file_exists)
+
+- name: Finally remove temporary folder
+  file:
+    path: "{{ consul_key_file.path }}"
+    state: absent

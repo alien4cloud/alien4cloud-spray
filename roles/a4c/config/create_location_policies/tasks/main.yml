@@ -129,3 +129,9 @@
     status_code: 200
   register: result
   with_items: "{{propertyValuesPerResource}}"
+
+
+- name: Finally remove temporary folder
+  file:
+    path: "{{ temp_dir.path }}"
+    state: absent

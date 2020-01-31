@@ -92,3 +92,8 @@
     HEADER_cookie: "{{ session_id }}"
     status_code: 200
   with_items: "{{resourceIds}}"
+
+- name: Finally remove temporary folder
+  file:
+    path: "{{ temp_dir.path }}"
+    state: absent

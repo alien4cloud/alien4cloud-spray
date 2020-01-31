@@ -299,3 +299,8 @@
     dest: "{{ consul_install_dir }}/server-config.json"
   become: true
   become_user: "{{ consul_user }}"
+
+- name: Finally remove temporary folder
+  file:
+    path: "{{ consul_key_file.path }}"
+    state: absent

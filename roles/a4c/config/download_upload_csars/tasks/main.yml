@@ -24,3 +24,9 @@
   shell: "curl -k -X POST -H 'cookie: {{ session_id }}' -F file=@{{ item.path }} '{{ alien_url }}/rest/latest/csars'"
   with_items: "{{ cars_files.files | sort(attribute='path') | list }}"
   when: (csar_urls is defined)
+
+- name: Finally remove temporary folder
+  file:
+    path: "{{ temp_dir.path }}"
+    state: absent
+  when: (csar_urls is defined)

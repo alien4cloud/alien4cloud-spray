@@ -28,3 +28,8 @@
     kube_config: "{{ resources_slurped['content'] | b64decode }}"
 - debug:
     var: kube_config
+
+- name: Finally remove temporary folder
+  file:
+    path: "{{ temp_dir.path }}"
+    state: absent

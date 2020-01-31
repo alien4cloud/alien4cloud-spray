@@ -52,3 +52,8 @@
     body: "{{ orchestratorConfiguration | to_json }}"
     body_format: json
     status_code: 200
+
+- name: Finally remove temporary folder
+  file:
+    path: "{{ yorc_orchestrator_config_file.path }}"
+    state: absent

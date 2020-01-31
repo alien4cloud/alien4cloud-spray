@@ -56,3 +56,8 @@
     dest: "{{ yorc_orchestrator_config_file_path }}"
     flat: yes
     validate_checksum: no
+
+- name: Finally remove temporary folder
+  file:
+    path: "{{ yorc_orchestrator_config_file_path.path }}"
+    state: absent

@@ -29,3 +29,8 @@
   debug:
     var: resources_yaml
   when: (resources_yaml is defined)
+
+- name: Finally remove temporary folder
+  file:
+    path: "{{ temp_dir.path }}"
+    state: absent
