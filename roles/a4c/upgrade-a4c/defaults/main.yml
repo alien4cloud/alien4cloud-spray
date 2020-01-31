@@ -1,4 +1,4 @@
-a4c_log_dir: /var/log/a4c
+a4c_log_dir: /var/log/alien4cloud
 
 # When set to true, old wars and plugins are backuped before beeing replaced
 a4c_update_backup: true
