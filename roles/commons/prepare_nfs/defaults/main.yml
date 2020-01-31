@@ -1,1 +1,2 @@
+# indicates that the share folder will be cleaned after NFS prepare stage 
 should_clean_share: true
