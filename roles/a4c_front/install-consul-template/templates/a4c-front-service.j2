@@ -8,7 +8,7 @@ Restart=on-failure
 WorkingDirectory=/var/lib/consul_template
 ExecStart=/var/lib/consul_template/consul-template -config /etc/consul_template/consul_template.conf
 ExecReload=/bin/kill -HUP $MAINPID
-KillSignal=SIGTERM
+KillSignal=SIGKILL
 
 [Install]
 WantedBy=multi-user.target
