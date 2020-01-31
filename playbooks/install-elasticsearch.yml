@@ -1,6 +1,7 @@
 ---
 - hosts: elasticsearch
   name: Install all common dependencies.
+  gather_facts: no  
   roles:
     - commons/install-common-dependencies
     - commons/add_dns_server

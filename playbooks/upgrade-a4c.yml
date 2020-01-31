@@ -9,6 +9,7 @@
     - a4c/configure-a4c
 
 - hosts: a4c
+  gather_facts: no
   name: Start A4C.
   # we want each A4C to be started sequencially in case of HA
   serial: 1

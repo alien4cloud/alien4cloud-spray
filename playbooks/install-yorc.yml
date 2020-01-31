@@ -3,6 +3,7 @@
     - yorc
     - yorcfront
   name: Install all common dependencies.
+  gather_facts: no  
   roles:
     - commons/install-common-dependencies
     - commons/add_dns_server
@@ -25,7 +26,7 @@
 - hosts: yorcfront
   name: Install Yorc front (Nginx).
   roles:
-    - commons/define_commons_vars            
+    - commons/define_commons_vars
     - nginx/stop-nginx
     - nginx/install-nginx
     - yorc/configure-nginx
