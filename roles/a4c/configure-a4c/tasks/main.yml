@@ -25,11 +25,6 @@
   debug:
     var: consul_tls
 
-- name: Ensure the 'a4c_log_dir' exists
-  set_fact :
-    a4c_log_dir: "{{ a4c_install_dir }}/alien4cloud/logs"
-  when: a4c_log_dir is not defined
-
 - name: Ensure logs directory exists
   become: true
   file:
