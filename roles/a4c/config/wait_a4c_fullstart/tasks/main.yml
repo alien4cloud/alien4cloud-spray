@@ -16,7 +16,7 @@
     status_code: 302
     headers:
       Content-Type: "application/x-www-form-urlencoded"
-  register: login
+  register: result
   until: result.status == 302
   retries: 30
   delay: 30
