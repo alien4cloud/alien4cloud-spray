@@ -65,14 +65,14 @@
         resources_file_artifact: 'resources/services.yaml'
       }
     - { role: a4c/config/git,
-        repositoryUrl: 'http://gitlab.technique.artemis/infostructure/socle/service-applicatif/a4c-standardtypes',
+        repositoryUrl: 'http://gitlab.technique.artemis/infostructure/socle/service-applicatif/a4c-standardtypes.git',
         repositoryUsername: 'root',
         repositoryPassword: '***',
         branchId: 'develop',
         subPath: ''
       }
     - { role: a4c/config/git,
-        repositoryUrl: 'http://gitlab.technique.artemis/temp/labs_a4c',
+        repositoryUrl: 'http://gitlab.technique.artemis/run/labs_a4c.git',
         repositoryUsername: 'root',
         repositoryPassword: '****',
         branchId: 'develop',
