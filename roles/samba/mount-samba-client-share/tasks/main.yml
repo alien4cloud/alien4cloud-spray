@@ -18,7 +18,7 @@
   become: true
   lineinfile:
     path: "/etc/fstab"
-    regexp: "^\\/\\/{{ groups['samba'][0] }}{{ appendable_private_domain_name }}\\/{{ samba_share_name }.*"
+    regexp: "^\\/\\/{{ groups['samba'][0] }}{{ appendable_private_domain_name }}\\/{{ samba_share_name }}.*"
     # //sva-a4c-share-1.priv.artemis/a4c /mnt/smb/a4c cifs rw,guest 0 0
     line: "//{{ groups['samba'][0] }}{{ appendable_private_domain_name }}/{{ samba_share_name } {{ samba_share_path }} cifs rw,guest 0 0"
   # when: (ha_enabled)
