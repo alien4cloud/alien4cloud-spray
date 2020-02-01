@@ -6,10 +6,10 @@
     </Properties>
     <Appenders>
         <Console name="STDOUT">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %c{1}:%L - %m%n" />
         </Console>
         <File name="FILE" fileName="{{ a4c_log_dir }}/alien4cloud.log">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %c{1}:%L - %m%n" />
         </File>
         <RollingFile name="DEPLOYMENT_LOGS_APPENDER" fileName="${deployment_path}/deployments.log"
                      filePattern="${deployment_path}/deployments-%d{yyyy-MM-dd}.log.gz">
