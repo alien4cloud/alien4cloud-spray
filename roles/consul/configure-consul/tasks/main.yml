@@ -250,7 +250,7 @@
 
 - name: Add 'verify_incoming' to consul config
   set_fact:
-    consul_config: "{{consul_config |combine({'verify_incoming': true})}}"
+    consul_config: "{{consul_config |combine({'verify_incoming': false})}}"
   with_dict: "{{consul_config}}"
   when: (_consul_tls)
 
