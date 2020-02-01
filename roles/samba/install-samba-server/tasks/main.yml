@@ -1,13 +1,8 @@
 - name: Instal the needed packages
   yum:
-    pkg: "{{ item }}"
+    pkg: ['samba', 'samba-client', 'samba-common']
     state: present
     update_cache: true
-  become: true
-  with_items:
-    - samba
-    - samba-client
-    - samba-common
   become: true
 
 - name: Creates samba directory

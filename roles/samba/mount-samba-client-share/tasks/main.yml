@@ -6,16 +6,51 @@
     mode: 0777
   become: true
 
-- name: Loop over the samba group
-  set_fact:
-    samba_ip: "{{ item }}"
-  with_items: "{{ groups['samba'] }}"
 
-- name: Mount samba share
-  mount:
-    path: "{{ samba_share_path }}"
-    src: "//{{ samba_ip }}/{{ samba_share_name }}"
-    fstype: cifs
-    state: mounted
-    opts: "rw,sec=ntlm,guest"
+- name: UnMount NFS share
   become: true
+  # become_user: "{{ working_user }}"
+  ignore_errors: yes
+  shell: "umount {{ mount_directory }}"
+  # when: (ha_enabled)
+
+- name: Add smb mount in /etc/fstab
+  become: true
+  lineinfile:
+    path: "/etc/fstab"
+    # //sva-a4c-share-1.priv.artemis/a4c /mnt/smb/a4c cifs rw,guest 0 0
+    line: "//{{ groups['samba'][0] }}{{ appendable_private_domain_name }} {{ mount_directory }} cifs rw,guest 0 0"
+  # when: (ha_enabled)
+
+- name: Mount smb share
+  become: true
+  shell: "mount -av"
+  # when: (ha_enabled)
+
+- name: Ensure working directory exists
+  become: true
+  become_user: "{{ working_user }}"
+  file:
+    path: "{{ working_directory }}"
+    state: directory
+  # when: (ha_enabled)
+
+- name: Clean the working directory
+  become: true
+  shell: "rm -rf {{ working_directory }}/*"
+  when: (ha_enabled or true) and (should_clean_share)
+
+
+# - name: Loop over the samba group
+#   set_fact:
+#     samba_ip: "{{ item }}"
+#   with_items: "{{ groups['samba'] }}"
+#
+# - name: Mount samba share
+#   mount:
+#     path: "{{ samba_share_path }}"
+#     src: "//{{ samba_ip }}/{{ samba_share_name }}"
+#     fstype: cifs
+#     state: mounted
+#     opts: "rw,sec=ntlm,guest"
+#   become: true

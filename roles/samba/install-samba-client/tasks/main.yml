@@ -1,8 +1,6 @@
-- name: Instal the needed packages
+- name: Instal cifs-utils packages
   yum:
-    pkg: "{{ item }}"
+    pkg: cifs-utils
     state: present
     update_cache: true
   become: true
-  with_items:
-    - cifs-utils
