@@ -10,6 +10,7 @@
 - hosts: consului
   name: Install configure and start consul.
   roles:
+    - commons/debug_vars
     - commons/define_commons_vars
     - consul/stop-consul
     - consul/install-consul

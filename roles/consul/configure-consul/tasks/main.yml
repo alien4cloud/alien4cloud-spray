@@ -76,7 +76,7 @@
 - name: Ensure consul_tls variable is defined
   set_fact:
     consul_tls: false
-  when: consul_tls is not defined or (force_no_tls is defined and force_no_tls)
+  when: (consul_tls is not defined) or (force_no_tls is defined and force_no_tls)
 
 - name: The 'consul_tls' variable defines if consul http connections should be secured
   debug:
