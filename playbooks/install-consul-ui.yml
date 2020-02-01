@@ -9,13 +9,11 @@
 
 - hosts: consului
   name: Install configure and start consul.
-  vars:
-    consul_tls: false
-    consul_http_port: 80
   roles:
     - commons/define_commons_vars
     - consul/stop-consul
     - consul/install-consul
     - consul/configure-consul-gossip-keygen
-    - { role: consul/configure-consul, consul_mode: 'client' }
+    - { role: consul/configure-consul, consul_mode: 'client', force_no_tls: true, force_consul_http_port: 80 }
     - consul/start-consul
+    - commons/debug_vars

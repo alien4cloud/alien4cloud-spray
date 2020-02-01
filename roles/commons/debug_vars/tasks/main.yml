@@ -1,0 +1,10 @@
+
+
+
+- name: Here is the 'consul_http_port' var value
+  debug:
+    var: consul_http_port
+
+- name: Here is the 'consul_tls' var value
+  debug:
+    var: consul_tls
