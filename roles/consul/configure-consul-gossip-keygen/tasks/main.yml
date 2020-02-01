@@ -89,3 +89,4 @@
   file:
     path: "{{ consul_key_file.path }}"
     state: absent
+  when: (consul_gossip_encrypt) and (not consul_gossip_encrypt_key_file_exists)
