@@ -39,7 +39,8 @@
 - name: Clean the working directory
   become: true
   shell: "rm -rf {{ samba_share_path }}/*"
-  when: (ha_enabled or true) and (should_clean_share)
+  when: (should_clean_share)
+  # when: (ha_enabled or true) and (should_clean_share)
 
 
 # - name: Loop over the samba group
