@@ -11,7 +11,7 @@
   become: true
   # become_user: "{{ working_user }}"
   ignore_errors: yes
-  shell: "umount {{ samba_share_path }}"
+  shell: "umount {{ mount_directory }}"
   # when: (ha_enabled)
 
 - name: Add smb mount in /etc/fstab
@@ -19,7 +19,7 @@
   lineinfile:
     path: "/etc/fstab"
     # //sva-a4c-share-1.priv.artemis/a4c /mnt/smb/a4c cifs rw,guest 0 0
-    line: "//{{ groups['samba'][0] }}{{ appendable_private_domain_name }} {{ samba_share_path }} cifs rw,guest 0 0"
+    line: "//{{ groups['samba'][0] }}{{ appendable_private_domain_name }} {{ mount_directory }} cifs rw,guest 0 0"
   # when: (ha_enabled)
 
 - name: Mount smb share
@@ -31,13 +31,13 @@
   become: true
   become_user: "{{ working_user }}"
   file:
-    path: "{{ samba_share_path }}"
+    path: "{{ working_directory }}"
     state: directory
   # when: (ha_enabled)
 
 - name: Clean the working directory
   become: true
-  shell: "rm -rf {{ samba_share_path }}/*"
+  shell: "rm -rf {{ working_directory }}/*"
   when: (ha_enabled or true) and (should_clean_share)
 
 
