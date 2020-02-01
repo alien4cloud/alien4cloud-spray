@@ -73,6 +73,12 @@
     path: "{{ consul_key_file.path }}"
     state: absent
 
+- debug:
+    msg: "{{ (consul_tls is not defined) or (force_no_tls is defined and force_no_tls) }}"
+
+- debug:
+    var: force_no_tls
+
 - name: Ensure consul_tls variable is defined
   set_fact:
     consul_tls: false
