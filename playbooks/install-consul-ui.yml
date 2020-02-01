@@ -1,0 +1,18 @@
+---
+- hosts: consul_ui
+  name: Install all common dependencies.
+  gather_facts: no
+  roles:
+    - commons/install-common-dependencies
+    - commons/add_dns_server
+    # - commons/remove_epel_repo
+
+- hosts: consul_ui
+  name: Install configure and start consul.
+  roles:
+    - commons/define_commons_vars
+    - consul/stop-consul
+    - consul/install-consul
+    - consul/configure-consul-gossip-keygen
+    - { role: consul/configure-consul, consul_mode: 'client', consul_tls: false, consul_http_port: 80 }
+    - consul/start-consul
