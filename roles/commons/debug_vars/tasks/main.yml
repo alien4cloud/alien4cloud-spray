@@ -1,5 +1,7 @@
 
-
+- name: Here is the 'consul_http_port' var value
+  debug:
+    msg: "========================================================================"
 
 - name: Here is the 'consul_http_port' var value
   debug:
