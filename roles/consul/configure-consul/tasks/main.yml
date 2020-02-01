@@ -275,12 +275,12 @@
 
 - name: Ensure _consul_http_port variable is defined
   set_fact:
-    _consul_http_port: {{ consul_http_port }}
+    _consul_http_port: "{{ consul_http_port }}"
   when: (consul_http_port is defined)
 
 - name: Ensure _consul_http_port variable is defined
   set_fact:
-    _consul_http_port: {{ force_consul_http_port }}
+    _consul_http_port: "{{ force_consul_http_port }}"
   when: (force_consul_http_port is defined)
 
 - name: Add 'http' to consul ports config
