@@ -1,5 +1,5 @@
 ---
-- hosts: consul_ui
+- hosts: consului
   name: Install all common dependencies.
   gather_facts: no
   roles:
@@ -7,7 +7,7 @@
     - commons/add_dns_server
     # - commons/remove_epel_repo
 
-- hosts: consul_ui
+- hosts: consului
   name: Install configure and start consul.
   roles:
     - commons/define_commons_vars
