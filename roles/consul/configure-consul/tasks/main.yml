@@ -271,7 +271,6 @@
 - name: Define a variable to store the consul 'ports' configuration
   set_fact:
     consul_port_config: "{{ '{}' | from_json }}"
-  when: (_consul_tls)
 
 - name: Ensure _consul_http_port variable is defined
   set_fact:
@@ -286,7 +285,7 @@
 - name: Add 'http' to consul ports config
   set_fact:
     consul_port_config: "{{consul_port_config |combine({'http': _consul_http_port})}}"
-  when: (not _consul_tls)
+  # when: (not _consul_tls)
 
 - name: Add 'http' to consul ports config
   set_fact:
@@ -302,7 +301,7 @@
   set_fact:
     consul_config: "{{consul_config |combine({'ports': consul_port_config})}}"
   with_dict: "{{consul_config}}"
-  when: (_consul_tls)
+  # when: (_consul_tls)
 
 - name: Add 'enable_agent_tls_for_checks' to consul config when Yorc is secured
   set_fact:
