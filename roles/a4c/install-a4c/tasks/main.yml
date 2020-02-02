@@ -49,7 +49,7 @@
     state: directory
     owner: "{{ a4c_user }}"
 
-- name: Ensure the 'a4c_working_dir' exists
+- name: Ensure the 'a4c_working_dir' variable is defined
   set_fact :
     a4c_working_dir: "{{ a4c_install_dir }}/runtime"
   when: a4c_working_dir is not defined
