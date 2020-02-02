@@ -1,0 +1,8 @@
+---
+
+- hosts: a4c
+  name: Stop Consul & A4C.
+  gather_facts: no
+  roles:
+    - consul/stop-consul
+    - a4c/stop-a4c
