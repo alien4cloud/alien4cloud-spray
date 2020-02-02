@@ -17,7 +17,7 @@ server {
         location / {
                 proxy_pass {{ a4c_protocol }}://{{ groups['a4c'][0] }}:{{ a4c_port }};
                 # necessary for websockets to work correctly behind a the proxy
-                proxy_set_header Host {{ inventory_hostname }};
+                #proxy_set_header Host {{ inventory_hostname }};
                 proxy_set_header X-Forwarded-Proto $scheme;
                 proxy_set_header X-Forwarded-Port $server_port;
 {% if (securize_nginx) %}
@@ -25,5 +25,9 @@ server {
                 # Force https
                 proxy_redirect http:// https://;
 {% endif %}
+                proxy_connect_timeout      1000;
+                proxy_send_timeout         1000;
+                proxy_read_timeout         1000;
+                send_timeout               1000;
         }
 }

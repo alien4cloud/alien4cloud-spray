@@ -1,6 +1,7 @@
 ---
 # - hosts: a4c
 #   gather_facts: no
+#   serial: 1  
 #   name: Install NFS and mount shared volume for A4C.
 #   roles:
 #     - { role: commons/prepare_nfs,
@@ -10,6 +11,7 @@
 
 - hosts: yorc
   gather_facts: no
+  serial: 1
   name: Install NFS and mount shared volume for Yorc.
   roles:
     - { role: commons/prepare_nfs,
