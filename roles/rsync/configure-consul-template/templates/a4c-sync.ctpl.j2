@@ -7,11 +7,16 @@ me="{{ inventory_hostname }}{{ appendable_private_domain_name }}"
 leaderName="$( cut -d ':' -f 1 <<< $leader )"
 echo "- $(date) : leader is $leaderName"
 
-if [ "$me" = "$leaderName" ] && [ "$1" != "-f" ]; then
-    echo "I am the leader, do nothing"
+if [ "$me" = "$leaderName" ]; then
+    if [ "$1" != "-f" ]; then
+      echo "Syncing files before becoming leader $leaderName"
+      rsync -Pavzh -e "ssh -o 'StrictHostKeyChecking no' -i ~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}" $leaderName:{{ a4c_working_dir }}/ {{ a4c_working_dir }}
+    else
+      echo "I am the leader, do nothing"
+    fi
 else
     echo "Syncing files from $leaderName"
-    rsync -Pavzh -e "ssh -o 'StrictHostKeyChecking no' -i ~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}" $leaderName:{{ a4c_working_dir }} {{ a4c_working_dir }}
+    rsync -Pavzh -e "ssh -o 'StrictHostKeyChecking no' -i ~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}" $leaderName:{{ a4c_working_dir }}/ {{ a4c_working_dir }}
 fi
 
 {{ '{{' }} else {{ '}}' }}
