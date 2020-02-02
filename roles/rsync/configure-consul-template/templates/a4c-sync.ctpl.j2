@@ -11,7 +11,7 @@ if [ "$me" = "$leaderName" ] && [ "$1" != "-f" ]; then
     echo "I am the leader, do nothing"
 else
     echo "Syncing files from $leaderName"
-    rsync -Pavzh -e "ssh -o 'StrictHostKeyChecking no' -i ~/.ssh/{{ inventory_hostname }}" $leaderName:{{ a4c_working_dir }} {{ a4c_working_dir }}
+    rsync -Pavzh -e "ssh -o 'StrictHostKeyChecking no' -i ~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}" $leaderName:{{ a4c_working_dir }} {{ a4c_working_dir }}
 fi
 
 {{ '{{' }} else {{ '}}' }}
