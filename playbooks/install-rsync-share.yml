@@ -11,4 +11,5 @@
     - rsync/install-consul-template
     - rsync/configure-consul-template
     - rsync/schedule-sync
+    - consul/start-consul    
     - rsync/start-consul-template
