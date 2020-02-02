@@ -12,7 +12,6 @@
   become_user: "{{ a4c_user }}"
   file:
     path: "~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}"
-    owner: "{{ a4c_user }}"
     state: absent
 
 - name: Ensure no public key is present
@@ -20,7 +19,6 @@
   become_user: "{{ a4c_user }}"
   file:
     path: "~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}.pub"
-    owner: "{{ a4c_user }}"
     state: absent
 
 - name: Generate keypair
