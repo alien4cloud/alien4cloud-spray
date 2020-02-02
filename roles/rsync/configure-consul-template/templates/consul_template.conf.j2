@@ -18,5 +18,5 @@ template {
   source = "/etc/consul_template/a4c-sync.ctpl"
   destination = "/var/lib/consul_template/a4c-sync.sh"
   perms = 0700
-  command = "/var/lib/consul_template/a4c-sync.sh -f >> {{ a4c_log_dir }}/sync.log 2>&1"
+  command = "bash -c '/var/lib/consul_template/a4c-sync.sh -f >> {{ a4c_log_dir }}/sync.log 2>&1'"
 }
