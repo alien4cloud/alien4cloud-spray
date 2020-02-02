@@ -1,5 +1,7 @@
 
 - name: Schedule workinig directory sync each minute
+  become: true
+  become_user: "{{ a4c_user }}"
   cron:
     name: "Sync working directory"
     minute: "*"
