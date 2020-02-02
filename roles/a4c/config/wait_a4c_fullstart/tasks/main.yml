@@ -22,7 +22,41 @@
   delay: 30
   ignore_errors: yes
 
+
 - name: Fail when fully started A4C is not reachable at {{ alien_url }}
   fail:
     msg: "Not able to login on A4C at {{ alien_url }} after 30 retries !"
   when: (result.status != 302)
+
+- name: "Login onto A4C using {{url}}"
+  uri:
+    url: "{{url}}"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    status_code: 302
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+  register: login
+
+- set_fact:
+    session_id: "{{ login.set_cookie.split(';')[0] }}"
+
+- name: Get application list
+  uri:
+    url: "{{ alien_url }}/rest/latest/applications/search"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body_format: json
+    body:
+      from: 0
+      size: 1
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 30
+  delay: 30
+  ignore_errors: yes
