@@ -9,7 +9,7 @@
 
 - name: Get the current user
   set_fact :
-    consul_template_user: "{{ ansible_user }}"
+    consul_template_user: "{{ a4c_user }}"
   when: consul_template_user is not defined
 
 - name: Ensure consul_tls variable is defined
