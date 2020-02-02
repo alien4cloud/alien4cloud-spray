@@ -3,7 +3,7 @@
   set_fact :
     a4c_working_dir: "{{ a4c_install_dir }}/runtime"
   when: a4c_working_dir is not defined
-  
+
 - name: Check if a4c condif already exist
   stat:
     path: "{{ a4c_install_dir }}/alien4cloud/config/alien4cloud-config.yml"
@@ -45,6 +45,15 @@
   become: true
   become_user: "{{ a4c_user }}"
 
+- name: Check if actual a4c_working_dir is empty
+  find:
+    paths: "{{ actual_a4c_working_dir }}/"
+  register: actual_a4c_working_dir_find
+
+- name: Define a variable indicating if actual working directory is empty
+  set_fact:
+     actual_a4c_working_dir_is_empty: "{{ actual_a4c_working_dir_find.matched == 0 }}"
+
 - name: Check if expected a4c_working_dir is empty
   find:
     paths: "{{ a4c_working_dir }}/"
@@ -64,12 +73,12 @@
   #   dest: "{{ a4c_working_dir }}"
   #   mode: preserve
   #   backup: no
-  when: (a4c_conf_result.stat.exists) and (a4c_working_dir != actual_a4c_working_dir) and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir) and (a4c_working_dir_is_empty)
+  when: (a4c_conf_result.stat.exists) and (a4c_working_dir != actual_a4c_working_dir) and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir) and (a4c_working_dir_is_empty) and (not actual_a4c_working_dir_is_empty)
 
 - name: Clean the actual working directory
   become: true
   shell: "rm -rf {{ actual_a4c_working_dir }}/*"
-  when: (a4c_conf_result.stat.exists) and (a4c_working_dir != actual_a4c_working_dir) and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir) and (a4c_working_dir_is_empty)
+  when: (a4c_conf_result.stat.exists) and (a4c_working_dir != actual_a4c_working_dir) and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir) and (a4c_working_dir_is_empty) and (not actual_a4c_working_dir_is_empty)
 
 - name: Actual working directory is as expected
   debug:
