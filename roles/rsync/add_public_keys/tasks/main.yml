@@ -30,8 +30,6 @@
   become: true
   become_user: "{{ a4c_user }}"
   shell: "cat ~/.ssh/$(basename {{ item }}) >> ~/.ssh/authorized_keys"
-  # args:
-  #   chdir: "~/.ssh/"
   with_items: "{{ pubkeys_ls.stdout_lines }}"
 
 - name: Set authorized_keys permissions to 0400
