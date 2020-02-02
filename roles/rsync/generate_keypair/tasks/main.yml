@@ -10,7 +10,7 @@
 - name: Generate keypair
   become: true
   become_user: "{{ a4c_user }}"
-  shell: "ssh-keygen -f .ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }} -P ''"
+  shell: "ssh-keygen -f ~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }} -P \"\""
   # openssh_keypair:
   #   path: "~/.ssh/{{ inventory_hostname }}"
   #   force: True
