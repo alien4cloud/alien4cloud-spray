@@ -17,6 +17,14 @@
     owner: "{{ a4c_user }}"
   with_items: "{{ pubkeys_ls.stdout_lines }}"
 
+- name: Set authorized_keys permissions to 0600
+  become: true
+  become_user: "{{ a4c_user }}"
+  file:
+    path: "~/.ssh/authorized_keys"
+    owner: "{{ a4c_user }}"
+    mode: '0600'
+
 - name: Feeding authorized_keys with public keys
   become: true
   become_user: "{{ a4c_user }}"
@@ -24,3 +32,11 @@
   # args:
   #   chdir: "~/.ssh/"
   with_items: "{{ pubkeys_ls.stdout_lines }}"
+
+- name: Set authorized_keys permissions to 0400
+  become: true
+  become_user: "{{ a4c_user }}"
+  file:
+    path: "~/.ssh/authorized_keys"
+    owner: "{{ a4c_user }}"
+    mode: '0400'
