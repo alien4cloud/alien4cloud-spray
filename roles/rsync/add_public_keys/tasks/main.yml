@@ -22,6 +22,7 @@
   become_user: "{{ a4c_user }}"
   shell: "touch ~/.ssh/authorized_keys"
 
+
 - name: Set authorized_keys permissions to 0600
   become: true
   become_user: "{{ a4c_user }}"
