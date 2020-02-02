@@ -1,0 +1,8 @@
+---
+
+- hosts: a4c
+  name: Setup rsync for A4C.
+  roles:
+    - rsync/install-rsync
+    - rsync/generate_keypair
+    - rsync/add_public_keys

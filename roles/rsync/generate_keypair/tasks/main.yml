@@ -1,0 +1,16 @@
+
+- name: Generate keypair
+  become: true
+  become_user: "{{ a4c_user }}"
+  openssh_keypair:
+    path: "~/.ssh/{{ inventory_hostname }}"
+    force: True
+
+- name: Copy public key in a local file
+  become: true
+  become_user: "{{ a4c_user }}"
+  fetch:
+    src: "~/.ssh/{{ inventory_hostname }}.pub"
+    dest: "{{ inventory_dir }}/certificates/pub/{{ inventory_hostname }}.pub"
+    flat: yes
+    validate_checksum: no

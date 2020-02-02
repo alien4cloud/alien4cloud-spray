@@ -1,0 +1,7 @@
+
+- name: Locally Check for public key files
+  local_action: "ls {{ inventory_dir }}/certificates/pub/*.pub"
+  register: pubkeys_ls
+
+- debug:
+    var: pubkeys_ls
