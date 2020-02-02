@@ -1,7 +1,7 @@
 
 - name: Locally Check for public key files
-  local_action: "shell bash -c 'echo toto'"
-  # local_action: "shell bash -c 'ls {{ inventory_dir }}/certificates/pub/*.pub'"
+  #local_action: "shell bash -c 'echo toto'"
+  local_action: "shell bash -c 'ls {{ inventory_dir }}/certificates/pub/*.pub'"
   register: pubkeys_ls
 
 - debug:
