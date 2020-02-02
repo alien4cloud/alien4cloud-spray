@@ -3,6 +3,7 @@
 - hosts: a4c
   name: Setup rsync for A4C.
   roles:
+    - rsync/stop-consul-template
     - commons/define_commons_vars
     - rsync/install-rsync
     - rsync/generate_keypair
