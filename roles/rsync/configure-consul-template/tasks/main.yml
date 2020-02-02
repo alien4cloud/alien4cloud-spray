@@ -7,10 +7,6 @@
   debug:
     var: a4c_ha_enabled
 
-- name: Define consul template user
-  set_fact :
-    consul_template_user: "{{ a4c_user }}"
-
 - name: Ensure consul_tls variable is defined
   set_fact:
     consul_tls: false
@@ -30,9 +26,9 @@
     dest: /etc/consul_template/consul_template.conf
     mode: 0444
     force: yes
-    owner: "{{ consul_template_user }}"
+    owner: "{{ a4c_user }}"
   become: true
-  become_user: "{{ consul_template_user }}"
+  become_user: "{{ a4c_user }}"
   when: (a4c_ha_enabled)
 
 - name: Setup initial sync script
@@ -41,9 +37,9 @@
     dest: /etc/consul_template/a4c-sync.sh
     mode: 0700
     force: yes
-    owner: "{{ consul_template_user }}"
+    owner: "{{ a4c_user }}"
   become: true
-  become_user: "{{ consul_template_user }}"
+  become_user: "{{ a4c_user }}"
   when: (a4c_ha_enabled)
 
 - name: Setup sync script template for consul template
@@ -52,9 +48,9 @@
     dest: /etc/consul_template/a4c-sync.ctpl
     mode: 0444
     force: yes
-    owner: "{{ consul_template_user }}"
+    owner: "{{ a4c_user }}"
   become: true
-  become_user: "{{ consul_template_user }}"
+  become_user: "{{ a4c_user }}"
   when: (a4c_ha_enabled)
 
 - name: Locally Check for CA file
@@ -89,7 +85,7 @@
     path: "/etc/consul_template/ssl"
     state: directory
   become: true
-  become_user: "{{ consul_template_user }}"
+  become_user: "{{ a4c_user }}"
   when: (consul_tls) and (a4c_ha_enabled)
 
 - name: Copy CA cert file
@@ -97,7 +93,7 @@
     src: "{{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
     dest: "/etc/consul_template/ssl/{{ ssl_ca_cert_name }}"
   become: true
-  become_user: "{{ consul_template_user }}"
+  become_user: "{{ a4c_user }}"
   when: (consul_tls) and (a4c_ha_enabled)
 
 - name: Copy host key file
@@ -105,7 +101,7 @@
     src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
     dest: "/etc/consul_template/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
   become: true
-  become_user: "{{ consul_template_user }}"
+  become_user: "{{ a4c_user }}"
   when: (consul_tls) and (a4c_ha_enabled)
 
 - name: Copy host cert file
@@ -113,5 +109,5 @@
     src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
     dest: "/etc/consul_template/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
   become: true
-  become_user: "{{ consul_template_user }}"
+  become_user: "{{ a4c_user }}"
   when: (consul_tls) and (a4c_ha_enabled)
