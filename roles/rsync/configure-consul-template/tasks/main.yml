@@ -28,18 +28,16 @@
     force: yes
     owner: "{{ a4c_user }}"
   become: true
-  become_user: "{{ a4c_user }}"
   when: (a4c_ha_enabled)
 
 - name: Setup initial sync script
   template:
     src: a4c-sync.init.j2
-    dest: /etc/consul_template/a4c-sync.sh
+    dest: /var/lib/consul_template/a4c-sync.sh
     mode: 0700
     force: yes
     owner: "{{ a4c_user }}"
   become: true
-  become_user: "{{ a4c_user }}"
   when: (a4c_ha_enabled)
 
 - name: Setup sync script template for consul template
@@ -50,7 +48,6 @@
     force: yes
     owner: "{{ a4c_user }}"
   become: true
-  become_user: "{{ a4c_user }}"
   when: (a4c_ha_enabled)
 
 - name: Locally Check for CA file
