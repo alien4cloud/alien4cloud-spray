@@ -44,7 +44,7 @@
     session_id: "{{ login.set_cookie.split(';')[0] }}"
 
 - name: here is the session_id
-  degug:
+  debug:
     var: session_id
 
 - name: Get application list
