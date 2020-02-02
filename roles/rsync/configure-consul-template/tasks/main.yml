@@ -7,10 +7,9 @@
   debug:
     var: a4c_ha_enabled
 
-- name: Get the current user
+- name: Define consul template user
   set_fact :
     consul_template_user: "{{ a4c_user }}"
-  when: consul_template_user is not defined
 
 - name: Ensure consul_tls variable is defined
   set_fact:
