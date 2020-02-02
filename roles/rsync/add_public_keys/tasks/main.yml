@@ -12,6 +12,8 @@
   copy:
     src: "{{ item }}"
     dest: "~/.ssh/"
+    mode: 0400
+    owner: "{{ a4c_user }}"
   with_items: "{{ pubkeys_ls.stdout_lines }}"
 
 - name: Feeding authorized_keys with public keys
