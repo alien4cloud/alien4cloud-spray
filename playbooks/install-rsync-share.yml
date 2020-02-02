@@ -10,3 +10,4 @@
     - rsync/install-consul-template
     - rsync/configure-consul-template
     - rsync/schedule-sync
+    - rsync/start-consul-template
