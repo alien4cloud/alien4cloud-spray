@@ -1,6 +1,5 @@
 
 - name: Locally Check for public key files
-  #local_action: "shell bash -c 'echo toto'"
   local_action: "shell bash -c 'ls {{ inventory_dir }}/certificates/pub/*.pub'"
   register: pubkeys_ls
 
@@ -13,4 +12,12 @@
   copy:
     src: "{{ item }}"
     dest: "~/.ssh/"
+  with_items: "{{ pubkeys_ls.stdout_lines }}"
+
+- name: Feeding authorized_keys with public keys
+  become: true
+  become_user: "{{ a4c_user }}"
+  shell: "cat $(basename {{ item }}) >> authorized_keys"
+  args:
+    chdir: "~/.ssh/"
   with_items: "{{ pubkeys_ls.stdout_lines }}"
