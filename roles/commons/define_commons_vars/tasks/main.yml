@@ -41,3 +41,8 @@
   set_fact:
     ssl_host_cert_suffix: "-cert.pem"
   when: ssl_host_cert_suffix is not defined
+
+- name: Ensure the 'a4c_working_dir' variable is defined
+  set_fact :
+    a4c_working_dir: "{{ a4c_install_dir }}/runtime"
+  when: a4c_working_dir is not defined

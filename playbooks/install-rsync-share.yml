@@ -6,3 +6,6 @@
     - rsync/install-rsync
     - rsync/generate_keypair
     - rsync/add_public_keys
+    - rsync/install-consul-template
+    - rsync/configure-consul-template
+    - rsync/schedule-sync

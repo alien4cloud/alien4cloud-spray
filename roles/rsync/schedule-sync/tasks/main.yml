@@ -1,0 +1,7 @@
+
+- name: Schedule workinig directory sync each minute
+  cron:
+    name: "Sync working directory"
+    minute: "*"
+    hour: "*"
+    job: "/etc/consul_template/a4c-sync.sh -f >> {{ a4c_log_dir }}/sync.log 2&>1"
