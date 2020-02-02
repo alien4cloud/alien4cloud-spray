@@ -3,7 +3,8 @@
   local_action: "shell bash -c 'ls {{ inventory_dir }}/certificates/pub/*.pub'"
   register: pubkeys_ls
 
-- debug:
+- name: Here are the public keys
+  debug:
     var: pubkeys_ls.stdout_lines
 
 - name: Copy public keys
