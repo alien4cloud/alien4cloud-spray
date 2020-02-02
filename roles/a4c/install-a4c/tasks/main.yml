@@ -103,15 +103,15 @@
     mode: 0444
     force: yes
   become: true
-  when: (not a4c_installed)
+  # when: (not a4c_installed)
 
 - name: Reload the deamon
   systemd:
     daemon_reload: yes
   become: true
-  when: (not a4c_installed)
+  # when: (not a4c_installed)
 
 - name: Enable a4c service
   command: systemctl enable a4c.service
   become: true
-  when: (not a4c_installed)
+  # when: (not a4c_installed)
