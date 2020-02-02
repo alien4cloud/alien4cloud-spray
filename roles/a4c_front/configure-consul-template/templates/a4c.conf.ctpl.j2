@@ -13,7 +13,7 @@ server {
 {% endif %}
         location / {
                 proxy_pass {{ a4c_protocol }}://{{ '{{' }} key "service/a4c/leader" {{ '}}' }};
-                #proxy_set_header Host {{ inventory_hostname }};
+                proxy_set_header Host {{ a4c_front_server_name if (a4c_front_server_name is defined) else inventory_hostname }};
                 proxy_set_header X-Forwarded-Proto $scheme;
                 proxy_set_header X-Forwarded-Port $server_port;
 {% if (securize_nginx) %}
