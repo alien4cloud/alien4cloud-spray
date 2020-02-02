@@ -24,7 +24,7 @@
   set_fact :
     a4c_user: "{{ ansible_user }}"
   when: a4c_user is not defined
-  
+
 - name: Ensure the 'a4c_working_dir' variable is defined
   set_fact :
     a4c_working_dir: "{{ a4c_install_dir }}/runtime"
@@ -70,24 +70,29 @@
   register: actual_working_directory_stat
   become: true
   become_user: "{{ a4c_user }}"
+  when: (a4c_conf_result.stat.exists)
 
 - name: Check if actual a4c_working_dir is empty
   find:
     paths: "{{ actual_a4c_working_dir }}/"
   register: actual_a4c_working_dir_find
+  when: (a4c_conf_result.stat.exists)
 
 - name: Define a variable indicating if actual working directory is empty
   set_fact:
      actual_a4c_working_dir_is_empty: "{{ actual_a4c_working_dir_find.matched == 0 }}"
+  when: (a4c_conf_result.stat.exists)
 
 - name: Check if expected a4c_working_dir is empty
   find:
     paths: "{{ a4c_working_dir }}/"
   register: a4c_working_dir_find
+  when: (a4c_conf_result.stat.exists)
 
 - name: Define a variable indicating if expected working directory is empty
   set_fact:
      a4c_working_dir_is_empty: "{{ a4c_working_dir_find.matched == 0 }}"
+  when: (a4c_conf_result.stat.exists)
 
 - name: "Copy actual working directory content '{{ actual_a4c_working_dir }}' to expected one '{{ a4c_working_dir }}'"
   become: true
