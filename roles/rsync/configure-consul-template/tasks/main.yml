@@ -31,6 +31,7 @@
     dest: /etc/consul_template/consul_template.conf
     mode: 0444
     force: yes
+    owner: "{{ consul_template_user }}"
   become: true
   become_user: "{{ consul_template_user }}"
   when: (a4c_ha_enabled)
@@ -41,6 +42,7 @@
     dest: /etc/consul_template/a4c-sync.sh
     mode: 0700
     force: yes
+    owner: "{{ consul_template_user }}"
   become: true
   become_user: "{{ consul_template_user }}"
   when: (a4c_ha_enabled)
@@ -51,6 +53,7 @@
     dest: /etc/consul_template/a4c-sync.ctpl
     mode: 0444
     force: yes
+    owner: "{{ consul_template_user }}"
   become: true
   become_user: "{{ consul_template_user }}"
   when: (a4c_ha_enabled)
