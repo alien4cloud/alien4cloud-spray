@@ -1,4 +1,30 @@
 
+- fail:
+    msg: "You can not specify an uid for a4c user that is root !"
+  when: a4c_user is defined and a4c_user == "root" and a4c_uid is defined
+
+- name: Add the user '{{ a4c_user }}' specifying uid
+  user:
+    name: "{{ a4c_user }}"
+    create_home: true
+    uid: "{{ a4c_uid }}"
+    state: present
+  become: true
+  when: a4c_user is defined and a4c_user != "root" and a4c_uid is defined
+
+- name: Add the user '{{ a4c_user }}'
+  user:
+    name: "{{ a4c_user }}"
+    create_home: true
+    state: present
+  become: true
+  when: a4c_user is defined and u4c_uid is not defined
+
+- name: Get the current user
+  set_fact :
+    a4c_user: "{{ ansible_user }}"
+  when: a4c_user is not defined
+  
 - name: Ensure the 'a4c_working_dir' variable is defined
   set_fact :
     a4c_working_dir: "{{ a4c_install_dir }}/runtime"
