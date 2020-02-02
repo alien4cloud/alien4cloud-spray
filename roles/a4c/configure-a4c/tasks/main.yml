@@ -121,12 +121,13 @@
 - name: "Copy actual working directory content '{{ actual_a4c_working_dir }}' to expected one '{{ a4c_working_dir }}'"
   become: true
   become_user: "{{ a4c_user }}"
-  copy:
-    remote_src: yes
-    src: "{{ actual_a4c_working_dir }}/"
-    dest: "{{ a4c_working_dir }}"
-    mode: preserve
-    backup: no
+  shell: "cp -rfp {{ actual_a4c_working_dir }}/* {{ a4c_working_dir }}/"
+  # copy:
+  #   remote_src: yes
+  #   src: "{{ actual_a4c_working_dir }}/"
+  #   dest: "{{ a4c_working_dir }}"
+  #   mode: preserve
+  #   backup: no
   when: (a4c_conf_result.stat.exists) and (a4c_working_dir != actual_a4c_working_dir) and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir) and (a4c_working_dir_is_empty)
 
 - name: Clean the old working directory
