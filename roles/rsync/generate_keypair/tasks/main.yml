@@ -1,4 +1,12 @@
 
+- name: Ensure .ssh directory exists
+  become: true
+  become_user: "{{ a4c_user }}"
+  file:
+    path: "~/.ssh"
+    state: directory
+    owner: "{{ a4c_user }}"
+
 - name: Generate keypair
   become: true
   become_user: "{{ a4c_user }}"
