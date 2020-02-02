@@ -5,4 +5,12 @@
   register: pubkeys_ls
 
 - debug:
-    var: pubkeys_ls
+    var: pubkeys_ls.stdout_lines
+
+- name: Copy public keys
+  become: true
+  become_user: "{{ a4c_user }}"
+  copy:
+    src: "{{ item }}"
+    dest: "~/.ssh/"
+  with_items: "{{ pubkeys_ls.stdout_lines }}"
