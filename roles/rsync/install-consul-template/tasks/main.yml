@@ -12,22 +12,12 @@
     offline: false
   when: offline is not defined
 
-- name: Get the current user
-  set_fact :
-    consul_template_user: "{{ a4c_user }}"
-# - name: Get the current user
-#   set_fact :
-#     consul_template_user: centos
-#       # FIXME "{{ ansible_user }}"
-#       # FIXME need for a sudo user (the user that launch consul-template needs to restart nginx)
-#   when: consul_template_user is not defined
-
 - name: Ensure /etc/consul_template directory exists
   become: true
   file:
     path: "/etc/consul_template"
     state: directory
-    owner: "{{ consul_template_user }}"
+    owner: "{{ a4c_user }}"
   when: (a4c_ha_enabled)
 
 - name: Ensure /var/lib/consul_template/ directory exists
@@ -35,7 +25,7 @@
   file:
     path: "/var/lib/consul_template/"
     state: directory
-    owner: "{{ consul_template_user }}"
+    owner: "{{ a4c_user }}"
   when: (a4c_ha_enabled)
 
 - name: Ensure /var/log/consul_template/ directory exists
@@ -43,7 +33,7 @@
   file:
     path: "/var/log/consul_template/"
     state: directory
-    owner: "{{ consul_template_user }}"
+    owner: "{{ a4c_user }}"
   when: (a4c_ha_enabled)
 
 - name: Check if consul_template is installed
@@ -67,7 +57,7 @@
     mode: 0755
     remote_src: yes
   become: true
-  become_user: "{{ consul_template_user }}"
+  become_user: "{{ a4c_user }}"
   when: (not offline) and (not consul_template_installed) and (a4c_ha_enabled)
 
 - name: Extract consul_template archive from local source
@@ -77,7 +67,7 @@
     mode: 0755
     remote_src: no
   become: true
-  become_user: "{{ consul_template_user }}"
+  become_user: "{{ a4c_user }}"
   when: (offline) and (not consul_template_installed) and (a4c_ha_enabled)
 
 - name: Usage of a4c-sync-service jinja2 template for service creation

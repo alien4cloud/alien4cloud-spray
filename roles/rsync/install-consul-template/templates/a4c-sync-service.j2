@@ -3,7 +3,7 @@ Description=Alien4Cloud consul template for rsync
 After=consul.service
 
 [Service]
-User={{ consul_template_user }}
+User={{ a4c_user }}
 Restart=on-failure
 WorkingDirectory=/var/lib/consul_template
 ExecStart=/var/lib/consul_template/consul-template -config /etc/consul_template/consul_template.conf
