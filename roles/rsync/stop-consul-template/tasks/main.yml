@@ -1,0 +1,8 @@
+
+- name: Stop a4c-sync service
+  service:
+    name: a4c-sync
+    state: stopped
+    enabled: yes
+  become: true
+  ignore_errors: yes
