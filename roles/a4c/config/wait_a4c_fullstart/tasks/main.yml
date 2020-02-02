@@ -39,8 +39,13 @@
       Content-Type: "application/x-www-form-urlencoded"
   register: login
 
-- set_fact:
+- name: Getting session_id from cookie
+  set_fact:
     session_id: "{{ login.set_cookie.split(';')[0] }}"
+
+- name: here is the session_id
+  degug:
+    var: session_id
 
 - name: Get application list
   uri:
