@@ -8,7 +8,7 @@ leaderName="$( cut -d ':' -f 1 <<< $leader )"
 echo "- $(date) : leader is $leaderName"
 
 if [ "$me" = "$leaderName" ]; then
-    if [ "$1" != "-f" ]; then
+    if [ "$1" = "-f" ]; then
       echo "Syncing files before becoming leader $leaderName"
       rsync -Pavzh -e "ssh -o 'StrictHostKeyChecking no' -i ~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}" $leaderName:{{ a4c_working_dir }}/ {{ a4c_working_dir }}
     else
