@@ -28,7 +28,7 @@
 
 - name: Install nginx
   yum:
-    pkg: nginx-1.16.1-1.el7
+    pkg: "{{ nginx_package }}"
     state: present
     update_cache: true
   become: true
