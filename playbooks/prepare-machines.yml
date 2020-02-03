@@ -1,8 +1,10 @@
 ---
 - hosts: all
-  gather_facts: no
+  gather_facts: yes
   name: Install all common dependencies.
   roles:
     #- commons/remove_epel_repo
     - commons/install-common-dependencies
     - commons/add_dns_server
+    - commons/define_commons_vars
+    - commons/set_hostname

@@ -1,0 +1,6 @@
+
+- name: Define hostname
+  shell:
+  become: true
+    cmd: "hostnamectl set-hostname --static {{ inventory_hostname }}{{ appendable_private_domain_name }}"
+  when: (should_set_hostname is defined) and (should_set_hostname)

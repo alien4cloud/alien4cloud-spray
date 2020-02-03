@@ -1,0 +1,2 @@
+# When set to true, we redefine the host name 
+should_set_hostname: false
