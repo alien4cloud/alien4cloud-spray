@@ -4,3 +4,4 @@
     name: rsync
     state: latest
   become: true
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)

@@ -1,24 +1,4 @@
 
-- name: Ensure a4c_ha_enabled variable is defined
-  set_fact:
-    a4c_ha_enabled: "{{ groups['a4c'] | length > 1 }}"
-
-- name: Is the HA enabled ?
-  debug:
-    var: a4c_ha_enabled
-
-- name: Ensure consul_tls variable is defined
-  set_fact:
-    consul_tls: false
-  when: consul_tls is not defined
-
-- name: The 'consul_tls' variable defines if consul http connections should be secured
-  debug:
-    var: consul_tls
-
-- name: Ensure securize_nginx variable is defined
-  set_fact:
-    securize_nginx: false
 
 - name: Setup consul template configuration
   template:
@@ -28,7 +8,7 @@
     force: yes
     owner: "{{ a4c_user }}"
   become: true
-  when: (a4c_ha_enabled)
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Setup initial sync script
   template:
@@ -38,7 +18,7 @@
     force: yes
     owner: "{{ a4c_user }}"
   become: true
-  when: (a4c_ha_enabled)
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Setup sync script template for consul template
   template:
@@ -48,12 +28,12 @@
     force: yes
     owner: "{{ a4c_user }}"
   become: true
-  when: (a4c_ha_enabled)
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Locally Check for CA file
   local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
   register: stat_cacert_path
-  when: (consul_tls) and (a4c_ha_enabled)
+  when: (consul_tls) and (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - fail:
     msg: "The consul http communication should be secured by no CA file found in {{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }} ! Please provide CA certificate file."
@@ -62,20 +42,20 @@
 - name: Locally Check for Host key file
   local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
   register: stat_hostkey_path
-  when: (consul_tls) and (a4c_ha_enabled)
+  when: (consul_tls) and (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - fail:
     msg: "The consul http communication should be secured by no host key file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }} ! Please provide host key file."
-  when: (consul_tls) and (a4c_ha_enabled) and (not stat_hostkey_path.stat.exists)
+  when: (consul_tls) and (a4c_ha_enabled) and (not stat_hostkey_path.stat.exists) and (should_use_rsync_for_a4c_ha)
 
 - name: Locally Check for Host cert file
   local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
   register: stat_hostcert_path
-  when: (consul_tls) and (a4c_ha_enabled)
+  when: (consul_tls) and (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - fail:
     msg: "The consul http communication should be secured by no host certificate file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }} ! Please provide host certificate file."
-  when: (consul_tls) and (a4c_ha_enabled) and (not stat_hostcert_path.stat.exists)
+  when: (consul_tls) and (a4c_ha_enabled) and (not stat_hostcert_path.stat.exists) and (should_use_rsync_for_a4c_ha)
 
 - name: Creates consul-template ssl directory
   file:
@@ -83,7 +63,7 @@
     state: directory
   become: true
   become_user: "{{ a4c_user }}"
-  when: (consul_tls) and (a4c_ha_enabled)
+  when: (consul_tls) and (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Copy CA cert file
   copy:
@@ -91,7 +71,7 @@
     dest: "/etc/consul_template/ssl/{{ ssl_ca_cert_name }}"
   become: true
   become_user: "{{ a4c_user }}"
-  when: (consul_tls) and (a4c_ha_enabled)
+  when: (consul_tls) and (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Copy host key file
   copy:
@@ -99,7 +79,7 @@
     dest: "/etc/consul_template/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
   become: true
   become_user: "{{ a4c_user }}"
-  when: (consul_tls) and (a4c_ha_enabled)
+  when: (consul_tls) and (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Copy host cert file
   copy:
@@ -107,4 +87,4 @@
     dest: "/etc/consul_template/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
   become: true
   become_user: "{{ a4c_user }}"
-  when: (consul_tls) and (a4c_ha_enabled)
+  when: (consul_tls) and (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)

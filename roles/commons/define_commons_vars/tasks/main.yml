@@ -46,3 +46,30 @@
   set_fact :
     a4c_working_dir: "{{ a4c_install_dir }}/runtime"
   when: a4c_working_dir is not defined
+
+- name: Ensure a4c_ha_enabled variable is defined
+  set_fact:
+    a4c_ha_enabled: "{{ groups['a4c'] | length > 1 }}"
+
+- name: Is the HA enabled ?
+  debug:
+    var: a4c_ha_enabled
+
+- name: Ensure the 'offline' variable is defined
+  set_fact :
+    offline: false
+  when: offline is not defined
+
+- name: Ensure the 'should_use_rsync_for_a4c_ha' variable is defined
+  set_fact :
+    should_use_rsync_for_a4c_ha: false
+  when: should_use_rsync_for_a4c_ha is not defined
+
+- name: Ensure consul_tls variable is defined
+  set_fact:
+    consul_tls: false
+  when: consul_tls is not defined
+
+- name: The 'consul_tls' variable defines if consul http connections should be secured
+  debug:
+    var: consul_tls

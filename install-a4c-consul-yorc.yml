@@ -39,30 +39,10 @@
     - elasticsearch/configure-elasticsearch
     - elasticsearch/start-elasticsearch
 
-- hosts: a4c
-  name: Install and configure A4C.
-  roles:
-    - commons/define_commons_vars
-    - consul/stop-consul
-    - a4c/stop-a4c
-    - install-java
-    - a4c/install-a4c
-    - consul/configure-consul-gossip-keygen
-    - consul/install-consul
-    - { role: consul/configure-consul, consul_mode: 'client' }
-    - a4c/configure-a4c
-    - consul/start-consul
-
-- hosts: a4c
-  name: Start A4C.
-  # we want each A4C to be started sequencially in case of HA
-  serial: 1
-  roles:
-    - a4c/start-a4c
-
 - hosts: a4cfront
   name: Install A4C front (Nginx, consul and consul-template).
   roles:
+    - commons/define_commons_vars
     - nginx/stop-nginx
     - a4c_front/stop-consul-template
     - consul/stop-consul
@@ -80,7 +60,40 @@
 - hosts: yorcfront
   name: Install Yorc front (Nginx).
   roles:
+    - commons/define_commons_vars
     - nginx/stop-nginx
     - nginx/install-nginx
     - yorc/configure-nginx
     - nginx/start-nginx
+
+- hosts: a4c
+  name: Install and configure A4C.
+  roles:
+    - commons/define_commons_vars
+    - consul/stop-consul
+    - a4c/stop-a4c
+    - install-java
+    - a4c/install-a4c
+    - consul/configure-consul-gossip-keygen
+    - consul/install-consul
+    - { role: consul/configure-consul, consul_mode: 'client' }
+    - a4c/configure-a4c
+    - consul/start-consul
+    - rsync/stop-consul-template
+    - commons/define_commons_vars
+    - rsync/install-rsync
+    - rsync/generate_keypair
+    - rsync/add_public_keys
+    - rsync/install-consul-template
+    - rsync/configure-consul-template
+    - rsync/schedule-sync
+    - rsync/start-consul-template
+
+- hosts: a4c
+  name: Start A4C.
+  # we want each A4C to be started sequencially in case of HA
+  serial: 1
+  roles:
+    - a4c/start-a4c
+    - { role: a4c/config/define_a4c_url, should_login: false }
+    - a4c/config/wait_a4c_fullstart

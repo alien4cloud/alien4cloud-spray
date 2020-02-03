@@ -1,0 +1,5 @@
+
+- name: Yum clean all
+  shell:
+  become: true
+    cmd: "yum clean all"

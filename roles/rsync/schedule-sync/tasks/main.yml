@@ -7,3 +7,4 @@
     minute: "*"
     hour: "*"
     job: "/var/lib/consul_template/a4c-sync.sh >> {{ a4c_log_dir }}/sync.log 2>&1"
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)

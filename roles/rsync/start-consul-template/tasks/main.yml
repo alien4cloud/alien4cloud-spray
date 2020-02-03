@@ -1,16 +1,8 @@
 
-- name: Ensure a4c_ha_enabled variable is defined
-  set_fact:
-    a4c_ha_enabled: "{{ groups['a4c'] | length > 1 }}"
-
-- name: Is the HA enabled ?
-  debug:
-    var: a4c_ha_enabled
-
 - name: Start a4c-sync service
   service:
     name: a4c-sync
     state: started
     enabled: yes
   become: true
-  when: (a4c_ha_enabled)
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)

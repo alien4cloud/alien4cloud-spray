@@ -1,16 +1,5 @@
 
-- name: Ensure a4c_ha_enabled variable is defined
-  set_fact:
-    a4c_ha_enabled: "{{ groups['a4c'] | length > 1 }}"
 
-- name: Is the HA enabled ?
-  debug:
-    var: a4c_ha_enabled
-
-- name: Ensure the 'offline' variable is defined
-  set_fact :
-    offline: false
-  when: offline is not defined
 
 - name: Ensure /etc/consul_template directory exists
   become: true
@@ -18,7 +7,7 @@
     path: "/etc/consul_template"
     state: directory
     owner: "{{ a4c_user }}"
-  when: (a4c_ha_enabled)
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Ensure /var/lib/consul_template/ directory exists
   become: true
@@ -26,7 +15,7 @@
     path: "/var/lib/consul_template/"
     state: directory
     owner: "{{ a4c_user }}"
-  when: (a4c_ha_enabled)
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Ensure /var/log/consul_template/ directory exists
   become: true
@@ -34,21 +23,24 @@
     path: "/var/log/consul_template/"
     state: directory
     owner: "{{ a4c_user }}"
-  when: (a4c_ha_enabled)
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Check if consul_template is installed
   shell: "/var/lib/consul_template/consul-template --version"
   register: is_consul_template_exist_command
   ignore_errors: yes
   become: true
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Register a boolean indicating if consul_template is already installed
   set_fact:
     consul_template_installed: "{{ is_consul_template_exist_command.rc == 0 }}"
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Is consul_template installed ?
   debug:
     var: consul_template_installed
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Extract consul_template archive from remote source
   unarchive:
@@ -58,7 +50,7 @@
     remote_src: yes
   become: true
   become_user: "{{ a4c_user }}"
-  when: (not offline) and (not consul_template_installed) and (a4c_ha_enabled)
+  when: (not offline) and (not consul_template_installed) and (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Extract consul_template archive from local source
   unarchive:
@@ -68,7 +60,7 @@
     remote_src: no
   become: true
   become_user: "{{ a4c_user }}"
-  when: (offline) and (not consul_template_installed) and (a4c_ha_enabled)
+  when: (offline) and (not consul_template_installed) and (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Usage of a4c-sync-service jinja2 template for service creation
   template:
@@ -77,15 +69,15 @@
     mode: 0444
     force: yes
   become: true
-  when: (a4c_ha_enabled)
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Reload the deamon
   systemd:
     daemon_reload: yes
   become: true
-  when: (a4c_ha_enabled) and (a4c_ha_enabled)
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Enable a4c-sync service
   command: systemctl enable a4c-sync.service
   become: true
-  when: (not consul_template_installed) and (a4c_ha_enabled)
+  when: (not consul_template_installed) and (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
