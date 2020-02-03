@@ -1,0 +1,8 @@
+---
+- hosts: all
+  gather_facts: no
+  name: Absolutely do nothing
+  tasks:
+  - name: Just say hello
+    debug:
+      msg: "Hello world"
