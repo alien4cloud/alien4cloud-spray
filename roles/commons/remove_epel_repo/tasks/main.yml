@@ -12,11 +12,11 @@
   file:
     path: /etc/yum.repos.d/epel.repo
     state: absent
-  when: (not offline)
+  when: (not offline) and (not ((dont_install_epel is defined) and (dont_install_epel)))
 
 - name: "FIXME : remove /etc/yum.repos.d/epel.repo"
   become: true
   file:
     path: /etc/yum.repos.d/epel7.repo
     state: absent
-  when: (not offline)
+  when: (not offline) and (not ((dont_install_epel is defined) and (dont_install_epel)))
