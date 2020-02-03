@@ -13,3 +13,10 @@
     path: /etc/yum.repos.d/epel.repo
     state: absent
   when: (not offline)
+
+- name: "FIXME : remove /etc/yum.repos.d/epel.repo"
+  become: true
+  file:
+    path: /etc/yum.repos.d/epel7.repo
+    state: absent
+  when: (not offline)
