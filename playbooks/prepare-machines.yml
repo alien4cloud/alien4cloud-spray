@@ -3,6 +3,6 @@
   gather_facts: no
   name: Install all common dependencies.
   roles:
+    - commons/remove_epel_repo
     - commons/install-common-dependencies
     - commons/add_dns_server
-    - commons/remove_epel_repo
