@@ -32,6 +32,10 @@
   become: true
   when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
+- name: Init a boolean indicating if consul_template is already installed
+  set_fact:
+    consul_template_installed: false
+
 - name: Register a boolean indicating if consul_template is already installed
   set_fact:
     consul_template_installed: "{{ is_consul_template_exist_command.rc == 0 }}"

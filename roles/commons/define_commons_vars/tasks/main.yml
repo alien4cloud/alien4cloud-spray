@@ -73,3 +73,12 @@
 - name: The 'consul_tls' variable defines if consul http connections should be secured
   debug:
     var: consul_tls
+
+- name: Ensure should_clean_share variable is defined
+  set_fact:
+    should_clean_share: true
+  when: should_clean_share is not defined
+
+- name: The 'should_clean_share' variable defines if shared folder should be cleaned when mounted
+  debug:
+    var: should_clean_share
