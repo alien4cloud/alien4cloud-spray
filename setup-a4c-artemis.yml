@@ -37,6 +37,18 @@
         phase: 'post-matched-node-setup',
         modifier_position: 1
       }
+    - { role: 'a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-kubernetes-plugin',
+        beanName: 'kubernetes-adapter-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 1
+      }
+    - { role: 'a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-k8s-spark-jobs',
+        beanName: 'k8s-spark-jobs-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 2
+      }
     - { role: 'a4c/config/disable_plugin',
         pluginId: 'alien4cloud-datagouv_mls-plugin'
       }
