@@ -56,7 +56,7 @@ ssl_key_password: changeit
 elasticsearch_rmp_url: resources/bin/elasticsearch/elasticsearch-6.6.2.rpm
 spark_download_url: resources/bin/spark-2.4.4-bin-hadoop2.7.tgz
 ALIEN_DIST_URL: resources/bin/alien4cloud-artemis-dist-3.0.0-M2-dist.tar.gz
-JAVA_DIST_URL: resources/bin/java/jdk.tar.gz
+JAVA_DIST_URL: resources/bin/java/jdk-8u131-linux-x64.tar.gz
 CONSUL_DIST_URL: resources/bin/consul_1.2.3_linux_amd64.zip
 YORC_DIST_URL: resources/bin/yorc-4.0.0-M6.tgz
 TERRAFORM_DIST_URL: resources/bin/terraform_0.11.8_linux_amd64.zip
