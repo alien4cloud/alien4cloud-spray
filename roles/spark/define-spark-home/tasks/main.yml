@@ -25,6 +25,7 @@
     var: spark_version.stderr_lines
 
 - name: Create a symbolic link for spark-submit into /usr/bin
+  become: true
   file:
     src: "{{ spark_home }}/bin/spark-submit"
     dest: "/usr/bin/spark-submit"
@@ -33,7 +34,17 @@
 - name: Ensure user {{ spark_user }} can launch Spark (using PATH)
   become: true
   become_user: "{{ spark_user }}"
-  shell: "spark-submit --version"
+  shell: "echo $PATH"
+  register: echo_path
+
+- name: Here is PATH
+  debug:
+    var: echo_path.stdout_lines
+
+- name: Ensure user {{ spark_user }} can launch Spark (using PATH)
+  become: true
+  become_user: "{{ spark_user }}"
+  shell: "source ~/.bashrc && spark-submit --version"
   register: spark_version
 
 - name: Here is Spark version (using PATH)
