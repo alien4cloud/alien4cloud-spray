@@ -9,14 +9,12 @@ find resources/bin/ ! -name 'readme.txt' -type f -exec rm -f {} +
 download () {
   IFS='/' read -ra ADDR <<< "$2"
   resourceFileName="${ADDR[@]: -1}"
-  dl_cmd="curl"
+  dl_cmd="curl -f"
   if [ ! -z "$3" ]; then
     resourceFileName="$3"
   fi
-  if [ -z "$4" ]; then
-    dl_cmd="$dl_cmd -f"
-  else
-    dl_cmd="$dl_cmd $4"
+  if [ ! -z "$4" ]; then
+    dl_cmd="$dl_cmd -f $4"
   fi
   dir=$(pwd)
   # it's important for Java dl to go into the directory !
@@ -42,7 +40,7 @@ download () {
     exit 1
   fi
 }
-
+#
 # Get Java
 download resources/bin/java http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz jdk-8u131-linux-x64.tar.gz "-H \"Cookie: oraclelicense=a\" -kLO"
 
