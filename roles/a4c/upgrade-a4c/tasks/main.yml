@@ -109,25 +109,14 @@
     suffix: upgrade_a4c
   register: temp_dir
 
-- name: Extract alien4cloud archive from remote source
+- name: Extract alien4cloud archive
   unarchive:
     src: "{{ ALIEN_DIST_URL }}"
     dest: "{{ temp_dir.path }}"
     mode: 0755
-    remote_src: yes
+    remote_src: "{{ 'no' if offline else 'yes' }}"
   become: true
   become_user: "{{ a4c_user }}"
-  when: (not offline)
-
-- name: Extract alien4cloud archive from local source
-  unarchive:
-    src: "{{ ALIEN_DIST_URL }}"
-    dest: "{{ temp_dir.path }}"
-    mode: 0755
-    remote_src: no
-  become: true
-  become_user: "{{ a4c_user }}"
-  when: (offline)
 
 - name: Find upgrade A4C wars (no ssl)
   become: true
@@ -261,6 +250,7 @@
   when: (a4c_upgrade_plugins is defined)
 
 - name: List all plugins in upgrade archive
+  become: true
   find:
     paths: "{{ temp_dir.path }}/alien4cloud/init/plugins"
     patterns: "*.zip"

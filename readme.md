@@ -187,8 +187,7 @@ This playbook will make a simple integration by deploying a simple mock based ap
 ansible-playbook -i hosts --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v test-a4c-artemis.yml
 ```
 
-
-To test the integration between A4C and Yorc:
+To test manually the integration between A4C and Yorc:
  1. Go to 'Application' / 'Nouvelle Application'
  2. Give a name to your app (ie. MyFirstTest)
  3. In 'Modèle de topologie', choose '3MockWithRel' template
@@ -199,3 +198,26 @@ To test the integration between A4C and Yorc:
  8. Click on 'Activer'
  9. You will then see a progess bar ... if all is finally green, all is OK.
  10. Click on 'Désactiver'
+
+
+# Upgrade
+
+You can upgrade an existing A4C installation using the upgrade-a4c playbook.
+Ensure your var `ALIEN_DIST_URL` is pointing to your new distribution.
+You can also specify the list of plugins you want to be upgraded using the list `a4c_upgrade_plugins`.
+
+```
+a4c_upgrade_plugins:
+  - my-plugin-1
+  - my-plugin-2
+```
+
+Please not that:
+* If `a4c_upgrade_plugins` is not defined, all plugins found in the new distribution will be used.
+* If `a4c_upgrade_plugins` is defined but empty, no plugin will be upgraded.
+
+```
+ansible-playbook -i hosts --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v upgrade-a4c.yml
+```
+
+During upgrade, all changes will be logs in 'changes.log' in a4c log folder.

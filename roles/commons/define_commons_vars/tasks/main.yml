@@ -82,3 +82,8 @@
 - name: The 'should_clean_share' variable defines if shared folder should be cleaned when mounted
   debug:
     var: should_clean_share
+
+- name: Ensure consul_http_port variable is defined
+  set_fact:
+    consul_http_port: 8500
+  when: consul_http_port is not defined
