@@ -14,12 +14,28 @@
     line: "export SPARK_HOME={{ spark_home }}"
     state: present
 
-- name: Ensure user {{ spark_user }} can launch Spark
+- name: Ensure user {{ spark_user }} can launch Spark (using SPARK_HOME)
   become: true
   become_user: "{{ spark_user }}"
   shell: "source ~/.bashrc && $SPARK_HOME/bin/spark-shell --version"
   register: spark_version
 
-- name: Here is Spark version
+- name: Here is Spark version (using SPARK_HOME)
+  debug:
+    var: spark_version.stderr_lines
+
+- name: Create a symbolic link for spark-submit into /usr/bin
+  file:
+    src: "{{ spark_home }}/bin/spark-submit"
+    dest: "/usr/bin/spark-submit"
+    state: link
+
+- name: Ensure user {{ spark_user }} can launch Spark (using PATH)
+  become: true
+  become_user: "{{ spark_user }}"
+  shell: "spark-submit --version"
+  register: spark_version
+
+- name: Here is Spark version (using PATH)
   debug:
     var: spark_version.stderr_lines
