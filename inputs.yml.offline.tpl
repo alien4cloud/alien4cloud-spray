@@ -18,7 +18,8 @@ a4c_front_protocol: http
 a4c_front_port: 80
 a4c_admin_usr: admin
 a4c_admin_pwd: 4dm1n
-a4c_version: 2.2.0-SM8
+a4c_version: 3.0.0-M2
+inventory_dir: "."
 
 consul_user: consul
 consul_install_dir: /opt/consul
@@ -52,8 +53,9 @@ ssl_dest_keystore_password: changeit
 ssl_key_password: changeit
 
 # Download urls in online mode
-elasticsearch_rmp_url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.6.2.rpm
-ALIEN_DIST_URL: resources/bin/alien4cloud-artemis-dist-3.0.0-M1-dist.tar.gz
+elasticsearch_rmp_url: resources/bin/elasticsearch/elasticsearch-6.6.2.rpm
+spark_download_url: resources/bin/spark-2.4.4-bin-hadoop2.7.tgz
+ALIEN_DIST_URL: resources/bin/alien4cloud-artemis-dist-3.0.0-M2-dist.tar.gz
 JAVA_DIST_URL: resources/bin/java/jdk.tar.gz
 CONSUL_DIST_URL: resources/bin/consul_1.2.3_linux_amd64.zip
 YORC_DIST_URL: resources/bin/yorc-4.0.0-M6.tgz
@@ -66,3 +68,5 @@ AWS_SECRET_KEY:
 AWS_REGION: eu-west-1
 
 dev_projects_path: /Users/xdegenne/work/src
+
+dont_install_epel: true

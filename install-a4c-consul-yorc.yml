@@ -25,10 +25,10 @@
     - consul/install-consul
     - { role: consul/configure-consul, consul_mode: 'client' }
     - install-java
-    - spark/install-spark
-    - { role: spark/define-spark-home, spark_user_var: 'yorc_user' }    
     - yorc/install-yorc
     - yorc/configure-yorc
+    - spark/install-spark
+    - { role: spark/define-spark-home, spark_user_var: 'yorc_user' }
     - consul/start-consul
     - yorc/start-yorc
 

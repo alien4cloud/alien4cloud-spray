@@ -23,21 +23,6 @@
     - { role: 'roles/a4c/config/create_metaproperties',
         resources_file_artifact: 'resources/metaproperties.yaml'
       }
-    # - { role: roles/git-ssl }
-    # - { role: roles/git,
-    #     repositoryUrl: 'https://34.242.16.28/artemis_use_cases/service_applicatif.git',
-    #     repositoryUsername: 'service_applicatif',
-    #     repositoryPassword: 'service_applicatif',
-    #     branchId: 'develop',
-    #     subPath: ''
-    #   }
-    # - { role: roles/git,
-    #     repositoryUrl: 'https://git.artemis.public/artemis_use_cases/service_applicatif.git',
-    #     repositoryUsername: 'service_applicatif',
-    #     repositoryPassword: 'service_applicatif',
-    #     branchId: 'develop',
-    #     subPath: ''
-    #   }
     - { role: 'roles/a4c/config/get_orchectrator',
         orchestratorName: 'Yorc'
       }
@@ -65,3 +50,9 @@
         pluginId: 'alien4cloud-supervision'
       }
     - a4c/config/upload_csars
+    - { role: 'commons/parse_kubeconfig',
+        resources_file_artifact: 'resources/kubeconfig'
+      }
+    - { role: 'a4c/config/create_services',
+        resources_file_artifact: 'resources/services.yaml'
+      }

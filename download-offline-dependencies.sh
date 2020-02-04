@@ -3,13 +3,13 @@
 find resources/bin/ ! -name 'readme.txt' -type f -exec rm -f {} +
 
 # Get a4c ecosystem binaries
-wget -P resources/bin/ http://54.246.249.105/dist/alien4cloud/alien4cloud-artemis-dist/3.0.0-M1/alien4cloud-artemis-dist-3.0.0-M1-dist.tar.gz
+wget -P resources/bin/ http://34.242.40.25/dist/alien4cloud/alien4cloud-artemis-dist/3.0.0-M2/alien4cloud-artemis-dist-3.0.0-M2-dist.tar.gz
 wget -P resources/bin/ https://releases.hashicorp.com/consul/1.2.3/consul_1.2.3_linux_amd64.zip
 wget -P resources/bin/ https://releases.hashicorp.com/consul-template/0.23.0/consul-template_0.23.0_linux_amd64.zip
 wget -P resources/bin/ https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
 wget -O resources/bin/yorc-4.0.0-M6.tgz https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.0-M6%2Fyorc-4.0.0-M6.tgz
 wget -P resources/bin/elasticsearch/ https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.6.2.rpm
-
+wget -P resources/bin/ https://archive.apache.org/dist/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz
 # Get rpm dependencies
 #wget -P resources/bin/rpms/ http://downloads.naulinux.ru/pub/SLCE/7x/x86_64/CyrEd/RPMS//unzip-6.0-15.1.el7.x86_64.rpm
 wget -P resources/bin/unzip/ http://mirror.centos.org/centos/7/os/x86_64/Packages/unzip-6.0-20.el7.x86_64.rpm

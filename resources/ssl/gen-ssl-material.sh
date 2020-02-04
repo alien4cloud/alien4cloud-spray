@@ -51,16 +51,26 @@ echo "Generate a key pair for $CN in ${DEST_DIR}/${CN}-key.pem"
 openssl genrsa -out ${DEST_DIR}/${CN}-key.pem 4096
 
 # Sign the key with the CA and create a certificate
-subjectAltName="subjectAltName = IP:127.0.0.1,DNS:localhost"
+#subjectAltName="subjectAltName = IP:127.0.0.1,DNS:localhost"
+subjectAltNameContent=""
 IFS=","
 for IPi in $IPs
 do
-   subjectAltName="${subjectAltName},IP:${IPi}"
+	if [ -z "$subjectAltNameContent" ]; then
+	  subjectAltNameContent="IP:${IPi}"
+	else
+	  subjectAltNameContent="${subjectAltNameContent},IP:${IPi}"
+	fi
 done
 for DNi in $DNs
 do
-   subjectAltName="${subjectAltName},DNS:${DNi}"
+	if [ -z "$subjectAltNameContent" ]; then
+		 subjectAltNameContent="DNS:${DNi}"
+	else
+		 subjectAltNameContent="${subjectAltNameContent},DNS:${DNi}"
+	fi
 done
+subjectAltName="subjectAltName = ${subjectAltNameContent}"
 
 echo "[ SAN ]" > $DEST_DIR/${CN}-extfile.cnf
 echo "extendedKeyUsage = serverAuth,clientAuth" >> $DEST_DIR/${CN}-extfile.cnf

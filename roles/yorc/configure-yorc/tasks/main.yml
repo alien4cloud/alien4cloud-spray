@@ -179,7 +179,10 @@
     yorc_consul_config: "{{ '{ \"ssl\": true }' | from_json }}"
   when: (consul_tls)
 
-
+- name: Define a variable to store the yorc consul configuration
+  set_fact:
+    yorc_consul_config: "{{ '{}' | from_json }}"
+  when: (not consul_tls)
 
 # - name: Define CA file path
 #   set_fact:

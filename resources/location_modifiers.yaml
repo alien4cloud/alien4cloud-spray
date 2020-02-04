@@ -1,12 +1,27 @@
 modifiers:
-    - pluginId: "alien4cloud-kubernetes-plugin"
-      beanName: "kubernetes-adapter-modifier"
-      phase: "post-matched-node-setup"
+    # - pluginId: "alien4cloud-datagouv_mls-plugin"
+    #   beanName: "datagouv_mls-modifier"
+    #   phase: "post-matched-node-setup"
     # - pluginId: "alien4cloud-kubernetes-plugin"
-    #   beanName: "kubernetes-final-modifier"
+    #   beanName: "kubernetes-adapter-modifier"
+    #   phase: "post-matched-node-setup"
+    # - pluginId: "alien4cloud-consul-publisher-plugin"
+    #   beanName: "consul-publisher"
+    #   phase: "post-matched-node-setup"
+    # - pluginId: "alien4cloud-ssi-network_policy-plugin"
+    #   beanName: "ssi-network_policy-modifier"
+    #   phase: "post-matched-node-setup"
+    # - pluginId: "alien4cloud-k8s-spark-jobs"
+    #   beanName: "k8s-spark-jobs-modifier"
+    #   phase: "post-matched-node-setup"
+    # - pluginId: "alien4cloud-supervision"
+    #   beanName: "kubernetes-supervision-modifier"
     #   phase: "post-matched-node-setup"
 
+
 orders:
-    # Change the order : the kubernetes-adapter-modifier must be executed before yorc modifiers
-    - from: 4
-      to: 1
+#     # Change the order : the kubernetes-adapter-modifier must be executed before yorc modifiers
+    # - from: 4
+    #   to: 1
+    - from: 5
+      to: 2

@@ -4,15 +4,15 @@
     state: directory
   register: temp_dir
 
+- name: Locally check {{ resources_file_artifact }} file
+  local_action: "stat path={{ inventory_dir }}/{{ resources_file_artifact }}"
+  register: stat_resources_file_artifact
+
 - name: "Upload artifact {{ inventory_dir }}/{{ resources_file_artifact }} on remote in {{ temp_dir.path }}/resources.yaml"
   copy:
     src: "{{ inventory_dir }}/{{ resources_file_artifact }}"
     dest: "{{ temp_dir.path }}/resources.yaml"
-
-# - name: "Upload artifact {{ inventory_dir }}/{{ resources_file_artifact }} on remote in {{ temp_dir.path }}/resources.yaml"
-#   template:
-#     src: "{{ inventory_dir }}/{{ resources_file_artifact }}"
-#     dest: "{{ temp_dir.path }}/resources.yaml"
+  when: stat_resources_file_artifact.stat.exists
 
 - name: "Stat {{ temp_dir.path }}/resources.yaml"
   stat: path="{{ temp_dir.path }}/resources.yaml"
@@ -26,6 +26,12 @@
 
 - set_fact:
     kube_config: "{{ resources_slurped['content'] | b64decode }}"
+  when: resources_file.stat.exists
+
+- set_fact:
+    kube_config: "Put your K8S config here"
+  when: (not resources_file.stat.exists)
+
 - debug:
     var: kube_config
 

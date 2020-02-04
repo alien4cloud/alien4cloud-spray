@@ -1,7 +1,7 @@
 ---
 
-- set_fact:
-    alien_url: "{{ a4c_protocol }}://{{ a4c_ip }}:{{ a4c_port }}"
+# - set_fact:
+#     alien_url: "{{ a4c_protocol }}://{{ a4c_ip }}:{{ a4c_port }}"
 
 - name: Create temporary folder
   tempfile:
@@ -45,20 +45,6 @@
     msg: "{{item}}"
   with_items: "{{modifiers}}"
 
-- name: "Login onto A4C using {{ alien_url }}/login?username={{ a4c_admin_usr }}&password={{ a4c_admin_pwd }}&submit=Login"
-  uri:
-    url: "{{ alien_url }}/login?username={{ a4c_admin_usr }}&password={{ a4c_admin_pwd }}&submit=Login"
-    method: POST
-    return_content: yes
-    status_code: 302
-    validate_certs: no
-    headers:
-      Content-Type: "application/x-www-form-urlencoded"
-  register: login
-
-- set_fact:
-    session_id: "{{ login.set_cookie.split(';')[0] }}"
-
 - name: "Create location modifier using {{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/modifiers"
   uri:
     url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/modifiers"
@@ -75,6 +61,7 @@
     status_code: 200
   register: result
   with_items: "{{modifiers}}"
+  when: modifiers | length > 0
 
 - set_fact:
     orders: "{{resources_yaml['orders']}}"
@@ -94,5 +81,11 @@
     status_code: 200
   register: result
   with_items: "{{orders}}"
+  when: orders | length > 0
 # - debug:
 #     var: result
+
+- name: Finally remove temporary folder
+  file:
+    path: "{{ temp_dir.path }}"
+    state: absent

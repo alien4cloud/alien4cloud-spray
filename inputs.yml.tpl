@@ -21,7 +21,8 @@ a4c_front_protocol: http
 a4c_front_port: 80
 a4c_admin_usr: admin
 a4c_admin_pwd: 4dm1n
-a4c_version: 2.2.0-SM8
+a4c_version: 3.0.0-M2
+inventory_dir: "."
 
 consul_user: consul
 consul_install_dir: /opt/consul
@@ -54,12 +55,13 @@ ssl_keystore_source_location: /var/folders/2d/3krvvvn538ggxjx8mtvwmj_c0000gn/T/t
 ssl_src_keystore_password: changeit
 ssl_dest_keystore_password: changeit
 ssl_key_password: changeit
-ssl_host_key_suffix: ".technique.artemis.crt.txt"
-ssl_host_cert_suffix: ".technique.artemis.pem.txt"
+#ssl_ca_cert_name: "artemis_ca.pem.txt"
+#ssl_host_key_suffix: ".technique.artemis.crt.txt"
+#ssl_host_cert_suffix: ".technique.artemis.pem.txt"
 
 # Download urls in online mode
 elasticsearch_rmp_url:- http://10.10.0.49/elasticsearch-6.6.2.rpm
-ALIEN_DIST_URL: http://54.246.249.105/dist/alien4cloud/alien4cloud-artemis-dist/3.0.0-M1/alien4cloud-artemis-dist-3.0.0-M1-dist.tar.gz
+ALIEN_DIST_URL: http://34.242.40.25/dist/alien4cloud/alien4cloud-artemis-dist/3.0.0-M2/alien4cloud-artemis-dist-3.0.0-M2-dist.tar.gz
 JAVA_DIST_URL: http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
 CONSUL_DIST_URL: https://releases.hashicorp.com/consul/1.2.3/consul_1.2.3_linux_amd64.zip
 YORC_DIST_URL: https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.0-M6%2Fyorc-4.0.0-M6.tgz
@@ -105,3 +107,6 @@ dev_projects_path: /Users/xdegenne/work/src
 csar_urls:
   - http://somewhere/csar1.zip
   - http://somewhere/csar2.zip
+
+
+dont_install_epel: true

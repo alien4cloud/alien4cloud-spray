@@ -181,8 +181,10 @@ That's all folk, the full system should be available.
 
 # Tests
 
+This playbook will make a simple integration by deploying a simple mock based application, ensuring all the stack is availaible and all stuff well connected together.
+
 ```
-ansible-playbook -i hosts --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v test-a4c-artemis.yml 
+ansible-playbook -i hosts --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v test-a4c-artemis.yml
 ```
 
 
