@@ -1,0 +1,56 @@
+- name: Check if Spark is installed
+  shell: "command -v {{ spark_expected_home }}/bin/spark-submit >/dev/null 2>&1"
+  register: is_spark_present
+  ignore_errors: yes
+  become: true
+
+- name: Define a variable defining if Spark is installed
+  set_fact:
+    is_spark_installed: "{{ is_spark_present.rc == 0 }}"
+
+- name: Is Spark installed ?
+  debug:
+    var: is_spark_installed
+
+- name: Creates Spark install directory
+  become: true
+  file:
+    path: "{{ spark_install_dir }}"
+    state: directory
+
+- name: Extract Spark archive
+  become: true
+  unarchive:
+    src: "{{ spark_download_url }}"
+    dest: "{{ spark_install_dir }}"
+    remote_src: "{{ 'no' if offline else 'yes' }}"
+    list_files: yes
+  register: spark_file_list
+  when: (not is_spark_installed)
+
+- name: Is Spark installed ?
+  debug:
+    var: spark_file_list.files[0]
+  when: (not is_spark_installed)
+
+- name: Defining Spark home using the unarchive result
+  set_fact:
+    spark_home: "{{ spark_install_dir }}/{{ spark_file_list.files[0] }}"
+  when: (not is_spark_installed)
+
+- name: The Spark home is as expected
+  set_fact:
+    spark_home: "{{ spark_expected_home }}"
+  when: (is_spark_installed)
+
+- name: Here is Spark Home
+  debug:
+    var: spark_home
+
+- name: Display Spark version
+  shell: "{{ spark_home }}/bin/spark-shell --version"
+  register: spark_version
+
+- name: Here is Spark version
+  debug:
+    var: spark_version.stderr_lines

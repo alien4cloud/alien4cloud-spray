@@ -3,7 +3,7 @@
     - yorc
     - yorcfront
   name: Install all common dependencies.
-  gather_facts: no  
+  gather_facts: no
   roles:
     - commons/install-common-dependencies
     - commons/add_dns_server
@@ -18,6 +18,9 @@
     - yorc/install-dependencies
     - consul/install-consul
     - { role: consul/configure-consul, consul_mode: 'client' }
+    - install-java
+    - spark/install-spark
+    - { role: spark/define-spark-home, spark_user_var: 'yorc_user' }    
     - yorc/install-yorc
     - yorc/configure-yorc
     - consul/start-consul
