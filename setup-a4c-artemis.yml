@@ -43,9 +43,9 @@
     - { role: 'a4c/config/disable_plugin',
         pluginId: 'alien4cloud-ssi-network_policy-plugin'
       }
-    - { role: 'a4c/config/disable_plugin',
-        pluginId: 'alien4cloud-consul-publisher-plugin'
-      }
+    # - { role: 'a4c/config/disable_plugin',
+    #     pluginId: 'alien4cloud-consul-publisher-plugin'
+    #   }
     - { role: 'a4c/config/disable_plugin',
         pluginId: 'alien4cloud-supervision'
       }
