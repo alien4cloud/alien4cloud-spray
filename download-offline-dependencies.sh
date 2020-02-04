@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#find resources/bin/ ! -name 'readme.txt' -type f -exec rm -f {} +
+find resources/bin/ ! -name 'readme.txt' -type f -exec rm -f {} +
 
 # $1 folder
 # $2 url
@@ -15,13 +15,16 @@ download () {
   else
     dl_cmd="$dl_cmd $3"
   fi
-  dl_cmd="$dl_cmd -o $1/$resourceFileName $2"
+  dir=$(pwd)
+  # it's important for Java dl to go into the directory !
+  cd $1
+  dl_cmd="$dl_cmd -o $resourceFileName $2"
   echo "Downloading $resourceFileName into $1 using: $dl_cmd"
+
   if ($($dl_cmd)); then
     echo "Sucessfully downloaded $resourceFileName"
+    cd $dir
   else
-    echo "Fail downloading $resourceFileName"
-
     echo "  _  ______    _ ";
     echo " | |/ / __ \  | |";
     echo " | ' / |  | | | |";
@@ -29,11 +32,17 @@ download () {
     echo " | . \ |__| | |_|";
     echo " |_|\_\____/  (_)";
     echo "                 ";
+    echo "Fail downloading $resourceFileName"
     echo "                 ";
-
+    cd $dir
     exit 1
   fi
+
 }
+
+# Get Java
+wget --continue --no-check-certificate -O resources/bin/java/jdk-8u131-linux-x64.tar.gz --header "Cookie: oraclelicense=a" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
+#download resources/bin/java http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz "--header 'Cookie: oraclelicense=a' -kLs -O"
 
 # Get a4c ecosystem binaries
 #download resources/bin http://34.242.40.25/dist/alien4cloud/alien4cloud-artemis-dist/3.0.0-M2/alien4cloud-artemis-dist-3.0.0-M2-dist.tar.gz
@@ -57,9 +66,6 @@ download resources/bin/terraform-plugins https://releases.hashicorp.com/terrafor
 
 # Get kubectl
 download resources/bin/usr https://storage.googleapis.com/kubernetes-release/release/v1.14.1/bin/linux/amd64/kubectl
-
-# Get Java
-download resources/bin/java http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz "--header \"Cookie: oraclelicense=a\" -kLs -O"
 
 # Get python Packages
 download resources/bin/python https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/ansible-2.7.2-1.el7.ans.noarch.rpm
@@ -146,3 +152,4 @@ echo " | |__| |   <  |_|" && \
 echo "  \____/|_|\_\ (_)" && \
 echo "                  " && \
 echo "                  "
+echo "You can process spray install using: ansible-playbook -i hosts --private-key \$PRIVATE_KEY_PATH --user \$REMOTE_USER --extra-vars \"@inputs.yml\" -v install-a4c-consul-yorc.yml"

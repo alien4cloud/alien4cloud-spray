@@ -162,7 +162,7 @@ ansible-playbook -i hosts --user $REMOTE_USER --extra-vars "@inputs.yml" -v --ex
 # Installation in _offline_ mode
 This mode is provided in case the remote machine does not have access to Internet (but the machine running the installation must still have access to Internet).
 
-On the local machine, first run the following commands to get all required binaries (the commands use `wget`):
+On the local machine, first run the following commands to get all required binaries (the commands use `curl`):
 ```
 ./download-offline-dependencies.sh
 ```
