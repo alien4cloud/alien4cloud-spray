@@ -28,7 +28,8 @@
 - name: We will securise nginx when a4c or a4c_front is in https
   set_fact:
     securize_nginx: true
-  when: (a4c_protocol == 'https') or (a4c_front_protocol == 'https')
+  when: (a4c_front_protocol == 'https')
+  # when: (a4c_protocol == 'https') or (a4c_front_protocol == 'https')
 
 - name: The 'securize_nginx' variable defines if nginx should be secured
   debug:
