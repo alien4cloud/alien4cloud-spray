@@ -1,0 +1,12 @@
+
+- hosts: elasticsearch
+  name: Start Elasticsearch.
+  gather_facts: no
+  roles:
+    - elasticsearch/start-elasticsearch
+
+- hosts: consul
+  name: Start consul.
+  gather_facts: no
+  roles:
+    - consul/start-consul
