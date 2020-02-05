@@ -3,12 +3,13 @@ server {
 {% if (securize_nginx) %}
         listen {{ a4c_front_port }} ssl http2;
         listen [::]:{{ a4c_front_port }} ssl http2;
-
-        ssl_certificate /etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }};
-        ssl_certificate_key /etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }};
 {% else %}
         listen {{ a4c_front_port }};
         listen [::]:{{ a4c_front_port }} ipv6only=on;
+{% endif %}
+{% if (securize_nginx or securize_a4c) %}
+        ssl_certificate /etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }};
+        ssl_certificate_key /etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }};
 {% endif %}
 
         root /usr/share/nginx/html;
@@ -22,6 +23,6 @@ server {
                 proxy_connect_timeout      1000;
                 proxy_send_timeout         1000;
                 proxy_read_timeout         1000;
-                send_timeout               1000;                
+                send_timeout               1000;
         }
 }

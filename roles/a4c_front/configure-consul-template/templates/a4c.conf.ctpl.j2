@@ -2,7 +2,7 @@
 server {
         listen {{ a4c_front_port }}{{ ' default ssl' if securize_nginx else '' }};
         server_name {{ a4c_front_server_name if (a4c_front_server_name is defined) else inventory_hostname }};
-{% if (securize_nginx) %}
+{% if (securize_nginx or securize_a4c) %}
         ssl_session_timeout 10m;
         ssl_certificate /etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }};
         ssl_certificate_key /etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }};
@@ -20,11 +20,11 @@ server {
                 #proxy_ssl_session_reuse on;
                 # Force https
                 proxy_redirect http:// https://;
+{% endif %}
                 proxy_connect_timeout      1000;
                 proxy_send_timeout         1000;
                 proxy_read_timeout         1000;
-                send_timeout               1000;                     
-{% endif %}
+                send_timeout               1000;
         }
 }
 {{ '{{' }} else {{ '}}' }}
@@ -34,6 +34,8 @@ server {
 
 {% if (securize_nginx) %}
         ssl on;
+{% endif %}
+{% if (securize_nginx or securize_a4c) %}
         ssl_certificate /etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }};
         ssl_certificate_key /etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }};
         ssl_session_cache shared:SSL:10m;

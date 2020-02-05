@@ -34,6 +34,14 @@
   debug:
     var: securize_nginx
 
+- name: Ensure securize_a4c variable is defined
+  set_fact:
+    securize_a4c: "{{ (a4c_protocol == 'https') }}"
+
+- name: The 'securize_a4c' variable defines if A4C is in https
+  debug:
+    var: securize_a4c
+
 - name: Setup consul template configuration
   template:
     src: consul_template.conf.j2
