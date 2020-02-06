@@ -43,46 +43,32 @@
   set_fact:
     yorc_config: "{{ yorc_config['content'] | b64decode }}"
 
-- name: Get the consul install directory
-  set_fact :
-    consul_install_dir: "{{ ansible_env.HOME }}/consul"
-  when: consul_install_dir is not defined
-
-- name: Ensure yorc_tls variable is defined
-  set_fact:
-    yorc_tls: false
-  when: yorc_tls is not defined
-
-- name: The 'yorc_tls' variable defines if yorc should be secured
-  debug:
-    var: yorc_tls
-
 - name: Locally Check for CA file
   local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
   register: stat_cacert_path
-  when: (yorc_tls)
+  when: (yorc_tls or consul_tls)
 
 - fail:
     msg: "Yorc should be secured by no CA file found in {{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }} ! Please provide CA certificate file."
-  when: (yorc_tls) and (not stat_cacert_path.stat.exists)
+  when: (yorc_tls or consul_tls) and (not stat_cacert_path.stat.exists)
 
 - name: Locally Check for Host key file
   local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
   register: stat_hostkey_path
-  when: (yorc_tls)
+  when: (yorc_tls or consul_tls)
 
 - fail:
     msg: "Yorc should be secured by no host key file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }} ! Please provide host key file."
-  when: (yorc_tls) and (not stat_hostkey_path.stat.exists)
+  when: (yorc_tls or consul_tls) and (not stat_hostkey_path.stat.exists)
 
 - name: Locally Check for Host cert file
   local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
   register: stat_hostcert_path
-  when: (yorc_tls)
+  when: (yorc_tls or consul_tls)
 
 - fail:
     msg: "Yorc should be secured by no host certificate file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }} ! Please provide host certificate file."
-  when: (yorc_tls) and (not stat_hostcert_path.stat.exists)
+  when: (yorc_tls or consul_tls) and (not stat_hostcert_path.stat.exists)
 
 - name: Creates yorc ssl directory
   file:
@@ -90,12 +76,12 @@
     state: directory
   become: true
   become_user: "{{ yorc_user }}"
-  when: (yorc_tls)
+  when: (yorc_tls or consul_tls)
 
 - name: Define CA file path
   set_fact:
     ca_file_path: "{{ yorc_install_dir }}/ssl/{{ ssl_ca_cert_name }}"
-  when: (yorc_tls)
+  when: (yorc_tls or consul_tls)
 
 - name: Copy CA cert file
   copy:
@@ -104,12 +90,12 @@
     mode: "0600"
   become: true
   become_user: "{{ yorc_user }}"
-  when: (yorc_tls)
+  when: (yorc_tls or consul_tls)
 
 - name: Define host key file path
   set_fact:
     hostkey_file_path: "{{ yorc_install_dir }}/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
-  when: (yorc_tls)
+  when: (yorc_tls or consul_tls)
 
 - name: Copy host key file
   copy:
@@ -118,12 +104,12 @@
     mode: "0600"
   become: true
   become_user: "{{ yorc_user }}"
-  when: (yorc_tls)
+  when: (yorc_tls or consul_tls)
 
 - name: Define host cert file path
   set_fact:
     hostcert_file_path: "{{ yorc_install_dir }}/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
-  when: (yorc_tls)
+  when: (yorc_tls or consul_tls)
 
 - name: Copy host cert file
   copy:
@@ -132,7 +118,7 @@
     mode: "0600"
   become: true
   become_user: "{{ yorc_user }}"
-  when: (yorc_tls)
+  when: (yorc_tls or consul_tls)
 
 - name: Add 'ssl_verify' to yorc config
   set_fact:
@@ -144,11 +130,6 @@
   set_fact:
     yorc_config: "{{ yorc_config|combine({'ssl_verify': false}) }}"
   when: (yorc_tls) and (groups['yorcfront'] | length > 0)
-
-
-
-
-
 
 - name: Add 'key_file' to yorc config
   set_fact:
@@ -164,15 +145,6 @@
   set_fact:
     yorc_config: "{{ yorc_config|combine({'ca_file': ca_file_path}) }}"
   when: (yorc_tls)
-
-- name: Ensure consul_tls variable is defined
-  set_fact:
-    consul_tls: false
-  when: consul_tls is not defined
-
-- name: The 'consul_tls' variable defines if consul http connections should be secured
-  debug:
-    var: consul_tls
 
 - name: Define a variable to store the yorc consul configuration
   set_fact:

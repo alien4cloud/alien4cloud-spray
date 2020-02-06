@@ -7,9 +7,10 @@
 
 - name: Extract SAML config archive
   unarchive:
-    src: "{{ inventory_dir }}/{{ saml_config_archive_path }}"
+    src: "{{ inventory_dir }}/{{ a4c_saml_config_archive_path }}"
     dest: "{{ temp_dir.path }}"
     remote_src: no
+  when: a4c_saml_enabled
 
 - name: Recursively find /tmp files older than 4 weeks and equal or greater than 1 megabyte
   find:
@@ -17,6 +18,7 @@
     patterns: 'idp-metadata.xml'
     recurse: yes
   register: idp_find_result
+  when: a4c_saml_enabled
 
 - debug:
     var: idp_find_result
@@ -24,13 +26,16 @@
 - name: Fail when not exactly 1 idp-metadata.xml found
   fail:
     msg: "I expect to have one and only one idp-metadata.xml file, got {{ idp_find_result.matched }} !"
-  when: (idp_find_result.matched != 1)
+  when: a4c_saml_enabled and (idp_find_result.matched != 1)
 
 - name: Copy idp-metadata.xml into A4C config directory
   copy:
     src: "{{ idp_find_result.files[0].path }}"
-    dest: "{{ a4c_install_dir }}/alien4cloud/config/"
+    dest: "{{ a4c_install_dir }}/alien4cloud/config/idp-metadata.xml"
     remote_src: yes
+    owner: "{{ a4c_user }}"
+  when: a4c_saml_enabled
+  become: true
 
 - name: Slurp the a4c config file
   slurp:
@@ -41,7 +46,7 @@
 
 - name: Decode a4c config
   set_fact:
-    a4c_config: "{{ a4c_config['content'] | b64decode }}"
+    a4c_config: "{{ a4c_config['content'] | b64decode | from_yaml }}"
 
 - name: Render SAML config in temp directory
   template:
@@ -56,65 +61,15 @@
 
 - name: Decode SAML config
   set_fact:
-    a4c_saml_config: "{{ a4c_saml_config['content'] | b64decode }}"
+    a4c_saml_config: "{{ a4c_saml_config['content'] | b64decode | from_yaml }}"
 
 - name: Debug the a4c_saml_config config
   debug:
     var: a4c_saml_config
 
-- name: Define a variable to store the A4C SAML configuration
-  set_fact:
-    a4c_saml_config: "{{ '{ \"enabled\": true }' | from_json }}"
-
-- name: Add 'maxAuthenticationAge' to SAML config
-  set_fact:
-    a4c_saml_config: "{{ a4c_saml_config|combine({'maxAuthenticationAge': 7200}) }}"
-- name: Add 'maxAssertionTime' to SAML config
-  set_fact:
-    a4c_saml_config: "{{ a4c_saml_config|combine({'maxAssertionTime': 3000}) }}"
-- name: Add 'maxAuthenticationAge' to SAML config
-  set_fact:
-    a4c_saml_config: "{{ a4c_saml_config|combine({'keystore': ''}) }}"
-- name: Add 'maxAuthenticationAge' to SAML config
-  set_fact:
-    a4c_saml_config: "{{ a4c_saml_config|combine({'file': 'idp-metadata.xml'}) }}"
-- name: Add 'maxAuthenticationAge' to SAML config
-  set_fact:
-    a4c_saml_config: "{{ a4c_saml_config|combine({'entityId': 'a4c'}) }}"
-- name: Add 'maxAuthenticationAge' to SAML config
-  set_fact:
-    a4c_saml_config: "{{ a4c_saml_config|combine({'entityBaseURL': 7200}) }}"
-
-      # - regexp: '(\s*)#*(\s*)(enabled)\s*:.*$'
-      #   line: '\1\2\3: true'
-      # - regexp: '(\s*)#*(\s*)(maxAuthenticationAge)\s*:.*$'
-      #   line: '\1\2\3: 7200'
-      # - regexp: '(\s*)#*(\s*)(maxAssertionTime)\s*:.*$'
-      #   line: '\1\2\3: 3000'
-      # - regexp: '(\s*)#*(\s*)(keystore)\s*:.*$'
-      #   line: '\1\2\3: server-keystore.jks'
-      # - regexp: '(\s*)#*(\s*)(defaultKey)\s*:.*$'
-      #   line: '\1\2\3: server'
-      # - regexp: '(\s*)#*(\s*)(keystorepassword)\s*:.*$'
-      #   line: '\1\2\3: changeIt!'
-      # - regexp: '(\s*)#*(\s*)(file)\s*:.*$'
-      #   line: '\1\3: "./config/idp-metadata.xml"'
-      # - regexp: '(\s*)#*(\s*)(entityId)\s*:.*$'
-      #   line: '\1\3: "a4c"'
-      # - regexp: '(\s*)#*(\s*)(entityBaseURL)\s*:.*$'
-      #   line: '\1\3: https://a4c.artemis.public:8088'
-      # - regexp: '(\s*)#*(logoutUrl)(.*)$'
-      #   line: '\1#\2\3'
-      # - regexp: '(\s*)#*(url:)(.*)$'
-      #   line: '\1#\2\3'
-
 - name: Add 'saml' to A4C config
   set_fact:
-    yorc_config: "{{ a4c_config|combine({'saml': a4c_saml_config}) }}"
-
-
-
-
+    a4c_config: "{{ a4c_config|combine({'saml': a4c_saml_config.saml}, recursive=True) }}"
 
 - name: Debug the a4c config before serializing it to file system
   debug:

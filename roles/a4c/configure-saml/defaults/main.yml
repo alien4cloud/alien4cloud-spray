@@ -1,1 +1,4 @@
-a4c_log_dir: /var/log/alien4cloud
+a4c_saml_enabled: false
+# archive where we expect to find idp-metadata.xml
+a4c_saml_config_archive_path: resources/keycloak-mod-auth-mellon-sp-config.zip
+a4c_saml_entityId: a4c
