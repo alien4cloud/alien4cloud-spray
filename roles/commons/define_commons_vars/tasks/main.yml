@@ -1,4 +1,13 @@
 
+- name: Ensure yorc_tls variable is defined
+  set_fact:
+    yorc_tls: false
+  when: yorc_tls is not defined
+
+- name: The 'yorc_tls' variable defines if yorc should be secured
+  debug:
+    var: yorc_tls
+
 - name: Ensure appendable_private_domain_name variable is defined
   set_fact:
     appendable_private_domain_name: ""

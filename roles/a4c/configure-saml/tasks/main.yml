@@ -20,3 +20,14 @@
 
 - debug:
     var: idp_find_result
+
+- name: Fail when not exactly 1 idp-metadata.xml found
+  fail:
+    msg: "I expect to have one and only one idp-metadata.xml file, got {{ idp_find_result.matched }} !"
+  when: (idp_find_result.matched != 1)
+
+- name: Copy idp-metadata.xml into A4C config directory
+  unarchive:
+    src: "{{ idp_find_result.files[0].path }}"
+    dest: "{{ a4c_install_dir }}/alien4cloud/config/"
+    remote_src: yes

@@ -1,30 +1,4 @@
 
-- name: Ensure a4c_ha_enabled variable is defined
-  set_fact:
-    a4c_ha_enabled: "{{ groups['a4c'] | length > 1 }}"
-
-- name: Is the HA enabled ?
-  debug:
-    var: a4c_ha_enabled
-
-- name: Ensure yorc_tls variable is defined
-  set_fact:
-    yorc_tls: false
-  when: yorc_tls is not defined
-
-- name: The 'yorc_tls' variable defines if yorc should be secured
-  debug:
-    var: yorc_tls
-
-- name: Ensure consul_tls variable is defined
-  set_fact:
-    consul_tls: false
-  when: consul_tls is not defined
-
-- name: The 'consul_tls' variable defines if consul http connections should be secured
-  debug:
-    var: consul_tls
-
 - name: Ensure logs directory exists
   become: true
   file:
