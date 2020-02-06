@@ -109,6 +109,8 @@ HA is enable be having multiple hosts in a4c and/or yorc group:
 
 You can use the playbook `install-samba.yml` in order to setup a Samba server (on the `samba` host). It will mount respectively `a4c_working_dir` and `yorc_working_dir` folders on `a4c` and `yorc` hosts. This playvbook is here as an example but should not be used in a production environment.
 
+We also have a role to setup rsync based replication (to de documented).
+
 ## SSL Certificates
 
 If you want to securize the components of your stack, you will need to have some certificates for each concerned hosts.
@@ -138,22 +140,29 @@ You can find scripts that help you generating such CA and hosts keys and certifi
 * `resources/ssl/gen-ssl-material.sh` : generate CA key and certificate of not found and key and certificate for a given host.
 * `resources/ssl/gen-aws-ssl-material.sh` : generate all SSL stuff for EC2 instances (filtered by name).
 
-# Installation
-The playbook `install-a4c-consul-yorc.yml` will install all stack on the remote machines:
+For an AWS setup, you can generate all your certificates using:
+```
+./resources/ssl/gen-aws-ssl-material.sh Spray-A4C ./certificates/
+```
+Where `Spray-A4C` is the name of the instance(s) (label name in EC2).
+All the SSL stuff will be generated for all hosts having this label (I usually use the output to feed the `hosts` inventory file).
 
-Fisrt off all, if you didn't attempt to connect to the remote machines, you will probably need to deactivate the host key checking:
+# Installation
+The playbook `install-a4c-consul-yorc.yml` will install all stack on the remote machine(s):
+
+First off all, if you didn't attempt to connect to the remote machines, you will probably need to deactivate the host key checking:
 
 ```
 export ANSIBLE_HOST_KEY_CHECKING=False
 ```
 
-Then, lauch the playbook:
+Then, launch the playbook:
 
 ```
 ansible-playbook -i hosts --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v install-a4c-consul-yorc.yml
 ```
 
-If you don't use a SSH key but a password authentication (which is not recomanded !) you can use:
+If you don't use a SSH key but a password authentication (which is not recommended !) you can use:
 
 ```
 ansible-playbook -i hosts --user $REMOTE_USER --extra-vars "@inputs.yml" -v --extra-vars "ansible_user=root ansible_password=yourpassword"  install-a4c-consul-yorc.yml
@@ -181,7 +190,7 @@ That's all folk, the full system should be available.
 
 # Tests
 
-This playbook will make a simple integration by deploying a simple mock based application, ensuring all the stack is availaible and all stuff well connected together.
+This playbook will make a simple integration by deploying a simple mock based application, ensuring all the stack is available and all stuff well connected together.
 
 ```
 ansible-playbook -i hosts --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v test-a4c-artemis.yml
