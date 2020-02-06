@@ -4,5 +4,5 @@
   name: Sandbox, play with plays ! The role of your life
   roles:
     - commons/define_commons_vars
-    - a4c/config/define_a4c_url
+    - { role: a4c/config/define_a4c_url, should_login: false }
     - a4c/configure-saml
