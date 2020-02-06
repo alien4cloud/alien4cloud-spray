@@ -7,7 +7,7 @@
 
 - name: Extract SAML config archive
   unarchive:
-    src: "{{ saml_config_archive_path }}"
+    src: "{{ inventory_dir }}/{{ saml_config_archive_path }}"
     dest: "{{ temp_dir.path }}"
     remote_src: no
 
