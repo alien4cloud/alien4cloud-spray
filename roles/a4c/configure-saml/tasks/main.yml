@@ -27,7 +27,7 @@
   when: (idp_find_result.matched != 1)
 
 - name: Copy idp-metadata.xml into A4C config directory
-  unarchive:
+  copy:
     src: "{{ idp_find_result.files[0].path }}"
     dest: "{{ a4c_install_dir }}/alien4cloud/config/"
     remote_src: yes
