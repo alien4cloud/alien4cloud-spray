@@ -1,6 +1,6 @@
 ---
 
-- hosts: yorc
+- hosts: a4c
   name: Sandbox, play with plays ! The role of your life
   roles:
     - a4c/configure-saml
