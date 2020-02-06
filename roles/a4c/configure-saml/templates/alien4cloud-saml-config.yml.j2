@@ -8,8 +8,8 @@ saml:
 #    port: 8080
 {% if a4c_protocol == 'https' %}
   ssl:
-    keystore: {{ a4c_install_dir }}/alien4cloud/config/ssl/server-keystore.jks
-    #defaultKey: apollo
+    keystore: ssl/server-keystore.jks
+    defaultKey: alien4cloud
     keystorepassword: {{ ssl_dest_keystore_password }}
 {% endif %}
   metadata:
