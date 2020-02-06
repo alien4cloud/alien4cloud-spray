@@ -1,0 +1,25 @@
+saml:
+  enabled: false
+  maxAuthenticationAge: 7200
+  maxAssertionTime: 3000
+  # logoutUrl: http://alien4cloud.org
+#  proxy:
+#    host: 193.56.47.20
+#    port: 8080
+  ssl:
+    keystore: samlKeystore.jks
+    defaultKey: apollo
+    keystorepassword: nalle123
+  metadata:
+    idp:
+      url: "https://idp.ssocircle.com/idp-meta.xml"
+      # file: "/path/to/file.xml"
+    sp:
+      entityId: "org:alien4cloud:sp"
+      # entityBaseURL: defaults to localhost:8088
+      # requestSigned:
+      # wantAssertionSigned:
+#  mapping:
+#    email: EmailAddress
+#    firstname: FirstName
+#    lastname: LastName

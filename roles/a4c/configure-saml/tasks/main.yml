@@ -31,3 +31,98 @@
     src: "{{ idp_find_result.files[0].path }}"
     dest: "{{ a4c_install_dir }}/alien4cloud/config/"
     remote_src: yes
+
+- name: Slurp the a4c config file
+  slurp:
+    src: "{{ a4c_install_dir }}/alien4cloud/config/alien4cloud-config.yml"
+  become: true
+  become_user: "{{ a4c_user }}"
+  register: a4c_config
+
+- name: Decode a4c config
+  set_fact:
+    a4c_config: "{{ a4c_config['content'] | b64decode }}"
+
+- name: Render SAML config in temp directory
+  template:
+    src: alien4cloud-saml-config.yml.j2
+    dest: "{{ temp_dir.path }}/alien4cloud-saml-config.yml"
+    force: yes
+
+- name: Slurp the SAML config file
+  slurp:
+    src: "{{ temp_dir.path }}/alien4cloud-saml-config.yml"
+  register: a4c_saml_config
+
+- name: Decode SAML config
+  set_fact:
+    a4c_saml_config: "{{ a4c_saml_config['content'] | b64decode }}"
+
+- name: Debug the a4c_saml_config config
+  debug:
+    var: a4c_saml_config
+
+- name: Define a variable to store the A4C SAML configuration
+  set_fact:
+    a4c_saml_config: "{{ '{ \"enabled\": true }' | from_json }}"
+
+- name: Add 'maxAuthenticationAge' to SAML config
+  set_fact:
+    a4c_saml_config: "{{ a4c_saml_config|combine({'maxAuthenticationAge': 7200}) }}"
+- name: Add 'maxAssertionTime' to SAML config
+  set_fact:
+    a4c_saml_config: "{{ a4c_saml_config|combine({'maxAssertionTime': 3000}) }}"
+- name: Add 'maxAuthenticationAge' to SAML config
+  set_fact:
+    a4c_saml_config: "{{ a4c_saml_config|combine({'keystore': ''}) }}"
+- name: Add 'maxAuthenticationAge' to SAML config
+  set_fact:
+    a4c_saml_config: "{{ a4c_saml_config|combine({'file': 'idp-metadata.xml'}) }}"
+- name: Add 'maxAuthenticationAge' to SAML config
+  set_fact:
+    a4c_saml_config: "{{ a4c_saml_config|combine({'entityId': 'a4c'}) }}"
+- name: Add 'maxAuthenticationAge' to SAML config
+  set_fact:
+    a4c_saml_config: "{{ a4c_saml_config|combine({'entityBaseURL': 7200}) }}"
+
+      # - regexp: '(\s*)#*(\s*)(enabled)\s*:.*$'
+      #   line: '\1\2\3: true'
+      # - regexp: '(\s*)#*(\s*)(maxAuthenticationAge)\s*:.*$'
+      #   line: '\1\2\3: 7200'
+      # - regexp: '(\s*)#*(\s*)(maxAssertionTime)\s*:.*$'
+      #   line: '\1\2\3: 3000'
+      # - regexp: '(\s*)#*(\s*)(keystore)\s*:.*$'
+      #   line: '\1\2\3: server-keystore.jks'
+      # - regexp: '(\s*)#*(\s*)(defaultKey)\s*:.*$'
+      #   line: '\1\2\3: server'
+      # - regexp: '(\s*)#*(\s*)(keystorepassword)\s*:.*$'
+      #   line: '\1\2\3: changeIt!'
+      # - regexp: '(\s*)#*(\s*)(file)\s*:.*$'
+      #   line: '\1\3: "./config/idp-metadata.xml"'
+      # - regexp: '(\s*)#*(\s*)(entityId)\s*:.*$'
+      #   line: '\1\3: "a4c"'
+      # - regexp: '(\s*)#*(\s*)(entityBaseURL)\s*:.*$'
+      #   line: '\1\3: https://a4c.artemis.public:8088'
+      # - regexp: '(\s*)#*(logoutUrl)(.*)$'
+      #   line: '\1#\2\3'
+      # - regexp: '(\s*)#*(url:)(.*)$'
+      #   line: '\1#\2\3'
+
+- name: Add 'saml' to A4C config
+  set_fact:
+    yorc_config: "{{ a4c_config|combine({'saml': a4c_saml_config}) }}"
+
+
+
+
+
+- name: Debug the a4c config before serializing it to file system
+  debug:
+    var: a4c_config
+
+- name: Serialize a4c config
+  copy:
+    content: "{{ a4c_config | to_nice_yaml(indent=2) }}"
+    dest: "{{ a4c_install_dir }}/alien4cloud/config/alien4cloud-config.yml"
+  become: true
+  become_user: "{{ a4c_user }}"
