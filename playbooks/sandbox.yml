@@ -1,14 +1,6 @@
 ---
 
-- hosts: a4cfront
-  name: Try writing/reading into/from inventory.
+- hosts: a4c
+  name: Sandbox, play with plays ! The role of your life
   roles:
-    - sandbox/echo_inventory_dir
-    # - sandbox/read_extras
-    # - sandbox/write_inventory
-    # - sandbox/read_inventory
-
-# - hosts: yorc
-#   name: Try reading from inventory.
-#   roles:
-#     - sandbox/read_inventory
+    - a4c/configure-saml
