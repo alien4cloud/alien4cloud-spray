@@ -1,0 +1,22 @@
+- name: Create temporary folder
+  become_user: "{{ a4c_user }}"
+  tempfile:
+    state: directory
+    suffix: saml_a4c
+  register: temp_dir
+
+- name: Extract SAML config archive
+  unarchive:
+    src: "{{ saml_config_archive_path }}"
+    dest: "{{ temp_dir.path }}"
+    remote_src: no
+
+- name: Recursively find /tmp files older than 4 weeks and equal or greater than 1 megabyte
+  find:
+    paths: "{{ temp_dir.path }}"
+    patterns: 'idp-metadata.xml'
+    recurse: yes
+  register: idp_find_result
+
+- debug:
+    var: idp_find_result
