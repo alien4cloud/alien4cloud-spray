@@ -1,11 +1,11 @@
-- name: Ensure consul_tls variable is defined
+- name: Ensure _consul_tls variable is defined
   set_fact:
-    consul_tls: false
-  when: consul_tls is not defined
+    _consul_tls: false
+  when: _consul_tls is not defined
 
-- name: The 'consul_tls' variable defines if consul http connections should be secured
+- name: The '_consul_tls' variable defines if consul http connections should be secured
   debug:
-    var: consul_tls
+    var: _consul_tls
 
 - name: Count consul hosts
   set_fact :
@@ -30,35 +30,35 @@
 # - name: Just pause few seconds to let the node starting
 #   pause:
 #     seconds: 30
-#   when: (CONSUL_HOST_COUNT > 1) and (not consul_tls)
+#   when: (CONSUL_HOST_COUNT > 1) and (not _consul_tls)
 #
 # - name: Loop over the consul group to join cluster
 #   shell: "{{ consul_install_dir }}/consul join {{ item }}"
 #   with_items: "{{ groups['consul'] }}"
-#   when: inventory_hostname != item and CONSUL_HOST_COUNT > 1 and (not consul_tls)
+#   when: inventory_hostname != item and CONSUL_HOST_COUNT > 1 and (not _consul_tls)
 
 # - name: Define CA file path
 #   set_fact:
 #     ca_file_path: "{{ consul_install_dir }}/ssl/{{ ssl_ca_cert_name }}"
-#   when: (consul_tls)
+#   when: (_consul_tls)
 #
 # - name: Define host key file path
 #   set_fact:
 #     hostkey_file_path: "{{ consul_install_dir }}/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
-#   when: (consul_tls)
+#   when: (_consul_tls)
 #
 # - name: Define host cert file path
 #   set_fact:
 #     hostcert_file_path: "{{ consul_install_dir }}/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
-#   when: (consul_tls)
+#   when: (_consul_tls)
 
 # TODO: should only be done in client mode
 # - name: Just pause few seconds to let the node starting
 #   pause:
 #     seconds: 30
-#   when: (CONSUL_HOST_COUNT > 1) and (consul_tls)
+#   when: (CONSUL_HOST_COUNT > 1) and (_consul_tls)
 
 # - name: Loop over the consul group to join cluster
 #   shell: "{{ consul_install_dir }}/consul join -http-addr='https://{{inventory_hostname}}:8501' -ca-file={{ca_file_path}} -client-cert={{hostcert_file_path}} -client-key={{hostkey_file_path}} {{ item }}"
 #   with_items: "{{ groups['consul'] }}"
-#   when: inventory_hostname != item and CONSUL_HOST_COUNT > 1 and (consul_tls)
+#   when: inventory_hostname != item and CONSUL_HOST_COUNT > 1 and (_consul_tls)

@@ -4,3 +4,5 @@ terraform_plugins:
  - https://releases.hashicorp.com/terraform-provider-openstack/1.9.0/terraform-provider-openstack_1.9.0_linux_amd64.zip
  - https://releases.hashicorp.com/terraform-provider-aws/1.36.0/terraform-provider-aws_1.36.0_linux_amd64.zip
 yorc_log_dir: /var/log/yorc
+
+yorc_debug: 0

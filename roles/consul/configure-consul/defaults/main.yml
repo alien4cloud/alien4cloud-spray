@@ -1,3 +1,4 @@
 consul_user: consul
 consul_http_port: 8500
 consul_https_port: 8501
+consul_use_localhost_as_client_addr: false

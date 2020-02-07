@@ -162,10 +162,10 @@ ttl:
 
 ha:
   ha_enabled: {{ 'true' if a4c_ha_enabled else 'false' }}
-  consulAgentIp: {{ inventory_hostname }}{{ appendable_private_domain_name }}
-  consulAgentPort: {{ consul_https_port if consul_tls else consul_http_port }}
+  consulAgentIp: {{ ha_consulAgentIp }}
+  consulAgentPort: {{ consul_https_port if _consul_tls else consul_http_port }}
   # the ip that will be given to consul for health check (can be a private ip)
-  instanceIp: {{ inventory_hostname }}{{ appendable_private_domain_name }}
+  instanceIp: {{ ha_instanceIp }}
   # health will be checked by consul using this period
   healthCheckPeriodInSecond: 5
   # the TTL of consul session
@@ -174,8 +174,8 @@ ha:
   consulLockDelayInSecond: 0
   # the delay before retrying to acquire lock when it fail
   lockAcquisitionDelayInSecond: 20
-  consul_tls_enabled: {{ 'true' if consul_tls else 'false' }}
-{% if (consul_tls) %}
+  consul_tls_enabled: {{ 'true' if _consul_tls else 'false' }}
+{% if (_consul_tls) %}
   # key store for SSL connection to consul
   keyStorePath: "{{ a4c_install_dir }}/alien4cloud/config/ssl/server-keystore.jks"
   keyStorePwd: "changeit"
@@ -208,8 +208,8 @@ languages:
   prefix: artemis
 
 consul:
-  url: {{ 'https' if consul_tls else 'http' }}://{{ inventory_hostname }}{{ appendable_private_domain_name }}:{{ '8501' if consul_tls else '8500' }}
-{% if (consul_tls) %}
+  url: {{ 'https' if _consul_tls else 'http' }}://{{ inventory_hostname }}{{ appendable_private_domain_name }}:{{ '8501' if _consul_tls else '8500' }}
+{% if (_consul_tls) %}
   key: {{ a4c_install_dir }}/alien4cloud/config/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}
   certificate: {{ a4c_install_dir }}/alien4cloud/config/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}
 {% endif %}

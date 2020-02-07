@@ -5,6 +5,7 @@
   become: false
 
   roles:
+    - commons/define_commons_vars    
     - a4c/config/define_a4c_url
     - { role: 'a4c/config/get_orchectrator',
         orchestratorName: 'Yorc'

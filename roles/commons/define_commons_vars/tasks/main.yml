@@ -74,14 +74,43 @@
     should_use_rsync_for_a4c_ha: false
   when: should_use_rsync_for_a4c_ha is not defined
 
-- name: Ensure consul_tls variable is defined
+- name: Ensure _consul_tls variable is defined
   set_fact:
-    consul_tls: false
+    _consul_tls: false
   when: consul_tls is not defined
 
-- name: The 'consul_tls' variable defines if consul http connections should be secured
+- name: Ensure _consul_tls variable is defined
+  set_fact:
+    _consul_tls: "{{ consul_tls }}"
+  when: consul_tls is defined
+
+- name: Detecting if consul_tls can be overriden
+  set_fact:
+    overriden_consul_tls: "{{ lookup('vars', '{{ consul_agent_for }}_consul_tls') }}"
+  when: consul_agent_for is defined
+  ignore_errors: yes
+
+- name: Override _consul_tls
+  set_fact:
+    _consul_tls: "{{ overriden_consul_tls }}"
+  when: overriden_consul_tls is defined
+
+- name: The '_consul_tls' variable defines if consul http connections should be secured
   debug:
-    var: consul_tls
+    var: _consul_tls
+
+- name: Ensure a4c_tls variable is defined
+  set_fact:
+    a4c_tls: false
+  when: a4c_tls is not defined
+
+- name: The 'a4c_tls' variable defines if a4c should be secured (https)
+  debug:
+    var: a4c_tls
+
+- name: Ensure a4c_protocol variable is defined
+  set_fact:
+    a4c_protocol: "{{ 'https' if a4c_tls else 'http' }}"
 
 - name: Ensure should_clean_share variable is defined
   set_fact:

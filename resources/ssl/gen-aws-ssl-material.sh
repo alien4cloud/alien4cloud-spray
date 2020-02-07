@@ -26,7 +26,7 @@ do
 		private_ip="${array[1]}"
 		private_dns="${array[2]}"
 		if [ -z "$DryRun" ] || [ "$DryRun" != "--dry" ]; then
-			eval "${script_dir}/gen-ssl-material.sh ${public_ip} ${private_dns},server.dc1.yorc ${public_ip},${private_ip} ${CertificatesFolder}"
+			eval "${script_dir}/gen-ssl-material.sh ${public_ip} ${private_dns},server.dc1.yorc,localhost ${public_ip},${private_ip} ${CertificatesFolder}"
 		fi
 		public_ips="${public_ips}\n${public_ip}"
 done < <(printf '%s\n' "$aws_result")

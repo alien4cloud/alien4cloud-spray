@@ -13,7 +13,7 @@ a4c_install_dir: /opt/a4c
 # This is the work folder for a4c, should be a mount point (shared volume) in case of HA
 #a4c_working_dir: /mnt/a4c/runtime
 #a4c_log_dir: /var/log/a4c
-a4c_protocol: http
+a4c_tls: false
 a4c_port: 8088
 a4c_front_protocol: http
 # WARNING : use 80 for http and 443 for SSL
@@ -34,6 +34,8 @@ consul_gossip_encrypt: false
 consul_gossip_encrypt_key_path: certificates/consul_encrypt_key
 # If true, consul http channels will be secured using TLS (certificates nedded)
 consul_tls: false
+# You can force this value per group:
+# For example: "a4cfront_consul_tls: true" will force consul TLS for a4cfront host
 
 yorc_user: yorc
 # optionnally specify the uid for the yorc user (we have to use a fixed one for NFS mount)

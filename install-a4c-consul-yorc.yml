@@ -18,12 +18,12 @@
 - hosts: yorc
   name: Install configure and start Yorc.
   roles:
-    - commons/define_commons_vars
+    - { role: commons/define_commons_vars, consul_agent_for: 'yorc' }
     - yorc/stop-yorc
     - consul/stop-consul
     - yorc/install-dependencies
     - consul/install-consul
-    - { role: consul/configure-consul, consul_mode: 'client' }
+    - { role: consul/configure-consul, consul_mode: 'client', consul_agent_for: 'yorc' }
     - install-java
     - yorc/install-yorc
     - yorc/configure-yorc
@@ -45,14 +45,14 @@
 - hosts: a4cfront
   name: Install A4C front (Nginx, consul and consul-template).
   roles:
-    - commons/define_commons_vars
+    - { role: commons/define_commons_vars, consul_agent_for: 'a4cfront' }
     - nginx/stop-nginx
     - a4c_front/stop-consul-template
     - consul/stop-consul
     - nginx/install-nginx
     - consul/configure-consul-gossip-keygen
     - consul/install-consul
-    - { role: consul/configure-consul, consul_mode: 'client' }
+    - { role: consul/configure-consul, consul_mode: 'client', consul_agent_for: 'a4cfront' }
     - a4c_front/configure-nginx
     - a4c_front/install-consul-template
     - a4c_front/configure-consul-template
@@ -72,15 +72,17 @@
 - hosts: a4c
   name: Install and configure A4C.
   roles:
-    - commons/define_commons_vars
+    - { role: commons/define_commons_vars, consul_agent_for: 'a4c' }
     - consul/stop-consul
     - a4c/stop-a4c
     - install-java
     - a4c/install-a4c
     - consul/configure-consul-gossip-keygen
     - consul/install-consul
-    - { role: consul/configure-consul, consul_mode: 'client' }
+    - { role: consul/configure-consul, consul_mode: 'client', consul_agent_for: 'a4c' }
     - a4c/configure-a4c
+    - { role: a4c/config/define_a4c_url, should_login: false }
+    - a4c/configure-saml
     - consul/start-consul
     - rsync/stop-consul-template
     - commons/define_commons_vars

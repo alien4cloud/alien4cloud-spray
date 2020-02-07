@@ -46,29 +46,29 @@
 - name: Locally Check for CA file
   local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
   register: stat_cacert_path
-  when: (yorc_tls or consul_tls)
+  when: (yorc_tls or _consul_tls)
 
 - fail:
     msg: "Yorc should be secured by no CA file found in {{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }} ! Please provide CA certificate file."
-  when: (yorc_tls or consul_tls) and (not stat_cacert_path.stat.exists)
+  when: (yorc_tls or _consul_tls) and (not stat_cacert_path.stat.exists)
 
 - name: Locally Check for Host key file
   local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
   register: stat_hostkey_path
-  when: (yorc_tls or consul_tls)
+  when: (yorc_tls or _consul_tls)
 
 - fail:
     msg: "Yorc should be secured by no host key file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }} ! Please provide host key file."
-  when: (yorc_tls or consul_tls) and (not stat_hostkey_path.stat.exists)
+  when: (yorc_tls or _consul_tls) and (not stat_hostkey_path.stat.exists)
 
 - name: Locally Check for Host cert file
   local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
   register: stat_hostcert_path
-  when: (yorc_tls or consul_tls)
+  when: (yorc_tls or _consul_tls)
 
 - fail:
     msg: "Yorc should be secured by no host certificate file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }} ! Please provide host certificate file."
-  when: (yorc_tls or consul_tls) and (not stat_hostcert_path.stat.exists)
+  when: (yorc_tls or _consul_tls) and (not stat_hostcert_path.stat.exists)
 
 - name: Creates yorc ssl directory
   file:
@@ -76,12 +76,12 @@
     state: directory
   become: true
   become_user: "{{ yorc_user }}"
-  when: (yorc_tls or consul_tls)
+  when: (yorc_tls or _consul_tls)
 
 - name: Define CA file path
   set_fact:
     ca_file_path: "{{ yorc_install_dir }}/ssl/{{ ssl_ca_cert_name }}"
-  when: (yorc_tls or consul_tls)
+  when: (yorc_tls or _consul_tls)
 
 - name: Copy CA cert file
   copy:
@@ -90,12 +90,12 @@
     mode: "0600"
   become: true
   become_user: "{{ yorc_user }}"
-  when: (yorc_tls or consul_tls)
+  when: (yorc_tls or _consul_tls)
 
 - name: Define host key file path
   set_fact:
     hostkey_file_path: "{{ yorc_install_dir }}/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
-  when: (yorc_tls or consul_tls)
+  when: (yorc_tls or _consul_tls)
 
 - name: Copy host key file
   copy:
@@ -104,12 +104,12 @@
     mode: "0600"
   become: true
   become_user: "{{ yorc_user }}"
-  when: (yorc_tls or consul_tls)
+  when: (yorc_tls or _consul_tls)
 
 - name: Define host cert file path
   set_fact:
     hostcert_file_path: "{{ yorc_install_dir }}/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
-  when: (yorc_tls or consul_tls)
+  when: (yorc_tls or _consul_tls)
 
 - name: Copy host cert file
   copy:
@@ -118,7 +118,7 @@
     mode: "0600"
   become: true
   become_user: "{{ yorc_user }}"
-  when: (yorc_tls or consul_tls)
+  when: (yorc_tls or _consul_tls)
 
 - name: Add 'ssl_verify' to yorc config
   set_fact:
@@ -149,62 +149,71 @@
 - name: Define a variable to store the yorc consul configuration
   set_fact:
     yorc_consul_config: "{{ '{ \"ssl\": true }' | from_json }}"
-  when: (consul_tls)
+  when: (_consul_tls)
 
 - name: Define a variable to store the yorc consul configuration
   set_fact:
     yorc_consul_config: "{{ '{}' | from_json }}"
-  when: (not consul_tls)
+  when: (not _consul_tls)
 
 # - name: Define CA file path
 #   set_fact:
 #     ca_file_path: "{{ consul_install_dir }}/ssl/{{ ssl_ca_cert_name }}"
-#   when: (consul_tls)
+#   when: (_consul_tls)
 
 - name: Add 'ca_cert' to yorc consul config
   set_fact:
     yorc_consul_config: "{{ yorc_consul_config|combine({'ca_cert': ca_file_path}) }}"
-  when: (consul_tls)
+  when: (_consul_tls)
 
 # - name: Define host key file path
 #   set_fact:
 #     hostkey_file_path: "{{ consul_install_dir }}/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
-#   when: (consul_tls)
+#   when: (_consul_tls)
 
 - name: Add 'key_file' to yorc consul config
   set_fact:
     yorc_consul_config: "{{ yorc_consul_config|combine({'key_file': hostkey_file_path}) }}"
-  when: (consul_tls)
+  when: (_consul_tls)
 
 # - name: Define host cert file path
 #   set_fact:
 #     hostcert_file_path: "{{ consul_install_dir }}/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
-#   when: (consul_tls)
+#   when: (_consul_tls)
 
 - name: Add 'cert_file' to yorc consul config
   set_fact:
     yorc_consul_config: "{{ yorc_consul_config|combine({'cert_file': hostcert_file_path}) }}"
-  when: (consul_tls)
+  when: (_consul_tls)
 
 - name: Define consul agent address
   set_fact:
-    consul_agent_address: "{{ inventory_hostname }}{{ appendable_private_domain_name }}:{{ consul_https_port }}"
-  when: (consul_tls)
+    consulAgentIp: "{{ inventory_hostname }}{{ appendable_private_domain_name }}"
+
+- name: Use localhost for consul agent address
+  set_fact:
+    consulAgentIp: "localhost"
+  when: (use_localhost_for_local_connections)
+
+- name: Define consul agent address
+  set_fact:
+    consul_agent_address: "{{ consulAgentIp }}:{{ consul_https_port }}"
+  when: (_consul_tls)
 
 - name: Define consul agent address
   set_fact:
     consul_agent_address: "{{ inventory_hostname }}{{ appendable_private_domain_name }}:{{ consul_http_port }}"
-  when: (not consul_tls)
+  when: (not _consul_tls)
 
 - name: Add 'address' to yorc consul config
   set_fact:
     yorc_consul_config: "{{ yorc_consul_config|combine({'address': consul_agent_address}) }}"
-  # when: (consul_tls)
+  # when: (_consul_tls)
 
 - name: Add 'consul' to yorc config
   set_fact:
     yorc_config: "{{ yorc_config|combine({'consul': yorc_consul_config}) }}"
-  when: (consul_tls)
+  when: (_consul_tls)
 
 - name: Debug the Yorc config before serializing it to file system
   debug:

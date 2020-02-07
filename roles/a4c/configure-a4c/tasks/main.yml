@@ -32,6 +32,25 @@
     a4c_config_added: "{{ a4c_config_addons | to_nice_yaml(indent=2) }}"
   when: (a4c_config_addons is defined)
 
+
+- name: Define consul agent address
+  set_fact:
+    ha_consulAgentIp: "{{ inventory_hostname }}{{ appendable_private_domain_name }}"
+
+- name: Use localhost for consul agent address
+  set_fact:
+    ha_consulAgentIp: "127.0.0.1"
+  when: (use_localhost_for_local_connections)
+
+- name: Define consul agent health check address
+  set_fact:
+    ha_instanceIp: "{{ inventory_hostname }}{{ appendable_private_domain_name }}"
+
+# - name: Use localhost for consul agent health check address
+#   set_fact:
+#     ha_instanceIp: "localhost"
+#   when: (use_localhost_for_local_connections)
+
 - name: Configure A4C
   template:
     src: alien4cloud-config.yml.j2
@@ -61,7 +80,7 @@
     path: "{{ a4c_install_dir }}/alien4cloud/config/ssl"
     state: directory
     owner: "{{ a4c_user }}"
-  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (consul_tls)
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
 
 - name: Copy CA cert file
   copy:
@@ -69,7 +88,7 @@
     dest: "{{ a4c_install_dir }}/alien4cloud/config/ssl/{{ ssl_ca_cert_name }}"
   become: true
   become_user: "{{ a4c_user }}"
-  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (consul_tls)
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
 
 - name: Copy host key file
   copy:
@@ -77,7 +96,7 @@
     dest: "{{ a4c_install_dir }}/alien4cloud/config/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
   become: true
   become_user: "{{ a4c_user }}"
-  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (consul_tls)
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
 
 - name: Copy host cert file
   copy:
@@ -85,22 +104,22 @@
     dest: "{{ a4c_install_dir }}/alien4cloud/config/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
   become: true
   become_user: "{{ a4c_user }}"
-  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (consul_tls)
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
 
 - name: Find the firts jre cacerts trustore
   shell: "find / -name cacerts | grep jre | head -n 1"
   become: true
   register: find_cacerts_command_output
-  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (consul_tls)
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
 
 - name: Define the cacerts path
   set_fact :
     cacerts_path: "{{ find_cacerts_command_output.stdout |trim }}"
-  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (consul_tls)
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
 
 - fail:
     msg: "Not able to locate any cacerts truststore !"
-  when: ((elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (consul_tls)) and (cacerts_path == "")
+  when: ((elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)) and (cacerts_path == "")
 
 - name: Copy cacerts truststore
   copy:
@@ -109,7 +128,7 @@
     dest: "{{ a4c_install_dir }}/alien4cloud/config/ssl/server-truststore.jks"
   become: true
   become_user: "{{ a4c_user }}"
-  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (consul_tls)
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
 
 - name: Prepare CA certificate to be imported into truststore
   shell: "openssl x509 -outform der -in {{ ssl_ca_cert_name }} -out ca-cert.der"
@@ -117,7 +136,7 @@
   become_user: "{{ a4c_user }}"
   args:
     chdir: "{{ a4c_install_dir }}/alien4cloud/config/ssl"
-  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (consul_tls)
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
 
 - name: Import CA certificate into truststore
   become: true
@@ -125,7 +144,7 @@
   shell: "keytool -import -alias alien4cloud -keystore server-truststore.jks -file ca-cert.der -storepass changeit -noprompt"
   args:
     chdir: "{{ a4c_install_dir }}/alien4cloud/config/ssl"
-  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (consul_tls)
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
 
 - name: Generate server keystore using openssl
   become: true
@@ -133,7 +152,7 @@
   shell: "openssl pkcs12 -export -name alien4cloud -in {{ inventory_hostname }}{{ ssl_host_cert_suffix }} -inkey {{ inventory_hostname }}{{ ssl_host_key_suffix }} -out server-keystore.p12 -chain -CAfile {{ ssl_ca_cert_name }} -caname root -password pass:changeit"
   args:
     chdir: "{{ a4c_install_dir }}/alien4cloud/config/ssl"
-  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (consul_tls)
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
 
 - name: Export server keystore using keytool
   become: true
@@ -141,7 +160,7 @@
   shell: "keytool -importkeystore -destkeystore server-keystore.jks -srckeystore server-keystore.p12 -srcstoretype pkcs12 -alias alien4cloud -deststorepass changeit -srcstorepass changeit"
   args:
     chdir: "{{ a4c_install_dir }}/alien4cloud/config/ssl"
-  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (consul_tls)
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
 
 - name: Append -Djavax.net.ssl... JVM options for Yorc TLS trustore and keystore
   become: true

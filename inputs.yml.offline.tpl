@@ -10,7 +10,7 @@ a4c_user: a4c
 a4c_install_dir: /opt/a4c
 # This is the work folder for a4c, should be a mount point (shared volume) in case of HA
 #a4c_working_dir: /mnt/a4c/runtime
-a4c_protocol: http
+a4c_tls: false
 a4c_port: 8088
 a4c_front_protocol: http
 # WARNING : use 80 for http and 443 for SSL

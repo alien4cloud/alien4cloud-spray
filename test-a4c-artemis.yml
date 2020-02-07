@@ -4,8 +4,9 @@
   become: false
 
   roles:
-    - { role: roles/a4c/config/define_a4c_url }
-    - { role: 'roles/a4c/config/test_application_deployment',
+    - commons/define_commons_vars
+    - a4c/config/define_a4c_url
+    - { role: 'a4c/config/test_application_deployment',
         topologyTemplateVersionId: '3MockWithRel:2.1.0-SNAPSHOT',
         applicationName: 'SetupTest'
       }
