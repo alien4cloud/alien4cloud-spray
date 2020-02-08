@@ -124,14 +124,24 @@
     var: a4c_working_dir_is_empty
   when: a4c_working_dir_is_empty is defined
 
-- fail:
-    msg: "Working dir seems to have changed from '{{ actual_a4c_working_dir }}' to '{{ a4c_working_dir }}' but '{{ a4c_working_dir }}' is not empty, please verify !"
+- name: Ask for user confirmation before migrating working dir
+  pause:
+    prompt: "Working dir seems to have changed from '{{ actual_a4c_working_dir }}' to '{{ a4c_working_dir }}' but '{{ a4c_working_dir }}' is not empty, this can occur in case of remote share, do you want to continue (Y/n) ?"
+  register: ask_for_continuation
   when: >
+    ask_for_continuation is defined and
     (a4c_conf_result.stat.exists)
     and (a4c_working_dir != actual_a4c_working_dir)
     and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir)
     and (not a4c_working_dir_is_empty)
     and (not actual_a4c_working_dir_is_empty)
+
+- fail:
+    msg: "You have decided to not continue !"
+  when: >
+    ask_for_continuation is defined
+    and ask_for_continuation.user_input is defined
+    and ask_for_continuation.user_input != "Y"
 
 - name: Ask for user confirmation before migrating working dir
   pause:
