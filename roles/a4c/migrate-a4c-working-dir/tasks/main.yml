@@ -30,6 +30,14 @@
     a4c_working_dir: "{{ a4c_install_dir }}/runtime"
   when: a4c_working_dir is not defined
 
+- name: Ensure a4c runtime directory exists
+  become: true
+  # we must become_user instead of use onwer since we don't want the rights to be changed (in case of samba share)
+  become_user: "{{ a4c_user }}"
+  file:
+    path: "{{ a4c_working_dir }}"
+    state: directory
+
 - name: Check if a4c condif already exist
   stat:
     path: "{{ a4c_install_dir }}/alien4cloud/config/alien4cloud-config.yml"
@@ -77,9 +85,12 @@
   become_user: "{{ a4c_user }}"
   find:
     paths: "{{ actual_a4c_working_dir }}/"
-    patterns: "*"
+    file_type: any
   register: actual_a4c_working_dir_find
   when: (a4c_conf_result.stat.exists)
+
+- debug:
+    var: actual_a4c_working_dir_find
 
 - name: Define a variable indicating if actual working directory is empty
   set_fact:
@@ -96,9 +107,12 @@
   become_user: "{{ a4c_user }}"
   find:
     paths: "{{ a4c_working_dir }}/"
-    patterns: "*"
+    file_type: any
   register: a4c_working_dir_find
   when: (a4c_conf_result.stat.exists)
+
+- debug:
+    var: a4c_working_dir_find
 
 - name: Define a variable indicating if expected working directory is empty
   set_fact:
@@ -110,11 +124,12 @@
     var: a4c_working_dir_is_empty
   when: a4c_working_dir_is_empty is defined
 
-- pause:
+- name: Ask for user confirmation before migrating working dir
+  pause:
     prompt: "Do you want to copy actual working directory content '{{ actual_a4c_working_dir }}' to expected one '{{ a4c_working_dir }}' ? (type 'yes I do !' to confirm)?"
-  register: ask_for_confirmation
+  register: ask_for_cp_confirmation
   delegate_to: localhost
-  when: |
+  when: >
     (a4c_conf_result.stat.exists)
     and (a4c_working_dir != actual_a4c_working_dir)
     and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir)
@@ -131,19 +146,17 @@
   #   dest: "{{ a4c_working_dir }}"
   #   mode: preserve
   #   backup: no
-  when: |
-    (a4c_conf_result.stat.exists)
-    and (a4c_working_dir != actual_a4c_working_dir)
-    and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir)
-    and (a4c_working_dir_is_empty)
-    and (not actual_a4c_working_dir_is_empty)
-    and ask_for_confirmation.user_input != "yes I do !"
+  when: >
+    ask_for_cp_confirmation is defined
+    and ask_for_cp_confirmation.user_input is defined
+    and ask_for_cp_confirmation.user_input == "yes I do !"
 
-- pause:
+- name: Ask for user confirmation before cleaning actual working dir
+  pause:
     prompt: "Do you want to clean the actual working directory content '{{ actual_a4c_working_dir }}' ? (type 'yes I do !' to confirm)?"
-  register: ask_for_confirmation
+  register: ask_for_clean_confirmation
   delegate_to: localhost
-  when: |
+  when: >
     (a4c_conf_result.stat.exists)
     and (a4c_working_dir != actual_a4c_working_dir)
     and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir)
@@ -153,13 +166,10 @@
 - name: Clean the actual working directory
   become: true
   shell: "rm -rf {{ actual_a4c_working_dir }}/*"
-  when: |
-    (a4c_conf_result.stat.exists)
-    and (a4c_working_dir != actual_a4c_working_dir)
-    and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir)
-    and (a4c_working_dir_is_empty)
-    and (not actual_a4c_working_dir_is_empty)
-    and ask_for_confirmation.user_input != "yes I do !"
+  when: >
+    ask_for_clean_confirmation is defined
+    and ask_for_clean_confirmation.user_input is defined
+    and ask_for_clean_confirmation.user_input == "yes I do !"
 
 - name: Actual working directory is as expected
   debug:
