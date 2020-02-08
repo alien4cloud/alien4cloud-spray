@@ -7,6 +7,8 @@
     - a4c/stop-a4c
     - a4c/upgrade-a4c
     - a4c/configure-a4c
+    - { role: a4c/config/define_a4c_url, should_login: false }
+    - a4c/configure-saml
 
 - hosts: a4c
   gather_facts: no
@@ -14,4 +16,6 @@
   # we want each A4C to be started sequencially in case of HA
   serial: 1
   roles:
+    - { role: a4c/config/define_a4c_url, should_login: false }
     - a4c/start-a4c
+    - a4c/config/wait_a4c_fullstart
