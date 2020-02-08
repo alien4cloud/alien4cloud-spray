@@ -73,8 +73,11 @@
   when: (a4c_conf_result.stat.exists)
 
 - name: Check if actual a4c_working_dir is empty
+  become: true
+  become_user: "{{ a4c_user }}"
   find:
     paths: "{{ actual_a4c_working_dir }}/"
+    patterns: "*"
   register: actual_a4c_working_dir_find
   when: (a4c_conf_result.stat.exists)
 
@@ -89,8 +92,11 @@
   when: actual_a4c_working_dir_is_empty is defined
 
 - name: Check if expected a4c_working_dir is empty
+  become: true
+  become_user: "{{ a4c_user }}"
   find:
     paths: "{{ a4c_working_dir }}/"
+    patterns: "*"
   register: a4c_working_dir_find
   when: (a4c_conf_result.stat.exists)
 
