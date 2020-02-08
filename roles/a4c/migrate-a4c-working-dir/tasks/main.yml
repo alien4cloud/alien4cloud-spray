@@ -110,6 +110,11 @@
     var: a4c_working_dir_is_empty
   when: a4c_working_dir_is_empty is defined
 
+- pause:
+    prompt: "Do you want to copy actual working directory content '{{ actual_a4c_working_dir }}' to expected one '{{ a4c_working_dir }}' ? (type 'yes I do !' to confirm)?"
+  register: ask_for_confirmation
+  delegate_to: localhost
+
 - name: "Copy actual working directory content '{{ actual_a4c_working_dir }}' to expected one '{{ a4c_working_dir }}'"
   become: true
   become_user: "{{ a4c_user }}"
@@ -120,12 +125,29 @@
   #   dest: "{{ a4c_working_dir }}"
   #   mode: preserve
   #   backup: no
-  when: (a4c_conf_result.stat.exists) and (a4c_working_dir != actual_a4c_working_dir) and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir) and (a4c_working_dir_is_empty) and (not actual_a4c_working_dir_is_empty)
+  when: |
+    (a4c_conf_result.stat.exists)
+    and (a4c_working_dir != actual_a4c_working_dir)
+    and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir)
+    and (a4c_working_dir_is_empty)
+    and (not actual_a4c_working_dir_is_empty)
+    and ask_for_confirmation.user_input != "yes I do !"
+
+- pause:
+    prompt: "Do you want to clean the actual working directory content '{{ actual_a4c_working_dir }}' ? (type 'yes I do !' to confirm)?"
+  register: ask_for_confirmation
+  delegate_to: localhost
 
 - name: Clean the actual working directory
   become: true
   shell: "rm -rf {{ actual_a4c_working_dir }}/*"
-  when: (a4c_conf_result.stat.exists) and (a4c_working_dir != actual_a4c_working_dir) and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir) and (a4c_working_dir_is_empty) and (not actual_a4c_working_dir_is_empty)
+  when: |
+    (a4c_conf_result.stat.exists)
+    and (a4c_working_dir != actual_a4c_working_dir)
+    and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir)
+    and (a4c_working_dir_is_empty)
+    and (not actual_a4c_working_dir_is_empty)
+    and ask_for_confirmation.user_input != "yes I do !"
 
 - name: Actual working directory is as expected
   debug:
