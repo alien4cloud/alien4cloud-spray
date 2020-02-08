@@ -18,11 +18,17 @@
         location_name: 'Default',
         location_type: 'OpenStack'
       }
+    - { role: 'a4c/config/enable_plugin',
+        pluginId: 'alien4cloud-datagouv_mls-plugin'
+      }
     - { role: 'a4c/config/setup_location_modifier',
         pluginId: 'alien4cloud-datagouv_mls-plugin',
         beanName: 'datagouv_mls-modifier',
         phase: 'post-matched-node-setup',
         modifier_position: 1
+      }
+    - { role: 'a4c/config/enable_plugin',
+        pluginId: 'alien4cloud-kubernetes-plugin'
       }
     - { role: 'a4c/config/setup_location_modifier',
         pluginId: 'alien4cloud-kubernetes-plugin',
@@ -30,11 +36,17 @@
         phase: 'post-matched-node-setup',
         modifier_position: 2
       }
+    - { role: 'a4c/config/enable_plugin',
+        pluginId: 'alien4cloud-consul-publisher-plugin'
+      }
     - { role: 'a4c/config/setup_location_modifier',
         pluginId: 'alien4cloud-consul-publisher-plugin',
         beanName: 'consul-publisher',
         phase: 'post-matched-node-setup',
         modifier_position: 3
+      }
+    - { role: 'a4c/config/enable_plugin',
+        pluginId: 'alien4cloud-ssi-network_policy-plugin'
       }
     - { role: 'a4c/config/setup_location_modifier',
         pluginId: 'alien4cloud-ssi-network_policy-plugin',
@@ -42,11 +54,17 @@
         phase: 'post-matched-node-setup',
         modifier_position: 4
       }
+    - { role: 'a4c/config/enable_plugin',
+        pluginId: 'alien4cloud-k8s-spark-jobs'
+      }
     - { role: 'a4c/config/setup_location_modifier',
         pluginId: 'alien4cloud-k8s-spark-jobs',
         beanName: 'k8s-spark-jobs-modifier',
         phase: 'post-matched-node-setup',
         modifier_position: 5
+      }
+    - { role: 'a4c/config/enable_plugin',
+        pluginId: 'alien4cloud-supervision'
       }
     - { role: 'a4c/config/setup_location_modifier',
         pluginId: 'alien4cloud-supervision',
