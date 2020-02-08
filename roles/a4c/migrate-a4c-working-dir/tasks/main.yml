@@ -114,6 +114,12 @@
     prompt: "Do you want to copy actual working directory content '{{ actual_a4c_working_dir }}' to expected one '{{ a4c_working_dir }}' ? (type 'yes I do !' to confirm)?"
   register: ask_for_confirmation
   delegate_to: localhost
+  when: |
+    (a4c_conf_result.stat.exists)
+    and (a4c_working_dir != actual_a4c_working_dir)
+    and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir)
+    and (a4c_working_dir_is_empty)
+    and (not actual_a4c_working_dir_is_empty)
 
 - name: "Copy actual working directory content '{{ actual_a4c_working_dir }}' to expected one '{{ a4c_working_dir }}'"
   become: true
@@ -137,6 +143,12 @@
     prompt: "Do you want to clean the actual working directory content '{{ actual_a4c_working_dir }}' ? (type 'yes I do !' to confirm)?"
   register: ask_for_confirmation
   delegate_to: localhost
+  when: |
+    (a4c_conf_result.stat.exists)
+    and (a4c_working_dir != actual_a4c_working_dir)
+    and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir)
+    and (a4c_working_dir_is_empty)
+    and (not actual_a4c_working_dir_is_empty)
 
 - name: Clean the actual working directory
   become: true
