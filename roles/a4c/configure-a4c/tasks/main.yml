@@ -46,10 +46,14 @@
   set_fact:
     ha_instanceIp: "{{ inventory_hostname }}{{ appendable_private_domain_name }}"
 
-# - name: Use localhost for consul agent health check address
-#   set_fact:
-#     ha_instanceIp: "localhost"
-#   when: (use_localhost_for_local_connections)
+- name: Define consul agent health check address (the IP consul will use to health check A4C)
+  set_fact:
+    ha_instanceCheckIp: "{{ inventory_hostname }}{{ appendable_private_domain_name }}"
+
+- name: Use localhost for consul agent health check address
+  set_fact:
+    ha_instanceCheckIp: "localhost"
+  when: (use_localhost_for_local_connections)
 
 - name: Configure A4C
   template:

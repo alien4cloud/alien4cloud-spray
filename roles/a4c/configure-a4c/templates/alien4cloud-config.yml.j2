@@ -166,6 +166,7 @@ ha:
   consulAgentPort: {{ consul_https_port if _consul_tls else consul_http_port }}
   # the ip that will be given to consul for health check (can be a private ip)
   instanceIp: {{ ha_instanceIp }}
+  instanceCheckIp: {{ ha_instanceCheckIp }}
   # health will be checked by consul using this period
   healthCheckPeriodInSecond: 5
   # the TTL of consul session
