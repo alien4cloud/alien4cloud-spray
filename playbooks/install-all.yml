@@ -1,0 +1,103 @@
+---
+- hosts: all
+  name: Install all common dependencies
+  roles:
+    - commons/install-common-dependencies
+    - commons/add_dns_server
+
+- hosts: consul
+  name: Install configure and start consul.
+  roles:
+    - commons/define_commons_vars
+    - consul/stop-consul
+    - consul/install-consul
+    - consul/configure-consul-gossip-keygen
+    - { role: consul/configure-consul, consul_mode: 'server' }
+    - consul/start-consul
+
+- hosts: yorc
+  name: Install configure and start Yorc.
+  roles:
+    - commons/define_commons_vars
+    - { role: commons/define_commons_vars, consul_agent_for: 'yorc' }
+    - yorc/stop-yorc
+    - consul/stop-consul
+    - yorc/install-dependencies
+    - consul/install-consul
+    - { role: consul/configure-consul, consul_mode: 'client', consul_agent_for: 'yorc' }
+    - install-java
+    - yorc/install-yorc
+    - yorc/configure-yorc
+    - spark/install-spark
+    - { role: spark/define-spark-home, spark_user_var: 'yorc_user' }
+    - consul/start-consul
+    - yorc/start-yorc
+
+- hosts: yorcfront
+  name: Install Yorc front (Nginx).
+  roles:
+    - commons/define_commons_vars
+    - nginx/stop-nginx
+    - nginx/install-nginx
+    - yorc/configure-nginx
+    - nginx/start-nginx
+
+- hosts: elasticsearch
+  name: Install configure and start Elasticsearch.
+  roles:
+    - commons/define_commons_vars
+    - elasticsearch/stop-elasticsearch
+    - install-java
+    - elasticsearch/install-elasticsearch
+    - elasticsearch/configure-elasticsearch
+    - elasticsearch/start-elasticsearch
+        
+- hosts: a4c
+  name: Eventually migrate a4c working directory
+  gather_facts: no
+  # we want this operation to be executed sequencially
+  serial: 1
+  roles:
+    - a4c/migrate-a4c-working-dir
+
+- hosts: a4c
+  name: Install and configure A4C
+  roles:
+    - { role: commons/define_commons_vars, consul_agent_for: 'a4c' }
+    - consul/stop-consul
+    - a4c/stop-a4c
+    - install-java
+    - a4c/install-a4c
+    - consul/install-consul
+    - { role: consul/configure-consul, consul_mode: 'client', consul_agent_for: 'a4c' }
+    - a4c/configure-a4c
+    - { role: a4c/config/define_a4c_url, should_login: false }
+    - a4c/configure-saml
+    - consul/start-consul
+
+- hosts: a4cfront
+  name: Install A4C front (Nginx, consul and consul-template)
+  roles:
+    - { role: commons/define_commons_vars, consul_agent_for: 'a4cfront' }
+    - nginx/stop-nginx
+    - a4c_front/stop-consul-template
+    - consul/stop-consul
+    - nginx/install-nginx
+    - consul/install-consul
+    - { role: consul/configure-consul, consul_mode: 'client', consul_agent_for: 'a4cfront' }
+    - a4c_front/configure-nginx
+    - a4c_front/install-consul-template
+    - a4c_front/configure-consul-template
+    - consul/start-consul
+    - nginx/start-nginx
+    - a4c_front/start-consul-template
+
+- hosts: a4c
+  name: Start A4C
+  gather_facts: no
+  # we want each A4C to be started sequencially in case of HA
+  serial: 1
+  roles:
+    - { role: a4c/config/define_a4c_url, should_login: false }
+    - a4c/start-a4c
+    - a4c/config/wait_a4c_fullstart
