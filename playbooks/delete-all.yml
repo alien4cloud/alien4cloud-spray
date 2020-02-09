@@ -12,6 +12,7 @@
   serial: 1
   name: unmount shared volume for A4C.
   roles:
+    - commons/define_commons_vars
     - { role: nfs/rm_nfs,
         ha_group: 'a4c'
       }
@@ -21,6 +22,7 @@
   serial: 1
   name: unmount shared volume for Yorc.
   roles:
+    - commons/define_commons_vars
     - { role: nfs/rm_nfs,
         ha_group: 'yorc'
       }
@@ -28,6 +30,7 @@
 - hosts: a4c
   name: Delete A4C
   roles:
+    - commons/define_commons_vars
     - a4c/delete-a4c
     - consul/delete-consul
     - rsync/delete-sync
@@ -41,6 +44,7 @@
   name: Delete Yorc
   become: false
   roles:
+    - commons/define_commons_vars
     - yorc/delete-yorc
     - consul/delete-consul
 
@@ -59,6 +63,7 @@
   gather_facts: no
   name: unmount shared volume for A4C.
   roles:
+    - commons/define_commons_vars
     - { role: nfs/unmount_nfs,
         ha_group: 'a4c'
       }
@@ -67,6 +72,7 @@
   gather_facts: no
   name: unmount shared volume for Yorc.
   roles:
+    - commons/define_commons_vars
     - { role: nfs/unmount_nfs,
         ha_group: 'yorc'
       }

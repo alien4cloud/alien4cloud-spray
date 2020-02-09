@@ -56,6 +56,11 @@
     a4c_working_dir: "{{ a4c_install_dir }}/runtime"
   when: a4c_working_dir is not defined
 
+- name: Ensure the 'yorc_working_dir' variable is defined
+  set_fact :
+    yorc_working_dir: "{{ yorc_install_dir }}/runtime"
+  when: yorc_working_dir is not defined
+
 - name: Ensure a4c_ha_enabled variable is defined
   set_fact:
     a4c_ha_enabled: "{{ groups['a4c'] | length > 1 }}"
@@ -134,4 +139,4 @@
 - name: Get the consul install directory
   set_fact :
     consul_install_dir: "{{ ansible_env.HOME }}/consul"
-  when: consul_install_dir is not defined  
+  when: consul_install_dir is not defined

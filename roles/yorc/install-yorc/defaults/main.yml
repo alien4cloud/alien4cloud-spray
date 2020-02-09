@@ -1,6 +1,6 @@
 yorc_log_dir: /var/log/yorc
 yorc_install_dir: /home/yorc
-yorc_working_dir: /home/yorc/work
+#yorc_working_dir: /home/yorc/work
 
 terraform_plugins:
  - https://releases.hashicorp.com/terraform-provider-consul/2.1.0/terraform-provider-consul_2.1.0_linux_amd64.zip
