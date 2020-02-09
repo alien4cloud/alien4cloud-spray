@@ -11,10 +11,6 @@
   debug:
     var: ha_enabled
 
-
-
-
-
 - name: Ensure working_directory variable is defined
   set_fact:
     working_directory: "{{ lookup('vars', '{{ ha_group }}_working_dir') }}"

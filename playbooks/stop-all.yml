@@ -16,7 +16,7 @@
 
 - hosts: a4c
   name: Stop Consul & A4C.
-  gather_facts: yes
+  gather_facts: no
   roles:
     - commons/define_commons_vars
     - consul/stop-consul

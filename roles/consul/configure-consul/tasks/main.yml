@@ -234,6 +234,20 @@
     consul_config: "{{ consul_config|combine({'retry_join': consul_host_array}) }}"
   # when: "{{ CONSUL_HOST_COUNT }} > 1 and consul_mode == 'server'"
 
+- name: Detecting host private IP address
+  set_fact:
+    private_ip_address: "{{ ansible_all_ipv4_addresses | ipaddr('private') | first }}"
+  when: private_interface_name is not defined
+
+- name: Detecting host private IP address
+  set_fact:
+    private_ip_address: "{{ lookup('vars', 'ansible_{{ private_interface_name }}').ipv4.address }}"
+  when: private_interface_name is defined
+
+- name: Here is the 'private_ip_address' var value
+  debug:
+    var: private_ip_address
+
 - name: Add 'advertise_addr' to consul config
   set_fact:
     consul_config: "{{consul_config |combine({'advertise_addr': private_ip_address})}}"
@@ -318,7 +332,7 @@
   with_dict: "{{consul_config}}"
   # when: (_consul_tls)
 
-- name: Add 'client_addr' to consul config 
+- name: Add 'client_addr' to consul config
   set_fact:
     consul_config: "{{consul_config |combine({'client_addr': consul_client_addr})}}"
 

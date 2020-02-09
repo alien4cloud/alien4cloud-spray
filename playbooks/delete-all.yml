@@ -1,6 +1,7 @@
 ---
 
 - hosts: a4cfront
+  gather_facts: no
   name: Delete A4C front (Nginx, consul and consul-template).
   roles:
     - a4c_front/delete-a4cfront
@@ -8,7 +9,7 @@
     - consul/delete-consul
 
 - hosts: a4c
-  # gather_facts: no
+  gather_facts: no
   serial: 1
   name: unmount shared volume for A4C.
   roles:
@@ -18,7 +19,7 @@
       }
 
 - hosts: yorc
-  # gather_facts: no
+  gather_facts: no
   serial: 1
   name: unmount shared volume for Yorc.
   roles:
@@ -28,6 +29,7 @@
       }
 
 - hosts: a4c
+  gather_facts: no
   name: Delete A4C
   roles:
     - commons/define_commons_vars
@@ -36,11 +38,13 @@
     - rsync/delete-sync
 
 - hosts: yorcfront
+  gather_facts: no
   name: Stop Yorc front (Nginx).
   roles:
     - nginx/delete-nginx
 
 - hosts: yorc
+  gather_facts: no
   name: Delete Yorc
   become: false
   roles:
@@ -49,18 +53,20 @@
     - consul/delete-consul
 
 - hosts: consul
+  gather_facts: no
   name: Delete Consul
   become: false
   roles:
     - consul/delete-consul
 
 - hosts: elasticsearch
+  gather_facts: no
   name: Delete Elasticsearch
   roles:
     - elasticsearch/delete-elasticsearch
 
 - hosts: a4c
-  # gather_facts: no
+  gather_facts: no
   name: unmount shared volume for A4C.
   roles:
     - commons/define_commons_vars
@@ -69,7 +75,7 @@
       }
 
 - hosts: yorc
-  # gather_facts: no
+  gather_facts: no
   name: unmount shared volume for Yorc.
   roles:
     - commons/define_commons_vars
