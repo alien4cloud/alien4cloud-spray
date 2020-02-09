@@ -20,6 +20,8 @@
   roles:
     - consul/stop-consul
     - a4c/stop-a4c
+    - rsync/stop-sync
+    - rsync/stop-consul-template
 
 - hosts: yorc
   name: Stop Yorc.
