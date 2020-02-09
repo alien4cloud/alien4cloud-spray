@@ -18,6 +18,7 @@
   name: Stop Consul & A4C.
   gather_facts: no
   roles:
+    - commons/define_commons_vars
     - consul/stop-consul
     - a4c/stop-a4c
     - rsync/stop-sync
