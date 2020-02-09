@@ -23,14 +23,12 @@
 
 - hosts: yorc
   name: Stop Yorc
-  become: false
   roles:
     - yorc/stop-yorc
     - consul/stop-consul
 
 - hosts: consul
   name: Stop Consul
-  become: false
   roles:
     - consul/stop-consul
 
