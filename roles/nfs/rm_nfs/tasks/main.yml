@@ -16,7 +16,6 @@
     working_directory: "{{ lookup('vars', '{{ ha_group }}_working_dir') }}"
   when: (ha_enabled)
 
-
 - name: Here is the working directory
   debug:
     var: working_directory
