@@ -1,7 +1,3 @@
-- name: Ensure the 'offline' variable is defined
-  set_fact :
-    offline: false
-  when: offline is not defined
 
 - name: Add the user '{{ consul_user }}'
   user:
@@ -10,16 +6,6 @@
     state: present
   become: true
   when: consul_user is defined
-
-- name: Get the current user
-  set_fact :
-    consul_user: "{{ ansible_user }}"
-  when: consul_user is not defined
-
-- name: Get the consul install directory
-  set_fact :
-    consul_install_dir: "{{ ansible_env.HOME }}/consul"
-  when: consul_install_dir is not defined
 
 - name: Check if consul is installed
   shell: "command -v {{ consul_install_dir }}/consul >/dev/null 2>&1"

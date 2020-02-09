@@ -1,0 +1,38 @@
+---
+
+- hosts: a4cfront
+  name: Delete A4C front (Nginx, consul and consul-template).
+  roles:
+    - a4c_front/delete-a4cfront
+    - nginx/delete-nginx
+    - consul/delete-consul
+
+- hosts: a4c
+  name: Delete A4C
+  roles:
+    - a4c/delete-a4c
+    - consul/delete-consul
+    - rsync/delete-sync
+
+- hosts: yorcfront
+  name: Stop Yorc front (Nginx).
+  roles:
+    - nginx/delete-nginx
+
+- hosts: yorc
+  name: Delete Yorc
+  become: false
+  roles:
+    - yorc/delete-yorc
+    - consul/delete-consul
+
+- hosts: consul
+  name: Delete Consul
+  become: false
+  roles:
+    - consul/delete-consul
+
+- hosts: elasticsearch
+  name: Delete Elasticsearch
+  roles:
+    - elasticsearch/delete-elasticsearch

@@ -1,7 +1,3 @@
-- name: Ensure the 'offline' variable is defined
-  set_fact :
-    offline: false
-  when: offline is not defined
 
 - fail:
     msg: "You can not specify an uid for a4c user that is root !"
@@ -37,22 +33,12 @@
     dest: ~/.gitconfig
     force: yes
 
-- name: Get the a4c install directory
-  set_fact :
-    a4c_install_dir: "{{ ansible_env.HOME }}/a4c"
-  when: a4c_install_dir is not defined
-
 - name: Ensure a4c directory exists
   become: true
   file:
     path: "{{ a4c_install_dir }}"
     state: directory
     owner: "{{ a4c_user }}"
-
-- name: Ensure the 'a4c_working_dir' variable is defined
-  set_fact :
-    a4c_working_dir: "{{ a4c_install_dir }}/runtime"
-  when: a4c_working_dir is not defined
 
 - name: Ensure a4c runtime directory exists
   become: true

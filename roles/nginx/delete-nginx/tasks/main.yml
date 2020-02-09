@@ -1,0 +1,11 @@
+
+# - pause:
+#     prompt: "Do you want to remove all yorc files on {{ a4c_ip }} ? (type 'yes I do !' to confirm)?"
+#   register: ask_for_confirmation
+#   delegate_to: localhost
+
+- name: Remove Nginx package
+  become: true
+  yum:
+    name: nginx
+    state: removed

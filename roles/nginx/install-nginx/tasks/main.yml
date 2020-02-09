@@ -1,9 +1,4 @@
 
-- name: Ensure the 'offline' variable is defined
-  set_fact :
-    offline: false
-  when: offline is not defined
-
 - name: List ansible packages and register result to print with debug later.
   yum:
     list: nginx

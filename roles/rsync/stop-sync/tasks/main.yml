@@ -1,5 +1,5 @@
 
-- name: Schedule working directory sync each minute
+- name: Stop schedule working directory sync
   become: true
   become_user: "{{ a4c_user }}"
   cron:
@@ -7,4 +7,6 @@
     minute: "*"
     hour: "*"
     job: "/var/lib/consul_template/a4c-sync.sh >> {{ a4c_log_dir }}/sync.log 2>&1"
-  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+    state: absent
+  when: (a4c_ha_enabled)
+  # when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)

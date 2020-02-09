@@ -8,11 +8,8 @@
 #     msg: "Aborted by user."
 #   when: ask_for_confirmation.user_input != "yes I do !"
 
-- name: Remove consul files
+- name: Remove Elasticsearch package
+  yum:
+    name: "elasticsearch"
+    state: removed
   become: true
-  file:
-    path: "{{ item }}"
-    state: absent
-  with_items:
-    - "{{ consul_install_dir }}"
-    - /etc/systemd/system/consul.service

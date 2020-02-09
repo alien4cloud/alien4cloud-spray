@@ -1,16 +1,28 @@
 ---
 
+- name: Create temporary folder
+  tempfile:
+    state: directory
+    suffix: csar_a4c
+  register: temp_dir
+
 - name: Copy CSAR archives
   copy:
     src: resources/csars/
-    dest: /tmp/csars/
+    dest: "{{ temp_dir.path }}"
 
 - name: Get CSAR archives
   find:
-    paths: /tmp/csars/
+    paths: "{{ temp_dir.path }}"
     patterns: "*.zip"
   register: cars_files
 
 - name: Upload CSAR archive to A4C
   shell: "curl -k -X POST -H 'cookie: {{ session_id }}' -F file=@{{ item.path }} '{{ alien_url }}/rest/latest/csars'"
   with_items: "{{ cars_files.files | sort(attribute='path') | list }}"
+
+- name: Finally remove temporary folder
+  become: true
+  file:
+    path: "{{ temp_dir.path }}"
+    state: absent

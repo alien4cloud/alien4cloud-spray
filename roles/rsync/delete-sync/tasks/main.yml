@@ -8,13 +8,13 @@
 #     msg: "Aborted by user."
 #   when: ask_for_confirmation.user_input != "yes I do !"
 
-- name: Remove a4c files
+- name: Remove sync files
   become: true
   file:
     path: "{{ item }}"
     state: absent
   with_items:
-    - "{{ a4c_install_dir }}"
-    - "{{ a4c_working_dir }}"
-    - "{{ a4c_log_dir }}"
-    - /etc/systemd/system/a4c.service
+    - /etc/consul_template
+    - /var/lib/consul_template/
+    - /var/log/consul_template/
+    - /etc/systemd/system/a4c-sync.service

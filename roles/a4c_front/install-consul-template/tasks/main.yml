@@ -1,24 +1,4 @@
 
-- name: Ensure a4c_ha_enabled variable is defined
-  set_fact:
-    a4c_ha_enabled: "{{ groups['a4c'] | length > 1 }}"
-
-- name: Is the HA enabled ?
-  debug:
-    var: a4c_ha_enabled
-
-- name: Ensure the 'offline' variable is defined
-  set_fact :
-    offline: false
-  when: offline is not defined
-
-- name: Get the current user
-  set_fact :
-    consul_template_user: centos
-      # FIXME "{{ ansible_user }}"
-      # FIXME need for a sudo user (the user that launch consul-template needs to restart nginx)
-  when: consul_template_user is not defined
-
 - name: Ensure /etc/consul_template directory exists
   become: true
   file:

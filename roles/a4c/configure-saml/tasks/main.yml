@@ -81,3 +81,9 @@
     dest: "{{ a4c_install_dir }}/alien4cloud/config/alien4cloud-config.yml"
   become: true
   become_user: "{{ a4c_user }}"
+
+- name: Finally remove temporary folder
+  become: true
+  file:
+    path: "{{ temp_dir.path }}"
+    state: absent

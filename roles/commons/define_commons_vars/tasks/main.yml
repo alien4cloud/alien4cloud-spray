@@ -125,3 +125,13 @@
   set_fact:
     consul_http_port: 8500
   when: consul_http_port is not defined
+
+- name: Get the current user
+  set_fact :
+    consul_user: "{{ ansible_user }}"
+  when: consul_user is not defined
+
+- name: Get the consul install directory
+  set_fact :
+    consul_install_dir: "{{ ansible_env.HOME }}/consul"
+  when: consul_install_dir is not defined  
