@@ -1,10 +1,9 @@
 
 - name: Check if a4c config already exist
+  become: true  
   stat:
     path: "{{ a4c_install_dir }}/alien4cloud/config/alien4cloud-config.yml"
   register: a4c_conf_result
-  become: true
-  become_user: "{{ a4c_user }}"
 
 - name: Define a var to known if actual A4C conf exists
   set_fact:
