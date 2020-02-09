@@ -20,16 +20,6 @@
   become: true
   when: a4c_user is defined and u4c_uid is not defined
 
-- name: Get the current user
-  set_fact :
-    a4c_user: "{{ ansible_user }}"
-  when: a4c_user is not defined
-
-- name: Ensure the 'a4c_working_dir' variable is defined
-  set_fact :
-    a4c_working_dir: "{{ a4c_install_dir }}/runtime"
-  when: a4c_working_dir is not defined
-
 - name: Ensure a4c runtime directory exists
   become: true
   # we must become_user instead of use onwer since we don't want the rights to be changed (in case of samba share)
@@ -38,7 +28,7 @@
     path: "{{ a4c_working_dir }}"
     state: directory
 
-- name: Check if a4c condif already exist
+- name: Check if a4c config already exist
   stat:
     path: "{{ a4c_install_dir }}/alien4cloud/config/alien4cloud-config.yml"
   register: a4c_conf_result

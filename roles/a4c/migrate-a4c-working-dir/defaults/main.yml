@@ -1,1 +1,3 @@
-
+a4c_user: a4c
+a4c_install_dir: /opt/a4c
+a4c_working_dir: /opt/a4c/runtime
