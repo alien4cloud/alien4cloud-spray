@@ -10,10 +10,11 @@
 
 - hosts: a4c
   name: Eventually migrate a4c working directory
-  gather_facts: no
+  # gather_facts: no
   # we want this operation to be executed sequencially
   serial: 1
   roles:
+    - commons/define_commons_vars
     - a4c/migrate-a4c-working-dir
 
 - hosts: a4c
