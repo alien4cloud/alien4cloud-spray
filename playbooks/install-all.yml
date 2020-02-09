@@ -35,6 +35,7 @@
 
 - hosts: yorcfront
   name: Install Yorc front (Nginx).
+  gather_facts: no
   roles:
     - commons/define_commons_vars
     - nginx/stop-nginx
@@ -44,6 +45,7 @@
 
 - hosts: elasticsearch
   name: Install configure and start Elasticsearch.
+  gather_facts: no
   roles:
     - commons/define_commons_vars
     - elasticsearch/stop-elasticsearch
@@ -54,6 +56,7 @@
 
 - hosts: a4c
   name: Eventually migrate a4c working directory
+  gather_facts: no
   # gather_facts: no
   # we want this operation to be executed sequencially
   serial: 1
@@ -63,6 +66,7 @@
 
 - hosts: a4c
   name: Install and configure A4C
+  gather_facts: yes
   roles:
     - { role: commons/define_commons_vars, consul_agent_for: 'a4c' }
     - consul/stop-consul
@@ -78,6 +82,7 @@
 
 - hosts: a4cfront
   name: Install A4C front (Nginx, consul and consul-template)
+  gather_facts: yes
   roles:
     - { role: commons/define_commons_vars, consul_agent_for: 'a4cfront' }
     - nginx/stop-nginx
