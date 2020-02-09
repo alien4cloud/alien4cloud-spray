@@ -26,3 +26,4 @@
   file:
     path: "{{ working_directory }}"
     state: absent
+  when: (ha_enabled)
