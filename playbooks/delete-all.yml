@@ -8,7 +8,7 @@
     - consul/delete-consul
 
 - hosts: a4c
-  gather_facts: no
+  # gather_facts: no
   serial: 1
   name: unmount shared volume for A4C.
   roles:
@@ -18,7 +18,7 @@
       }
 
 - hosts: yorc
-  gather_facts: no
+  # gather_facts: no
   serial: 1
   name: unmount shared volume for Yorc.
   roles:
@@ -60,7 +60,7 @@
     - elasticsearch/delete-elasticsearch
 
 - hosts: a4c
-  gather_facts: no
+  # gather_facts: no
   name: unmount shared volume for A4C.
   roles:
     - commons/define_commons_vars
@@ -69,7 +69,7 @@
       }
 
 - hosts: yorc
-  gather_facts: no
+  # gather_facts: no
   name: unmount shared volume for Yorc.
   roles:
     - commons/define_commons_vars
