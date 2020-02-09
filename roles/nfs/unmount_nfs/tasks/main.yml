@@ -51,3 +51,12 @@
   ignore_errors: yes
   shell: "umount {{ mount_directory }}"
   when: (ha_enabled)
+
+- name: Remove NFS mount in /etc/fstab
+  become: true
+  lineinfile:
+    path: "/etc/fstab"
+    regexp: "{{ nfs_share }}"
+    state: absent
+    # line: "{{ nfs_share }} {{ mount_directory }} nfs4 rw,user,exec,rsize=65536,wsize=65536 0 0"
+  when: (ha_enabled)
