@@ -30,7 +30,7 @@
   debug:
     var: working_user
   when: (ha_enabled)
-  
+
 - name: Get the parent dir of the working directory
   shell: "echo $(dirname \"{{ working_directory }}\")"
   register: dirname_command_output
@@ -48,7 +48,6 @@
 
 - name: UnMount NFS share
   become: true
-  become_user: "{{ working_user }}"
   ignore_errors: yes
   shell: "umount {{ mount_directory }}"
   when: (ha_enabled)
