@@ -1,14 +1,4 @@
 
-- name: Get the yorc install directory
-  set_fact :
-    yorc_install_dir: "{{ ansible_env.HOME }}/yorc"
-  when: yorc_install_dir is not defined
-
-- name: Get the yorc work directory
-  set_fact :
-    yorc_working_dir: "{{ yorc_install_dir }}/work"
-  when: yorc_working_dir is not defined
-
 - name: Ensure the work directory exists
   become: true
   become_user: "{{ yorc_user }}"

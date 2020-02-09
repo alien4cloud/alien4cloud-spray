@@ -32,11 +32,6 @@
     yorc_user: "{{ ansible_user }}"
   when: yorc_user is not defined
 
-- name: Get the yorc install directory
-  set_fact :
-    yorc_install_dir: "{{ ansible_env.HOME }}/yorc"
-  when: yorc_install_dir is not defined
-
 - name: Creates terraform plugins directory
   file:
     path: /var/terraform/plugins

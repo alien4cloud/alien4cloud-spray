@@ -8,6 +8,24 @@
     - consul/delete-consul
 
 - hosts: a4c
+  gather_facts: no
+  serial: 1
+  name: unmount shared volume for A4C.
+  roles:
+    - { role: commons/rm_nfs,
+        ha_group: 'a4c'
+      }
+
+- hosts: yorc
+  gather_facts: no
+  serial: 1
+  name: unmount shared volume for Yorc.
+  roles:
+    - { role: commons/rm_nfs,
+        ha_group: 'yorc'
+      }
+
+- hosts: a4c
   name: Delete A4C
   roles:
     - a4c/delete-a4c
@@ -36,3 +54,20 @@
   name: Delete Elasticsearch
   roles:
     - elasticsearch/delete-elasticsearch
+
+- hosts: a4c
+  gather_facts: no
+  name: unmount shared volume for A4C.
+  roles:
+    - { role: commons/unmount_nfs,
+        ha_group: 'a4c'
+      }
+
+- hosts: yorc
+  gather_facts: no
+  name: unmount shared volume for Yorc.
+  roles:
+    - { role: commons/unmount_nfs,
+        ha_group: 'yorc'
+      }
+  

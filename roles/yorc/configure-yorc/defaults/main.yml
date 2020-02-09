@@ -1,0 +1,3 @@
+yorc_log_dir: /var/log/yorc
+yorc_install_dir: /home/yorc
+yorc_working_dir: /home/yorc/work

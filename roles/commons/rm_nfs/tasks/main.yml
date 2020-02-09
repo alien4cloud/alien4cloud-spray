@@ -1,0 +1,28 @@
+
+- name: Ensure ha_enabled variable is defined
+  set_fact:
+    ha_enabled: "{{ groups[ha_group] | length > 1 }}"
+
+- name: Is the HA enabled ?
+  debug:
+    msg: "{{ groups[ha_group] }}"
+
+- name: Is the HA enabled ?
+  debug:
+    var: ha_enabled
+
+- name: Ensure working_directory variable is defined
+  set_fact:
+    working_directory: "{{ lookup('vars', '{{ ha_group }}_working_dir') }}"
+  when: (ha_enabled)
+
+- name: Here is the working directory
+  debug:
+    var: working_directory
+  when: (ha_enabled)
+
+- name: Remove working directory
+  become: true
+  file:
+    path: "{{ working_directory }}"
+    state: absent
