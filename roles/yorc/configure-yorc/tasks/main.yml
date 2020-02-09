@@ -192,7 +192,7 @@
 
 - name: Define consul agent address
   set_fact:
-    consul_agent_address: "{{ inventory_hostname }}{{ appendable_private_domain_name }}:{{ consul_http_port }}"
+    consul_agent_address: "{{ consulAgentIp }}:{{ consul_http_port }}"
   when: (not _consul_tls)
 
 - name: Add 'address' to yorc consul config
@@ -203,7 +203,7 @@
 - name: Add 'consul' to yorc config
   set_fact:
     yorc_config: "{{ yorc_config|combine({'consul': yorc_consul_config}) }}"
-  when: (_consul_tls)
+  # when: (_consul_tls)
 
 - name: Debug the Yorc config before serializing it to file system
   debug:

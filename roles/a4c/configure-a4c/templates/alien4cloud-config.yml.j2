@@ -209,7 +209,7 @@ languages:
   prefix: artemis
 
 consul:
-  url: {{ 'https' if _consul_tls else 'http' }}://{{ inventory_hostname }}{{ appendable_private_domain_name }}:{{ '8501' if _consul_tls else '8500' }}
+  url: {{ 'https' if _consul_tls else 'http' }}://{{ ha_consulAgentIp }}:{{ consul_https_port if _consul_tls else consul_http_port }}
 {% if (_consul_tls) %}
   key: {{ a4c_install_dir }}/alien4cloud/config/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}
   certificate: {{ a4c_install_dir }}/alien4cloud/config/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}

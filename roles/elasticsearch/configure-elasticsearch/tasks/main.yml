@@ -16,13 +16,15 @@
   debug:
     var: ES_HOST_COUNT
 
-# - name: Define elasticsearch hosts
-#   set_fact :
-#     private_domain_name: "[\"127.0.0.1\""
+- name: Define elasticsearch hosts
+  set_fact :
+    cluster_host_list: "[\"127.0.0.1\""
+  when: use_localhost_for_local_connections
 
 - name: Define elasticsearch hosts
   set_fact :
     cluster_host_list: "[\"{{ inventory_hostname }}{{ appendable_private_domain_name }}\""
+  when: not use_localhost_for_local_connections
 
 - name: Loop over the elasticsearch group to fill elasticsearch hosts
   set_fact:
@@ -121,7 +123,7 @@
     dest: "{{ hostcert_file_path }}"
     owner: "{{ elasticsearch_user }}"
     group: "{{ elasticsearch_group }}"
-    mode: "0600"    
+    mode: "0600"
   become: true
   when: (elasticsearch_tls)
 

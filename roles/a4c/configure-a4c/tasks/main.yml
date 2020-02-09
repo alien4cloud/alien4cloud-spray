@@ -14,13 +14,15 @@
   set_fact:
     es_node_list: "{{ es_node_list + [ item + appendable_private_domain_name + ':9300' ] }}"
   with_items: "{{ groups['elasticsearch'] }}"
-  # when: inventory_hostname != item
+  when: >
+    (inventory_hostname != item and use_localhost_for_local_connections)
+    or not use_localhost_for_local_connections
 
-# - name: Loop over the elasticsearch group (only for localhost)
-#   set_fact:
-#     es_node_list: "{{ es_node_list + [ 'localhost:9300' ] }}"
-#   with_items: "{{ groups['elasticsearch'] }}"
-#   when: inventory_hostname == item
+- name: Loop over the elasticsearch group (only for localhost)
+  set_fact:
+    es_node_list: "{{ es_node_list + [ 'localhost:9300' ] }}"
+  with_items: "{{ groups['elasticsearch'] }}"
+  when: use_localhost_for_local_connections and inventory_hostname == item
 
 - name: Ensure a4c_config_added variable exists
   set_fact:
