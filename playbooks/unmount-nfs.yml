@@ -3,7 +3,7 @@
   gather_facts: no
   name: unmount shared volume for A4C.
   roles:
-    - { role: commons/unmount_nfs,
+    - { role: nfs/unmount_nfs,
         ha_group: 'a4c'
       }
 
@@ -11,6 +11,6 @@
   gather_facts: no
   name: unmount shared volume for Yorc.
   roles:
-    - { role: commons/unmount_nfs,
+    - { role: nfs/unmount_nfs,
         ha_group: 'yorc'
       }
