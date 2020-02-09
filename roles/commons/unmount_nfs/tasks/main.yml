@@ -21,6 +21,16 @@
     var: working_directory
   when: (ha_enabled)
 
+- name: Ensure working_user variable is defined
+  set_fact:
+    working_user: "{{ lookup('vars', '{{ ha_group }}_user') }}"
+  when: (ha_enabled)
+
+- name: Here is the working user
+  debug:
+    var: working_user
+  when: (ha_enabled)
+  
 - name: Get the parent dir of the working directory
   shell: "echo $(dirname \"{{ working_directory }}\")"
   register: dirname_command_output
