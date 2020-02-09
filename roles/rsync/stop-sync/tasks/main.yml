@@ -4,9 +4,9 @@
   become_user: "{{ a4c_user }}"
   cron:
     name: "Sync working directory"
-    minute: "*"
-    hour: "*"
-    job: "/var/lib/consul_template/a4c-sync.sh >> {{ a4c_log_dir }}/sync.log 2>&1"
+    # minute: "*"
+    # hour: "*"
+    # job: "/var/lib/consul_template/a4c-sync.sh >> {{ a4c_log_dir }}/sync.log 2>&1"
     state: absent
   when: (a4c_ha_enabled)
   # when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
