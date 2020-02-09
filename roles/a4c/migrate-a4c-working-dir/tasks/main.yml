@@ -1,33 +1,4 @@
 
-- fail:
-    msg: "You can not specify an uid for a4c user that is root !"
-  when: a4c_user is defined and a4c_user == "root" and a4c_uid is defined
-
-- name: Add the user '{{ a4c_user }}' specifying uid
-  user:
-    name: "{{ a4c_user }}"
-    create_home: true
-    uid: "{{ a4c_uid }}"
-    state: present
-  become: true
-  when: a4c_user is defined and a4c_user != "root" and a4c_uid is defined
-
-- name: Add the user '{{ a4c_user }}'
-  user:
-    name: "{{ a4c_user }}"
-    create_home: true
-    state: present
-  become: true
-  when: a4c_user is defined and u4c_uid is not defined
-
-- name: Ensure a4c runtime directory exists
-  become: true
-  # we must become_user instead of use onwer since we don't want the rights to be changed (in case of samba share)
-  become_user: "{{ a4c_user }}"
-  file:
-    path: "{{ a4c_working_dir }}"
-    state: directory
-
 - name: Check if a4c config already exist
   stat:
     path: "{{ a4c_install_dir }}/alien4cloud/config/alien4cloud-config.yml"
@@ -35,32 +6,37 @@
   become: true
   become_user: "{{ a4c_user }}"
 
+- name: Define a var to known if actual A4C conf exists
+  set_fact:
+    a4c_conf_exists: "{{ a4c_conf_result.stat.exists }}"
+
 - name: Slurp the consul config file
   become: true
   become_user: "{{ a4c_user }}"
   slurp:
     src: "{{ a4c_install_dir }}/alien4cloud/config/alien4cloud-config.yml"
   register: a4c_config
-  when: a4c_conf_result.stat.exists
+  when: a4c_conf_exists
 
 - name: Decode a4c config
   set_fact:
     a4c_config: "{{ a4c_config['content'] | b64decode | from_yaml }}"
-  when: a4c_conf_result.stat.exists
+  when: a4c_conf_exists
 
 - name: Get the actual working directory
   set_fact:
     actual_a4c_working_dir: "{{ a4c_config.directories.alien }}"
-  when: a4c_conf_result.stat.exists
+  when: a4c_conf_exists
 
 - name: Here is the actual a4c working directory
   debug:
     var: actual_a4c_working_dir
+  when: a4c_conf_exists
 
 - name: Ensure the 'a4c_working_dir' exists
   set_fact :
     a4c_working_dir: "{{ a4c_install_dir }}/runtime"
-  when: a4c_working_dir is not defined
+  when: a4c_conf_exists and a4c_working_dir is not defined
 
 - name: Check if a4c actual working directory exist
   stat:
@@ -68,7 +44,7 @@
   register: actual_working_directory_stat
   become: true
   become_user: "{{ a4c_user }}"
-  when: (a4c_conf_result.stat.exists)
+  when: a4c_conf_exists
 
 - name: Check if actual a4c_working_dir is empty
   become: true
@@ -77,20 +53,21 @@
     paths: "{{ actual_a4c_working_dir }}/"
     file_type: any
   register: actual_a4c_working_dir_find
-  when: (a4c_conf_result.stat.exists)
+  when: a4c_conf_exists
 
 - debug:
     var: actual_a4c_working_dir_find
+  when: a4c_conf_exists
 
 - name: Define a variable indicating if actual working directory is empty
   set_fact:
      actual_a4c_working_dir_is_empty: "{{ actual_a4c_working_dir_find.matched == 0 }}"
-  when: (a4c_conf_result.stat.exists)
+  when: a4c_conf_exists
 
 - name: Is the actual working dir empty ?
   debug:
     var: actual_a4c_working_dir_is_empty
-  when: actual_a4c_working_dir_is_empty is defined
+  when: a4c_conf_exists and actual_a4c_working_dir_is_empty is defined
 
 - name: Check if expected a4c_working_dir is empty
   become: true
@@ -99,28 +76,29 @@
     paths: "{{ a4c_working_dir }}/"
     file_type: any
   register: a4c_working_dir_find
-  when: (a4c_conf_result.stat.exists)
+  when: a4c_conf_exists
 
 - debug:
     var: a4c_working_dir_find
+  when: a4c_conf_exists
 
 - name: Define a variable indicating if expected working directory is empty
   set_fact:
      a4c_working_dir_is_empty: "{{ a4c_working_dir_find.matched == 0 }}"
-  when: (a4c_conf_result.stat.exists)
+  when: a4c_conf_exists
 
 - name: Is the expected working dir empty ?
   debug:
     var: a4c_working_dir_is_empty
-  when: a4c_working_dir_is_empty is defined
+  when: a4c_conf_exists and a4c_working_dir_is_empty is defined
 
 - name: Ask for user confirmation before migrating working dir
   pause:
     prompt: "Working dir seems to have changed from '{{ actual_a4c_working_dir }}' to '{{ a4c_working_dir }}' but '{{ a4c_working_dir }}' is not empty, this can occur in case of remote share, do you want to continue (Y/n) ?"
   register: ask_for_continuation
   when: >
-    ask_for_continuation is defined and
-    (a4c_conf_result.stat.exists)
+    a4c_conf_exists
+    and ask_for_continuation is defined
     and (a4c_working_dir != actual_a4c_working_dir)
     and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir)
     and (not a4c_working_dir_is_empty)
@@ -129,7 +107,8 @@
 - fail:
     msg: "You have decided to not continue !"
   when: >
-    ask_for_continuation is defined
+    a4c_conf_exists
+    and ask_for_continuation is defined
     and ask_for_continuation.user_input is defined
     and ask_for_continuation.user_input != "Y"
 
@@ -139,7 +118,7 @@
   register: ask_for_cp_confirmation
   delegate_to: localhost
   when: >
-    (a4c_conf_result.stat.exists)
+    a4c_conf_exists
     and (a4c_working_dir != actual_a4c_working_dir)
     and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir)
     and (a4c_working_dir_is_empty)
@@ -156,7 +135,8 @@
   #   mode: preserve
   #   backup: no
   when: >
-    ask_for_cp_confirmation is defined
+    a4c_conf_exists
+    and ask_for_cp_confirmation is defined
     and ask_for_cp_confirmation.user_input is defined
     and ask_for_cp_confirmation.user_input == "yes I do !"
 
@@ -166,7 +146,7 @@
   register: ask_for_clean_confirmation
   delegate_to: localhost
   when: >
-    (a4c_conf_result.stat.exists)
+    a4c_conf_exists
     and (a4c_working_dir != actual_a4c_working_dir)
     and (actual_working_directory_stat.stat.isdir is defined and actual_working_directory_stat.stat.isdir)
     and (a4c_working_dir_is_empty)
@@ -176,11 +156,12 @@
   become: true
   shell: "rm -rf {{ actual_a4c_working_dir }}/*"
   when: >
-    ask_for_clean_confirmation is defined
+    a4c_conf_exists
+    and ask_for_clean_confirmation is defined
     and ask_for_clean_confirmation.user_input is defined
     and ask_for_clean_confirmation.user_input == "yes I do !"
 
 - name: Actual working directory is as expected
   debug:
     msg: "Actual working directory '{{ actual_a4c_working_dir }}' is as expected '{{ a4c_working_dir }}' (nothing to do !)"
-  when: (a4c_conf_result.stat.exists) and (a4c_working_dir == actual_a4c_working_dir)
+  when: a4c_conf_exists and (a4c_working_dir == actual_a4c_working_dir)
