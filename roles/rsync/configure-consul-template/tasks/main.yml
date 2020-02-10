@@ -1,4 +1,13 @@
 
+- name: Define consul agent address
+  set_fact:
+    consulAgentIp: "{{ inventory_hostname }}{{ appendable_private_domain_name }}"
+
+- name: Use localhost for consul agent address
+  set_fact:
+    consulAgentIp: "127.0.0.1"
+  when: (use_localhost_for_local_connections)
+
 
 - name: Setup consul template configuration
   template:

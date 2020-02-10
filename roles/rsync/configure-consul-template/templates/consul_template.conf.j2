@@ -1,5 +1,5 @@
 consul {
-  address = "{{ inventory_hostname }}{{ appendable_private_domain_name }}:{{ consul_https_port if _consul_tls else consul_http_port }}"
+  address = "{{ consulAgentIp }}:{{ consul_https_port if _consul_tls else consul_http_port }}"
   retry {
     enabled = true
     attempts = 12
