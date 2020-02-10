@@ -41,7 +41,7 @@
   register: result
   until: result.status == 200
   retries: 30
-  delay: 30
+  delay: 60
   ignore_errors: yes
 
 - name: Fail when A4C is not reachable at {{ alien_health_url }}
