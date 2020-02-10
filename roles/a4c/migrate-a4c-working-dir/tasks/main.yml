@@ -39,11 +39,13 @@
 
 - name: Ensure a4c runtime directory exists
   become: true
-  # we must become_user instead of use onwer since we don't want the rights to be changes (in case of samba share)
-  become_user: "{{ a4c_user }}"
+  # # we must become_user instead of use onwer since we don't want the rights to be changes (in case of samba share)
+  # become_user: "{{ a4c_user }}"
   file:
     path: "{{ a4c_working_dir }}"
     state: directory
+    owner: "{{ a4c_user }}"
+  when: a4c_conf_exists
 
 - name: Check if a4c actual working directory exist
   stat:
