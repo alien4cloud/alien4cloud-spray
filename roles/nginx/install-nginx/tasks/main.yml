@@ -1,5 +1,5 @@
 
-- name: List ansible packages and register result to print with debug later.
+- name: List nginx packages
   yum:
     list: nginx
   register: yum_list_result
