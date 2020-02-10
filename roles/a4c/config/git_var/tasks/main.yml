@@ -1,0 +1,53 @@
+---
+
+# - name: Install pip
+#   yum: pkg=python-pip state=present
+
+# - name: Ensure httplib2 is installed
+#   pip:
+#     name: httplib2
+#     state: present
+#   become: true
+
+- name: Create CSAR GIT repository
+  uri:
+    url: "{{ alien_url }}/rest/latest/csarsgit"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body:
+      repositoryUrl: "{{ item.repositoryUrl }}"
+      username: "{{ item.repositoryUsername }}"
+      password: "{{ item.repositoryPassword }}"
+      storedLocally: true
+      importLocations:
+        - branchId: "{{ item.branchId }}"
+          subPath: "{{ item.subPath }}"
+    body_format: json
+  register: result
+  with_items: "{{ a4c_git_repositories }}"
+  ignore_errors: yes
+  when: a4c_git_repositories is defined
+
+- debug:
+    var: result
+
+# - name: "Register repository_id with value <{{ result.json.data }}> for attribute parsing"
+#   set_fact:
+#     repository_id: "{{ result.json.data }}"
+#
+- name: Import CSAR GIT repository
+  uri:
+    url: "{{ alien_url }}/rest/latest/csarsgit/{{ item.json.data }}"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    timeout: 3000
+  register: result
+  with_items: "{{ result.results }}"
+  ignore_errors: yes
+  when: a4c_git_repositories is defined
