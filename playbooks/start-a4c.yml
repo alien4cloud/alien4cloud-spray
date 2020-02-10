@@ -19,6 +19,7 @@
   # we want each A4C to be started sequencially in case of HA !
   serial: 1
   roles:
+    - commons/define_commons_vars    
     - consul/start-consul
     - a4c/start-a4c
     - { role: a4c/config/define_a4c_url, should_login: false }
