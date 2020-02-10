@@ -69,7 +69,7 @@ elasticSearch:
   # a comma separated list of host:port couples
   hosts: {{ es_node_list | list | join (',') }}
   shard_count: {{ es_node_list | length }}
-  replica_count: {{ (es_node_list | length)  -1}}
+  replica_count: 1
 
 {% if (elasticsearch_tls) %}
 searchguard:

@@ -106,7 +106,6 @@
   set_fact:
     yorc_url: "{{ yorc_scheme }}://{{ yorc_address }}:8800"
 
-
 - name: Add 'urlYorc' to orchestrator config
   set_fact:
     orchestratorConfiguration: "{{ orchestratorConfiguration|combine({'urlYorc': yorc_url}) }}"
