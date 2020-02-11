@@ -8,7 +8,6 @@
     consulAgentIp: "127.0.0.1"
   when: (use_localhost_for_local_connections)
 
-
 - name: Setup consul template configuration
   template:
     src: consul_template.conf.j2
