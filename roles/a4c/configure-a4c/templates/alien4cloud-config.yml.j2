@@ -60,16 +60,15 @@ components.search.boost:
 elasticSearch:
   clusterName: escluster
   local: false
-  # client: false
   resetData: false
   prefix_max_expansions: 10
   # Start elasticsearch in transport client mode, it will not join the cluster and will not store any data
-  client: true
-  transportClient: true
+  client: {{ false if es_embedded else true }}
+  transportClient: {{ false if es_embedded else true }}
   # a comma separated list of host:port couples
   hosts: {{ es_node_list | list | join (',') }}
   shard_count: {{ es_node_list | length }}
-  replica_count: 1
+  replica_count: {{ 0 if es_embedded else 1 }}
 
 {% if (elasticsearch_tls) %}
 searchguard:
