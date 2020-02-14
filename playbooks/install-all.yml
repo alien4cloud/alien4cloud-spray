@@ -99,6 +99,20 @@
     - a4c_front/start-consul-template
 
 - hosts: a4c
+  name: Setup rsync for A4C.
+  roles:
+    - rsync/stop-consul-template
+    - commons/define_commons_vars
+    - rsync/install-rsync
+    - rsync/generate_keypair
+    - rsync/add_public_keys
+    - rsync/install-consul-template
+    - rsync/configure-consul-template
+    - rsync/schedule-sync
+    - consul/start-consul
+    - rsync/start-consul-template
+    
+- hosts: a4c
   name: Start A4C
   gather_facts: no
   # we want each A4C to be started sequencially in case of HA

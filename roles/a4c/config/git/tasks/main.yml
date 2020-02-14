@@ -1,13 +1,39 @@
 ---
 
-# - name: Install pip
-#   yum: pkg=python-pip state=present
+- name: Get existing repositories
+  uri:
+    url: "{{ alien_url }}/rest/latest/csarsgit?from=0&query=&size=100"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body_format: json
+    status_code: 200
+  register: result
 
-# - name: Ensure httplib2 is installed
-#   pip:
-#     name: httplib2
-#     state: present
-#   become: true
+- name: Build the JSON query for searching Git repo
+  set_fact:
+    query: "data.data[?repositoryUrl=='{{ repositoryUrl }}']"
+
+- name: Init repository_id
+  set_fact:
+    csargitrepo: ""
+
+- name: Search repository
+  set_fact:
+    # TODO: better query than doesn't fail when no location found
+    csargitrepo: "{{ result.content | from_json | json_query(query) | first }}"
+  ignore_errors: yes
+
+- name: Init repository_id
+  set_fact:
+    repository_id: ""
+
+- name: Get Git repo
+  set_fact:
+    repository_id: "{{ csargitrepo.id }}"
+  when: (csargitrepo is defined and csargitrepo != "")
 
 - name: Create CSAR GIT repository
   uri:
@@ -15,7 +41,8 @@
     method: POST
     return_content: yes
     validate_certs: no
-    HEADER_cookie: "{{ session_id }}"
+    headers:
+      Cookie: "{{ session_id }}"
     body:
       repositoryUrl: "{{ repositoryUrl }}"
       username: "{{ repositoryUsername }}"
@@ -26,10 +53,12 @@
           subPath: "{{ subPath }}"
     body_format: json
   register: result
+  when: repository_id is not defined or repository_id == ""
 
 - name: "Register repository_id with value <{{ result.json.data }}> for attribute parsing"
   set_fact:
     repository_id: "{{ result.json.data }}"
+  when: repository_id is not defined or repository_id == ""
 
 - name: Import CSAR GIT repository
   uri:
@@ -37,6 +66,8 @@
     method: POST
     return_content: yes
     validate_certs: no
-    HEADER_cookie: "{{ session_id }}"
+    headers:
+      Cookie: "{{ session_id }}"
     timeout: 3000
   register: result
+  when: repository_id is defined and repository_id != ""
