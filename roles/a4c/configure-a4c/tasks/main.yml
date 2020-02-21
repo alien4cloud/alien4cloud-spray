@@ -79,6 +79,15 @@
   become: true
   become_user: "{{ a4c_user }}"
 
+- name: Configure A4C embeded ES
+  template:
+    src: elasticsearch.yml.j2
+    dest: "{{ a4c_install_dir }}/alien4cloud/config/elasticsearch.yml"
+    force: yes
+  become: true
+  become_user: "{{ a4c_user }}"
+  when: es_embedded
+
 - name: Configure A4C logs
   template:
     src: log4j2.xml.j2

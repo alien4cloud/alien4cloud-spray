@@ -6,6 +6,7 @@
     path: "~/.ssh"
     state: directory
     owner: "{{ a4c_user }}"
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Ensure no private key is present
   become: true
@@ -13,6 +14,7 @@
   file:
     path: "~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}"
     state: absent
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Ensure no public key is present
   become: true
@@ -20,11 +22,13 @@
   file:
     path: "~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}.pub"
     state: absent
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
 
 - name: Generate keypair
   become: true
   become_user: "{{ a4c_user }}"
   shell: "ssh-keygen -f ~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }} -P \"\""
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
   # openssh_keypair:
   #   path: "~/.ssh/{{ inventory_hostname }}"
   #   force: True
@@ -37,3 +41,4 @@
     dest: "{{ inventory_dir }}/certificates/pub/{{ inventory_hostname }}{{ appendable_private_domain_name }}.pub"
     flat: yes
     validate_checksum: no
+  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
