@@ -1,0 +1,46 @@
+services:
+
+{% for service in services.data.data %}
+  - nodeType: "{{ service.nodeInstance.nodeTemplate.type }}"
+    nodeTypeVersion: "{{ service.nodeInstance.typeVersion }}"
+    name: "{{ service.name }}"
+    version: "{{ service.version }}"
+    nodeInstance:
+{% if service.nodeInstance.nodeTemplate.properties | length > 0 %}
+      properties:
+{% for propertyEntry in service.nodeInstance.nodeTemplate.properties %}
+{% set propertyYaml = { propertyEntry.key : propertyEntry.value.value } %}
+{{ propertyYaml | to_nice_yaml | indent( width=8, indentfirst=True) }}
+{% endfor %}
+{% endif %}
+{% set capabilityHasPropertyValue = {'almostOne': False, 'capabilitiesWithPropertyValue': {}} %}
+{% for capability in service.nodeInstance.nodeTemplate.capabilities %}
+{% for propertyEntry in capability.value.properties %}
+{% if propertyEntry.value %}
+{% set capabilitiesWithPropertyValue = capabilityHasPropertyValue.capabilitiesWithPropertyValue %}
+{% set capabilitiesWithPropertyValue = capabilitiesWithPropertyValue|combine({capability.key: True }) %}
+{% if capabilityHasPropertyValue.update({'capabilitiesWithPropertyValue': capabilitiesWithPropertyValue }) %} {% endif %}
+{% if capabilityHasPropertyValue.update({'almostOne': True}) %} {% endif %}
+{% endif %}
+{% endfor %}
+{% endfor %}
+{% if capabilityHasPropertyValue.almostOne == True %}
+      capabilities:
+{% for capability in service.nodeInstance.nodeTemplate.capabilities %}
+{% if capabilityHasPropertyValue.capabilitiesWithPropertyValue[capability.key] is defined and capabilityHasPropertyValue.capabilitiesWithPropertyValue[capability.key] == True %}
+        {{ capability.key }}:
+          properties:
+{% for propertyEntry in capability.value.properties %}
+{% if propertyEntry.value %}
+{% set propertyYaml = { propertyEntry.key : propertyEntry.value.value } %}
+{{ propertyYaml | to_nice_yaml | indent( width=12, indentfirst=True) }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if service.nodeInstance.attributeValues | length > 0 %}
+      attributeValues:
+{{ service.nodeInstance.attributeValues | to_nice_yaml | indent( width=8, indentfirst=True) }}
+{% endif %}
+{% endfor %}

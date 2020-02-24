@@ -1,0 +1,54 @@
+
+---
+
+- name: Search for existing services
+  uri:
+    url: "{{ alien_url }}/rest/latest/services/adv/search"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body:
+      query: ""
+      from: 0
+      size: 500
+    body_format: json
+    status_code: 200
+  register: search_services_result
+
+- name: Decode result
+  set_fact:
+    services: "{{ search_services_result.content | from_json }}"
+
+# - name: Here is the dumped services array
+#   debug:
+#     var: services
+
+- name: Create temporary file
+  tempfile:
+    state: file
+    suffix: services
+  register: temp_file
+
+- name: Generate services.yml file
+  template:
+    src: services.yaml.j2
+    dest: "{{ temp_file.path }}"
+    force: yes
+
+- name: Here is the temp file
+  debug:
+    var: temp_file.path
+
+- name: Store services file in a local file
+  fetch:
+    src: "{{ temp_file.path }}"
+    dest: "{{ inventory_dir }}/resources/services-{{ alien_url | replace('.', '-') | replace(':', '-') | replace('/', '-') }}-{{ ansible_date_time.iso8601 | replace(':', '') }}.yml"
+    flat: yes
+    validate_checksum: no
+
+- name: Finally remove temporary folder
+  file:
+    path: "{{ temp_file.path }}"
+    state: absent
