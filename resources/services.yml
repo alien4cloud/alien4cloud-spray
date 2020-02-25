@@ -1,0 +1,482 @@
+services:
+
+  - nodeType: "artemis.accumulo.pub.nodes.AccumuloService"
+    nodeTypeVersion: "2.1-SNAPSHOT"
+    name: "AccumuloLAB24"
+    version: "0.1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        accumulo_endpoint:
+          properties:
+            namespace: name1
+
+            port: '5200'
+
+            datastore_cu: labaccu
+
+            username: accuser
+
+            password: accpwd
+
+            artemis_instance_name: acc03
+
+            protocol: http
+
+            secure: 'false'
+
+            network_name: PRIVATE
+
+            initiator: source
+
+      attributeValues:
+        capabilities.accumulo_endpoint.ip_address: acc.artemis.public
+        state: initial
+
+  - nodeType: "artemis.cassandra.pub.nodes.CassandraDbService"
+    nodeTypeVersion: "2.1-SNAPSHOT"
+    name: "CassandraLAB26"
+    version: "0.1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        cassandra_endpoint:
+          properties:
+            keyspace: ks
+
+            port: '1200'
+
+            datastore_cu: labcass
+
+            username: cass
+
+            password: cass
+
+            artemis_instance_name: cass00
+
+            protocol: cassandra
+
+            secure: 'false'
+
+            network_name: PRIVATE
+
+            initiator: source
+
+      attributeValues:
+        capabilities.cassandra_endpoint.ip_address: cassandra.artemis.public
+        state: initial
+
+  - nodeType: "artemis.ceph.pub.nodes.CephBucket"
+    nodeTypeVersion: "2.1-SNAPSHOT"
+    name: "CephLAB24"
+    version: "0.1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        http:
+          properties:
+            bucket_name: uc_simil_entrepot_image_osint
+
+            pseudo_dir: repertoire
+
+            port: '8000'
+
+            datastore_cu: labceph
+
+            username: SDXS70TGLZJGFUEB3A80
+
+            password: 5yVZZxtJKNQox0dYoO5LGbIRgRbUnqsiez9bYWf8
+
+            artemis_instance_name: ceph01
+
+            protocol: http
+
+            secure: 'false'
+
+            network_name: PRIVATE
+
+            initiator: source
+
+      attributeValues:
+        capabilities.http.ip_address: ceph.artemis.public
+        state: initial
+
+  - nodeType: "artemis.elasticsearch.pub.nodes.ElasticSearchService"
+    nodeTypeVersion: "2.1-SNAPSHOT"
+    name: "ESLAB09"
+    version: "0.1.0-SNAPSHOT"
+    nodeInstance:
+      properties:
+        index_basename: tb0
+
+      capabilities:
+        elasticsearch:
+          properties:
+            protocol: tcp
+
+            secure: 'false'
+
+            network_name: PRIVATE
+
+            initiator: source
+
+        http:
+          properties:
+            port: '9200'
+
+            username: na
+
+            password: na
+
+            artemis_instance_name: es01
+
+            protocol: tcp
+
+            secure: 'false'
+
+            network_name: PRIVATE
+
+            initiator: source
+
+      attributeValues:
+        capabilities.http.ip_address: 192.168.1.1
+        state: initial
+
+  - nodeType: "artemis.elasticsearch.pub.nodes.ElasticSearchService"
+    nodeTypeVersion: "2.1-SNAPSHOT"
+    name: "ESLAB27"
+    version: "0.1.0-SNAPSHOT"
+    nodeInstance:
+      properties:
+        index_basename: tb27
+
+      capabilities:
+        elasticsearch:
+          properties:
+            protocol: tcp
+
+            secure: 'false'
+
+            network_name: PRIVATE
+
+            initiator: source
+
+        http:
+          properties:
+            port: '9200'
+
+            datastore_cu: labelas
+
+            username: na
+
+            password: na
+
+            artemis_instance_name: es01
+
+            protocol: http
+
+            secure: 'false'
+
+            network_name: PRIVATE
+
+            initiator: source
+
+      attributeValues:
+        capabilities.http.ip_address: 192.168.1.1
+        state: initial
+
+  - nodeType: "artemis.kafka.pub.nodes.TopicService"
+    nodeTypeVersion: "2.1-SNAPSHOT"
+    name: "Kafka"
+    version: "0.1.0-SNAPSHOT"
+    nodeInstance:
+      properties:
+        topic_name: mytopic
+
+      capabilities:
+        kafka_topic:
+          properties:
+            port: '9092'
+
+            protocol: tcp
+
+            secure: 'false'
+
+            network_name: PRIVATE
+
+            initiator: source
+
+      attributeValues:
+        capabilities.kafka_topic.ip_address: kafka-1.artemis.public:9092,kafka-2.artemis.public:9092,kafka-3.artemis.public:9092
+        state: initial
+
+  - nodeType: "org.alien4cloud.kubernetes.api.types.nodes.KubeCluster"
+    nodeTypeVersion: "3.0.0-SM"
+    name: "New_KubeCluster"
+    version: "1.0-SNAPSHOT"
+    nodeInstance:
+      properties:
+        config: |
+          apiVersion: v1
+          clusters:
+          - cluster:
+              certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN5RENDQWJDZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRFNU1Ea3hNekV6TXpjeU5Gb1hEVEk1TURreE1ERXpNemN5TkZvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTVNICjFmRHU0SFhYTm9iTnQ4ai9NdDlEUDFDZWNDMWRLZk0ycFFHbmxURElVbmlSdTJnbUNtdUVRVi9OSVZRZ3hsVVoKZ0dRS24xSE9BelVjcHlwb1M5Vm1PM1RSMldKa25wQTNCdVpKTnppSUJJY0g5eTBHeXdyV3UxSzRPdlRpZFRkego0QUVMem10NExuWnlkaTlyd0JhZzBTMC8xbHMxRHpDeitzMGVjTm5VRHpMK3dkeGlBbGNLNjl2cDhiLzQ4S2ZsClpzbmVCYmQxZ1QzeUROcnJUV1d2NjlkcHFWK3lZd015bzRST1Y4a3IrR0gwc2UzRlkrL0xPWENrTC8vUHJ6cmIKYUdHbFBqem1TcktGWDU4TFc3eSsvbHNwVHJRWEMyU0h1SG9vUmJiNUxnR2hiMnc1VHdVSFlKc0dvYXQ0V2N2QQpvRkQyWEg4OFJTM3FnUlR6d3VrQ0F3RUFBYU1qTUNFd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFLY1hiWURBbDBzSTJucFVGeXoxVHpyV2QrbGUKUTVXd3JyNitQWXp3WjhxNmExSVdHU2pVMUNOa2xxZHlHMFZqMkwweVBrWlI5OHQrNFQzQUZBa0FCREVhWEZ4aAphd3FPZjdlcXBiOG80UDBiUjhGcTdQU0c2UGZQYkc5OEx2ZnJaUTZVdTB1M0tnRHM4OHMzbTlnQjBzK2FyTHIyCmtJY2YyOXZJSmd3cm55WE40eDh4MkZsekVudEc1Ny8zSG9lbFZGR2EyNHZvMndoaWFEWVdKcXZkSkRwTkU1YW8KMmFqaHpISnJ2dUp3RDF1S3p2N0daYlVQNlhYcFV3dU9YQ1FxcWt0YjBqNzAwVG01ZVgxSmhFRmc1T2t4RlRvNgo1b2FDM2NscHF1cTF0R0Y1cFdpNlNvWVNTSU1HSVVGU0tVNFZRcEd6SXBIanZsc3FTVW1OUHF5NEgyOD0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+              server: https://kubernetes.artemis.public
+            name: dev2
+          contexts:
+          - context:
+              cluster: dev2
+              namespace: cu-p-environment-default--lab09basic
+              user: a4c
+            name: a4c-context
+          current-context: a4c-context
+          kind: Config
+          preferences: {}
+          users:
+          - name: a4c
+            user:
+              client-certificate-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNyakNDQVpZQ0NRREdmYVgzbkNhdVpEQU5CZ2txaGtpRzl3MEJBUXNGQURBVk1STXdFUVlEVlFRREV3cHIKZFdKbGNtNWxkR1Z6TUI0WERURTVNRGt4T0RFek1URXlPVm9YRFRJeU1EWXhOREV6TVRFeU9Wb3dIVEVNTUFvRwpBMVVFQXd3RFlUUmpNUTB3Q3dZRFZRUUtEQVJoZEc5ek1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBCk1JSUJDZ0tDQVFFQXRuMndKTngyUW42R3YwVmNUS214VnRJNSs5QlowRUVlMmQrMFNMR1pUWmd1Vy9PT1RHcGYKZENMb2xyUCtrdXoyOVNkZ3JYTGZQZGs4RUl2R3VUTVNRcUJiYWkzOVF1U09NbUluRHR6eE9FMTV2SnhEMFBUawpzNTdITnRteDh5ekc0R3A2VzBWbnNxWlA1ZEtEdk1zbUZUc1FNUHlpVWVZTEl4SE8zWWZOVmFPVkdRTVZDZkR5CkhCMForeUE1UlNXOTVQbGhJWk0xUkNqVExLVCtsM2NYMGZKeEhuVkxEMUJIR3BYNHQ1YlNJOGJySEhyZHcvdHcKU0dncXVjRWpVVk1kWkw1ZWhCL3l2b0FBK0Z1K25EdGtUWVRXMU9uUmxmdjR0N2pURzZ2TkRWUkEwRUgyL1M3NApOKzBQelFBTVMweFFySFlGVTFqOEZ5OWs5RDBmZkw2ODJRSURBUUFCTUEwR0NTcUdTSWIzRFFFQkN3VUFBNElCCkFRQVd4MzFSeGhPSWpvbXViOHlWSDhxUTZjV09MdEVrdXUzejZmMXk4ZUJWZmFJMjk1a3NSYWFwSFpkU0x3czYKTHNjRVVoMERhMHZPMmFsRkpKZ0xDaVpvcVd2YVIwK1ArNXRGVENOSTY3bmYyRHQxL2JDUkozT1hUOStoSXNSQwpYZngyMkJ4eHJzaE1xMVRjNktpMnZsY1RqT2FYQUlZSENPR05JTzhJdEg5bktwY1hyb2Z4ZmgzTVNIM0pHcTJsCnVTYnJTdGp2WnR4cXV1TStLYTM3aHR3SVB1RXhoZUlhTkQ1Y0xpcHZwRmZQelNFZXFHaHZmSXJJNXM0ZGVkblUKZnk1ZFV2R1ZLZ1VWMm44SDFyZExQRVN0eThFY3htNkhCN2MyNlNTaVRXd01qbVB2bTJWeFd0bnJudks4SmZudwovZ3daMFU1TVJUUXIxQys3V0paYkgvVCsKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+              client-key-data: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBdG4yd0pOeDJRbjZHdjBWY1RLbXhWdEk1KzlCWjBFRWUyZCswU0xHWlRaZ3VXL09PClRHcGZkQ0xvbHJQK2t1ejI5U2RnclhMZlBkazhFSXZHdVRNU1FxQmJhaTM5UXVTT01tSW5EdHp4T0UxNXZKeEQKMFBUa3M1N0hOdG14OHl6RzRHcDZXMFZuc3FaUDVkS0R2TXNtRlRzUU1QeWlVZVlMSXhITzNZZk5WYU9WR1FNVgpDZkR5SEIwWit5QTVSU1c5NVBsaElaTTFSQ2pUTEtUK2wzY1gwZkp4SG5WTEQxQkhHcFg0dDViU0k4YnJISHJkCncvdHdTR2dxdWNFalVWTWRaTDVlaEIveXZvQUErRnUrbkR0a1RZVFcxT25SbGZ2NHQ3alRHNnZORFZSQTBFSDIKL1M3NE4rMFB6UUFNUzB4UXJIWUZVMWo4Rnk5azlEMGZmTDY4MlFJREFRQUJBb0lCQVFDd1UzTk51b0s5cnZsTgplSnc5S3IxQ0VYQ2JJZTZWN1VYODZFeU83S01ldVVzWjU1UDN1OVF0SjhtcVM1SlByb3pUeFUrQlovdlNDOE1nCmpaM2V0ajBQaVZlcW1YTWJIakZTOTBtYjc5bFhPR3pHMUFvbXJXa0pNUUoxdWhSWnpVci83WUg2REc2c3pFdG8KMldZV2xnZGUvaW1mMjRxUExZSlhTVTZpK0NOcmVUZlpzRTc4b0ZpWFpVRFpYdXNzKzhKRGgxbGZvb3dzZkZ1cAplWTJIV3ljaXhHQ2NqVFcrazhFMXgvbWJhTVNJZHJsYS92dC9HTGV3YXdBRHRBYWIxS0JVeElaMkFiRi9rSzhxCjZJaUtNMU50WFNMMDdLbnhqU055ZkZUZlc0dGQ4QUxiWVRXUDZiUm1mSlpESUR0YVZFSkh0TXJnVHNqcXJoVFkKVzVQQUJEWU5Bb0dCQU9lUWVBa2xuZ0FQdWFaYWhIVUZ6OTkydVBHeGhnY3BFTlprUG9CdjUzd081cXl2SU1SegozR0ErQ3FxVFVUbWx2SmtDVC9sbW1sZGp4Z1VIdGxnRndJUDFXRGd4SWhic2JaWWFNY1FGUkNOS2paeWlBV0ZtCmw2RFpISnpYT1pJZjUwdE9Bam9RR2cvdlRJT2Zxb25UbTJwNDlZZFNaVldJdE0reDZBUVVrR3NqQW9HQkFNbS8KaWsvZUFQcEJtWmh1SUowYUNZSVVwQzdPVzMwK0tadjNwS3VsN0VSQnJ2bnJ3MTUvOUxTRTBjZjhLb2FLb2VyRApIeFRGd3pwbkxPOEJrMGZZWkxGdmVmWmQ0K3NTcVpieW54L08rSVplMmZqOEdnc2huU2YrSE1FWTRDcU1XbStYCk1zVGZxYU93ZURybkNseGN1akw4VFQxZUdqdmR1YUhDK0xXUU1rWFRBb0dBUmJaMmpMcG9jTGhMT2N1eWFOQ1IKSGtOTnRtV3RaZVoxRFRZc290b05wSW1QNUpqc2tuZ1c5bHAzTjVjV012YTBhcFFKbzVuQ0NXRWVNbEY2RWRIWgpmV0NWYUlWU0wvaUpuVkRSZnFQZk9ZaXVUV053YXZSSjNjQy9IbkNsQWxyY2RRMU5HbEhTcHMxeUNZWTkvelJYCmE1eHl2b1NOd1V4Z3NzNXFmUi83d21VQ2dZQjZ5Wi9Wa2ltSUpvcmo4Z3JaY3ZKY2dGR1l4ekY1blc3WHBUWk0KM2ZSWmFweWpNVEc3L3lhaEE4Rmw5UHl3M0FsR0I3R1FBL2taUDVoaWN0UC93eDB0dk1vKy9zL3J6M1QyRVA1MQo3cExsdlM3dTBnakx3NDZSdTZBbWlneE0rUlZGbTRGanZ6alJEbU51ZmhXWk56cUFNM3lUSUFYWmI4NCtQSnNBCmJoMmF6d0tCZ1FEUlV4dTNOdXlpK3R6UHlXM040ZWN1cm82Uk5FeGE2aDczMTY3ZmNITFNVaHkweVZFZnVkY3YKRFBjQXhUQkt2TXdiNkgwK3RQc3kvZ29ub3k5VFdlSGlTbnpPZlhON21TbEN2eE4rRkhob2htdjc3ZFcrUHBHagpTTmtBaVdCTUd4L2Jnd3dhQ2R5V2pzSHVLYkxZS21lYUMzK0p0aVdhbXpRZTBuVkFLdExhZXc9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
+      capabilities:
+        k8s_endpoint:
+          properties:
+            protocol: tcp
+            secure: 'false'
+            network_name: PRIVATE
+            initiator: source
+      attributeValues:
+        state: initial
+  #
+  # - nodeType: "org.alien4cloud.kubernetes.api.types.nodes.KubeCluster"
+  #   nodeTypeVersion: "3.0.0-M3"
+  #   name: "KubeCluster_NS"
+  #   version: "1.0-SNAPSHOT"
+  #   nodeInstance:
+  #     properties:
+  #       config: |
+  #         apiVersion: v1
+  #         clusters:
+  #         - cluster:
+  #             certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN5RENDQWJDZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRFNU1Ea3hNekV6TXpjeU5Gb1hEVEk1TURreE1ERXpNemN5TkZvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTVNICjFmRHU0SFhYTm9iTnQ4ai9NdDlEUDFDZWNDMWRLZk0ycFFHbmxURElVbmlSdTJnbUNtdUVRVi9OSVZRZ3hsVVoKZ0dRS24xSE9BelVjcHlwb1M5Vm1PM1RSMldKa25wQTNCdVpKTnppSUJJY0g5eTBHeXdyV3UxSzRPdlRpZFRkego0QUVMem10NExuWnlkaTlyd0JhZzBTMC8xbHMxRHpDeitzMGVjTm5VRHpMK3dkeGlBbGNLNjl2cDhiLzQ4S2ZsClpzbmVCYmQxZ1QzeUROcnJUV1d2NjlkcHFWK3lZd015bzRST1Y4a3IrR0gwc2UzRlkrL0xPWENrTC8vUHJ6cmIKYUdHbFBqem1TcktGWDU4TFc3eSsvbHNwVHJRWEMyU0h1SG9vUmJiNUxnR2hiMnc1VHdVSFlKc0dvYXQ0V2N2QQpvRkQyWEg4OFJTM3FnUlR6d3VrQ0F3RUFBYU1qTUNFd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFLY1hiWURBbDBzSTJucFVGeXoxVHpyV2QrbGUKUTVXd3JyNitQWXp3WjhxNmExSVdHU2pVMUNOa2xxZHlHMFZqMkwweVBrWlI5OHQrNFQzQUZBa0FCREVhWEZ4aAphd3FPZjdlcXBiOG80UDBiUjhGcTdQU0c2UGZQYkc5OEx2ZnJaUTZVdTB1M0tnRHM4OHMzbTlnQjBzK2FyTHIyCmtJY2YyOXZJSmd3cm55WE40eDh4MkZsekVudEc1Ny8zSG9lbFZGR2EyNHZvMndoaWFEWVdKcXZkSkRwTkU1YW8KMmFqaHpISnJ2dUp3RDF1S3p2N0daYlVQNlhYcFV3dU9YQ1FxcWt0YjBqNzAwVG01ZVgxSmhFRmc1T2t4RlRvNgo1b2FDM2NscHF1cTF0R0Y1cFdpNlNvWVNTSU1HSVVGU0tVNFZRcEd6SXBIanZsc3FTVW1OUHF5NEgyOD0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+  #             server: https://kubernetes.artemis.public
+  #           name: dev2
+  #         contexts:
+  #         - context:
+  #             cluster: dev2
+  #             namespace: a4c
+  #             user: a4c
+  #           name: a4c-context
+  #         current-context: a4c-context
+  #         kind: Config
+  #         preferences: {}
+  #         users:
+  #         - name: a4c
+  #           user:
+  #             client-certificate-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNyakNDQVpZQ0NRREdmYVgzbkNhdVpEQU5CZ2txaGtpRzl3MEJBUXNGQURBVk1STXdFUVlEVlFRREV3cHIKZFdKbGNtNWxkR1Z6TUI0WERURTVNRGt4T0RFek1URXlPVm9YRFRJeU1EWXhOREV6TVRFeU9Wb3dIVEVNTUFvRwpBMVVFQXd3RFlUUmpNUTB3Q3dZRFZRUUtEQVJoZEc5ek1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBCk1JSUJDZ0tDQVFFQXRuMndKTngyUW42R3YwVmNUS214VnRJNSs5QlowRUVlMmQrMFNMR1pUWmd1Vy9PT1RHcGYKZENMb2xyUCtrdXoyOVNkZ3JYTGZQZGs4RUl2R3VUTVNRcUJiYWkzOVF1U09NbUluRHR6eE9FMTV2SnhEMFBUawpzNTdITnRteDh5ekc0R3A2VzBWbnNxWlA1ZEtEdk1zbUZUc1FNUHlpVWVZTEl4SE8zWWZOVmFPVkdRTVZDZkR5CkhCMForeUE1UlNXOTVQbGhJWk0xUkNqVExLVCtsM2NYMGZKeEhuVkxEMUJIR3BYNHQ1YlNJOGJySEhyZHcvdHcKU0dncXVjRWpVVk1kWkw1ZWhCL3l2b0FBK0Z1K25EdGtUWVRXMU9uUmxmdjR0N2pURzZ2TkRWUkEwRUgyL1M3NApOKzBQelFBTVMweFFySFlGVTFqOEZ5OWs5RDBmZkw2ODJRSURBUUFCTUEwR0NTcUdTSWIzRFFFQkN3VUFBNElCCkFRQVd4MzFSeGhPSWpvbXViOHlWSDhxUTZjV09MdEVrdXUzejZmMXk4ZUJWZmFJMjk1a3NSYWFwSFpkU0x3czYKTHNjRVVoMERhMHZPMmFsRkpKZ0xDaVpvcVd2YVIwK1ArNXRGVENOSTY3bmYyRHQxL2JDUkozT1hUOStoSXNSQwpYZngyMkJ4eHJzaE1xMVRjNktpMnZsY1RqT2FYQUlZSENPR05JTzhJdEg5bktwY1hyb2Z4ZmgzTVNIM0pHcTJsCnVTYnJTdGp2WnR4cXV1TStLYTM3aHR3SVB1RXhoZUlhTkQ1Y0xpcHZwRmZQelNFZXFHaHZmSXJJNXM0ZGVkblUKZnk1ZFV2R1ZLZ1VWMm44SDFyZExQRVN0eThFY3htNkhCN2MyNlNTaVRXd01qbVB2bTJWeFd0bnJudks4SmZudwovZ3daMFU1TVJUUXIxQys3V0paYkgvVCsKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+  #             client-key-data: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBdG4yd0pOeDJRbjZHdjBWY1RLbXhWdEk1KzlCWjBFRWUyZCswU0xHWlRaZ3VXL09PClRHcGZkQ0xvbHJQK2t1ejI5U2RnclhMZlBkazhFSXZHdVRNU1FxQmJhaTM5UXVTT01tSW5EdHp4T0UxNXZKeEQKMFBUa3M1N0hOdG14OHl6RzRHcDZXMFZuc3FaUDVkS0R2TXNtRlRzUU1QeWlVZVlMSXhITzNZZk5WYU9WR1FNVgpDZkR5SEIwWit5QTVSU1c5NVBsaElaTTFSQ2pUTEtUK2wzY1gwZkp4SG5WTEQxQkhHcFg0dDViU0k4YnJISHJkCncvdHdTR2dxdWNFalVWTWRaTDVlaEIveXZvQUErRnUrbkR0a1RZVFcxT25SbGZ2NHQ3alRHNnZORFZSQTBFSDIKL1M3NE4rMFB6UUFNUzB4UXJIWUZVMWo4Rnk5azlEMGZmTDY4MlFJREFRQUJBb0lCQVFDd1UzTk51b0s5cnZsTgplSnc5S3IxQ0VYQ2JJZTZWN1VYODZFeU83S01ldVVzWjU1UDN1OVF0SjhtcVM1SlByb3pUeFUrQlovdlNDOE1nCmpaM2V0ajBQaVZlcW1YTWJIakZTOTBtYjc5bFhPR3pHMUFvbXJXa0pNUUoxdWhSWnpVci83WUg2REc2c3pFdG8KMldZV2xnZGUvaW1mMjRxUExZSlhTVTZpK0NOcmVUZlpzRTc4b0ZpWFpVRFpYdXNzKzhKRGgxbGZvb3dzZkZ1cAplWTJIV3ljaXhHQ2NqVFcrazhFMXgvbWJhTVNJZHJsYS92dC9HTGV3YXdBRHRBYWIxS0JVeElaMkFiRi9rSzhxCjZJaUtNMU50WFNMMDdLbnhqU055ZkZUZlc0dGQ4QUxiWVRXUDZiUm1mSlpESUR0YVZFSkh0TXJnVHNqcXJoVFkKVzVQQUJEWU5Bb0dCQU9lUWVBa2xuZ0FQdWFaYWhIVUZ6OTkydVBHeGhnY3BFTlprUG9CdjUzd081cXl2SU1SegozR0ErQ3FxVFVUbWx2SmtDVC9sbW1sZGp4Z1VIdGxnRndJUDFXRGd4SWhic2JaWWFNY1FGUkNOS2paeWlBV0ZtCmw2RFpISnpYT1pJZjUwdE9Bam9RR2cvdlRJT2Zxb25UbTJwNDlZZFNaVldJdE0reDZBUVVrR3NqQW9HQkFNbS8KaWsvZUFQcEJtWmh1SUowYUNZSVVwQzdPVzMwK0tadjNwS3VsN0VSQnJ2bnJ3MTUvOUxTRTBjZjhLb2FLb2VyRApIeFRGd3pwbkxPOEJrMGZZWkxGdmVmWmQ0K3NTcVpieW54L08rSVplMmZqOEdnc2huU2YrSE1FWTRDcU1XbStYCk1zVGZxYU93ZURybkNseGN1akw4VFQxZUdqdmR1YUhDK0xXUU1rWFRBb0dBUmJaMmpMcG9jTGhMT2N1eWFOQ1IKSGtOTnRtV3RaZVoxRFRZc290b05wSW1QNUpqc2tuZ1c5bHAzTjVjV012YTBhcFFKbzVuQ0NXRWVNbEY2RWRIWgpmV0NWYUlWU0wvaUpuVkRSZnFQZk9ZaXVUV053YXZSSjNjQy9IbkNsQWxyY2RRMU5HbEhTcHMxeUNZWTkvelJYCmE1eHl2b1NOd1V4Z3NzNXFmUi83d21VQ2dZQjZ5Wi9Wa2ltSUpvcmo4Z3JaY3ZKY2dGR1l4ekY1blc3WHBUWk0KM2ZSWmFweWpNVEc3L3lhaEE4Rmw5UHl3M0FsR0I3R1FBL2taUDVoaWN0UC93eDB0dk1vKy9zL3J6M1QyRVA1MQo3cExsdlM3dTBnakx3NDZSdTZBbWlneE0rUlZGbTRGanZ6alJEbU51ZmhXWk56cUFNM3lUSUFYWmI4NCtQSnNBCmJoMmF6d0tCZ1FEUlV4dTNOdXlpK3R6UHlXM040ZWN1cm82Uk5FeGE2aDczMTY3ZmNITFNVaHkweVZFZnVkY3YKRFBjQXhUQkt2TXdiNkgwK3RQc3kvZ29ub3k5VFdlSGlTbnpPZlhON21TbEN2eE4rRkhob2htdjc3ZFcrUHBHagpTTmtBaVdCTUd4L2Jnd3dhQ2R5V2pzSHVLYkxZS21lYUMzK0p0aVdhbXpRZTBuVkFLdExhZXc9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
+  #     capabilities:
+  #       k8s_endpoint:
+  #         properties:
+  #           protocol: tcp
+  #           secure: 'false'
+  #           network_name: PRIVATE
+  #           initiator: source
+  #     attributeValues:
+  #       state: initial
+
+  - nodeType: "artemis.mariadb.pub.nodes.MariadbService"
+    nodeTypeVersion: "2.1-SNAPSHOT"
+    name: "MariaLAB23"
+    version: "0.1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        mariadb_endpoint:
+          properties:
+            database: dbmaria
+
+            port: '3306'
+
+            datastore_cu: ProfileManager
+
+            username: db_user
+
+            password: db_password
+
+            artemis_instance_name: maria00
+
+            protocol: mysql2
+
+            secure: 'false'
+
+            network_name: PRIVATE
+
+            initiator: source
+
+      attributeValues:
+        capabilities.mariadb_endpoint.ip_address: mariadb.artemis.public
+        state: initial
+
+  - nodeType: "artemis.nexus.pub.nodes.NexusService"
+    nodeTypeVersion: "2.1-SNAPSHOT"
+    name: "Nexus"
+    version: "0.1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        nexus_endpoint:
+          properties:
+            port: '80'
+
+            protocol: http
+
+            secure: 'false'
+
+            url_path: /repository/Artemis-mvn2/
+
+            network_name: PRIVATE
+
+            initiator: source
+
+      attributeValues:
+        capabilities.nexus_endpoint.ip_address: 10.197.214.4
+        state: initial
+
+  - nodeType: "artemis.postgresql.pub.nodes.PostgreSQLService"
+    nodeTypeVersion: "2.1-SNAPSHOT"
+    name: "PS"
+    version: "0.1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        postgresql_endpoint:
+          properties:
+            database: s02_pg_iad
+
+            port: '9722'
+
+            username: myuser
+
+            password: mypwd
+
+            protocol: tcp
+
+            secure: 'false'
+
+            network_name: PRIVATE
+
+            initiator: source
+
+      attributeValues:
+        capabilities.postgresql_endpoint.ip_address: 10.197.214.173
+        state: initial
+
+  - nodeType: "artemis.redis.pub.nodes.RedisService"
+    nodeTypeVersion: "2.1-SNAPSHOT"
+    name: "RedisLAB23"
+    version: "0.1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        redis_endpoint:
+          properties:
+            prefix: re_
+
+            port: '7001'
+
+            datastore_cu: ProfileManager
+
+            username: ruser
+
+            password: rpassword
+
+            artemis_instance_name: na
+
+            protocol: tcp
+
+            secure: 'false'
+
+            network_name: PRIVATE
+
+            initiator: source
+
+      attributeValues:
+        capabilities.redis_endpoint.ip_address: redis.external
+        state: initial
+
+  - nodeType: "artemis.mongodb.pub.nodes.MongoDbService"
+    nodeTypeVersion: "2.1-SNAPSHOT"
+    name: "mongoLAB11"
+    version: "0.1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        mongodb_endpoint:
+          properties:
+            databasename: mng_dbrens
+
+            port: '27017'
+
+            datastore_cu: lab11datastore
+
+            username: mongo-admin
+
+            password: none
+
+            protocol: mongodb
+
+            secure: 'false'
+
+            network_name: PRIVATE
+
+            initiator: source
+
+      attributeValues:
+        capabilities.mongodb_endpoint.ip_address: mongo-2.artemis.public
+        state: initial
+
+  - nodeType: "artemis.mongodb.pub.nodes.MongoDbService"
+    nodeTypeVersion: "2.1-SNAPSHOT"
+    name: "mongoLAB23"
+    version: "0.1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        mongodb_endpoint:
+          properties:
+            databasename: mng_dbrens
+
+            port: '27017'
+
+            datastore_cu: ProfileManager
+
+            username: mongo-admin
+
+            password: none
+
+            protocol: mongodb
+
+            secure: 'false'
+
+            network_name: PRIVATE
+
+            initiator: source
+
+      attributeValues:
+        capabilities.mongodb_endpoint.ip_address: mongo-2.artemis.public
+        state: initial
+
+  - nodeType: "artemis.hadoop.pub.nodes.HdfsRepositoryService"
+    nodeTypeVersion: "2.1-SNAPSHOT"
+    name: "source"
+    version: "0.1.0-SNAPSHOT"
+    nodeInstance:
+      capabilities:
+        hdfs_repository:
+          properties:
+            path: /tmp
+
+            port: '8020'
+
+            protocol: tcp
+
+            secure: 'false'
+
+            network_name: PRIVATE
+
+            initiator: source
+
+      attributeValues:
+        capabilities.hdfs_repository.ip_address: hdfs-nn-2.artemis.public
+        state: initial

@@ -1,13 +1,6 @@
 # CAUTION: No parameters default are possible for target:application type of metaproperties
 
 metaproperties:
-  - name: "K8S_NAMESPACE"
-    description: "The Kubernetes namespace where resources will be created for this location"
-    target: location
-    type: string
-    password: false
-    filtered: false
-    required: false
   - name: "K8S_PREFIX"
     description: "This prefix will be used to prefix all name of resources created in Kubernetes for this application"
     target: application
@@ -17,6 +10,24 @@ metaproperties:
     required: false
     constraints:
       - pattern: ".+"
+  - name: "MLS_France_level"
+    description: ""
+    target: component
+    type: string
+    password: false
+    filtered: true
+    required: false
+    constraints:
+      - validValues: [NP, DR, CD]
+  - name: "MLS_France_levelwrite"
+    description: ""
+    target: component
+    type: string
+    password: false
+    filtered: true
+    required: false
+    constraints:
+      - validValues: [NP, DR, CD]
   - name: "Type de composant"
     description: ""
     target: component
@@ -34,46 +45,7 @@ metaproperties:
     filtered: true
     required: false
     constraints:
-      - validValues: ["N/A", Collecte, Traitement, Moyen_De_Stockage_Echange, Ecriture, IHM]
-  - name: "Habilitation requise"
-    description: ""
-    target: component
-    type: string
-    password: false
-    filtered: true
-    required: false
-    constraints:
-      - validValues: [0_Non_Classifiee, 1_Diffusion_Restreinte, 2_Confidentiel_Defense, 2_Confidentiel_Defense]
-  - name: "Mention de manipulation"
-    description: ""
-    target: component
-    type: string
-    password: false
-    filtered: true
-    required: false
-    constraints:
-      - validValues: [Sans_Mention, Special_France, Source_Secrete, Eclair]
-  - name: "Droit d'en connaître"
-    description: ""
-    target: component
-    type: string
-    password: false
-    filtered: false
-    required: false
-  - name: "Description données produites"
-    description: ""
-    target: component
-    type: string
-    password: false
-    filtered: false
-    required: false
-  - name: "Description données consommées"
-    description: ""
-    target: component
-    type: string
-    password: false
-    filtered: false
-    required: false
+      - validValues: [Collecte, Traitement, Moyen_De_Stockage_Echange, Ecriture, IHM]
   - name: "Cas d'usage"
     description: ""
     target: topology
@@ -82,21 +54,7 @@ metaproperties:
     filtered: true
     required: false
     constraints:
-      - validValues: ["N/A", AIS, Similimage, LID2, ROEM]
-  - name: "Description données produites"
-    description: ""
-    target: topology
-    type: string
-    password: false
-    filtered: false
-    required: false
-  - name: "Description données consommées"
-    description: ""
-    target: topology
-    type: string
-    password: false
-    filtered: false
-    required: false
+      - validValues: [rens, labs, ana, con, res, san, mco]
   - name: "Cas d'usage"
     description: ""
     target: application
@@ -105,8 +63,8 @@ metaproperties:
     filtered: true
     required: false
     constraints:
-      - validValues: ["N/A", AIS, Similimage, LID2, ROEM]
-  - name: "Habilitation requise"
+      - validValues: [rens, labs, ana, con, res, san, mco]
+  - name: "Catégorie application"
     description: ""
     target: application
     type: string
@@ -114,8 +72,8 @@ metaproperties:
     filtered: true
     required: false
     constraints:
-      - validValues: [0_Non_Classifiee, 1_Diffusion_Restreinte, 2_Confidentiel_Defense, 2_Confidentiel_Defense]
-  - name: "Mention de manipulation"
+      - validValues: ["Utilisation", "Configuration", "Administration"]
+  - name: "Type d'application"
     description: ""
     target: application
     type: string
@@ -123,28 +81,25 @@ metaproperties:
     filtered: true
     required: false
     constraints:
-      - validValues: [Sans_Mention, Special_France, Source_Secrete, Source_Secrete, Eclair]
-  - name: "Droit d'en connaître"
+      - validValues: ["N/A", "Traitement_Flux", "Traitement_Batch", "Interface"]
+  - name: "Catégorie application"
     description: ""
-    target: application
+    target: topology
     type: string
     password: false
-    filtered: false
+    filtered: true
     required: false
-  - name: "Description données produites"
+    constraints:
+      - validValues: ["Utilisation", "Configuration", "Administration"]
+  - name: "Type d'application"
     description: ""
-    target: application
+    target: topology
     type: string
     password: false
-    filtered: false
+    filtered: true
     required: false
-  - name: "Description données consommées"
-    description: ""
-    target: application
-    type: string
-    password: false
-    filtered: false
-    required: false
+    constraints:
+      - validValues: ["N/A", "Traitement_Flux", "Traitement_Batch", "Interface"]
   - name: "Type de service"
     description: ""
     target: service
@@ -153,7 +108,7 @@ metaproperties:
     filtered: true
     required: false
     constraints:
-      - validValues: [Espace_De_Stockage_Echange, Moyen_De_Stockage_Echange, Moteur_D_Execution, Moteur_D_Execution]
+      - validValues: [Espace_De_Stockage_Echange, Moyen_De_Stockage_Echange, Moteur_D_Execution]
   - name: "Type de stockage"
     description: ""
     target: service
@@ -171,32 +126,7 @@ metaproperties:
     filtered: true
     required: false
     constraints:
-      - validValues: ["N/A", AIS, Similimage, LID2, ROEM]
-  - name: "Habilitation requise"
-    description: ""
-    target: service
-    type: string
-    password: false
-    filtered: true
-    required: false
-    constraints:
-      - validValues: [0_Non_Classifiee, 1_Diffusion_Restreinte, 2_Confidentiel_Defense, 2_Confidentiel_Defense]
-  - name: "Mention de manipulation"
-    description: ""
-    target: service
-    type: string
-    password: false
-    filtered: true
-    required: false
-    constraints:
-      - validValues: [ 'Sans_Mention', 'Special_France', 'Source_Secrete', 'Source_Secrete', 'Eclair' ]
-  - name: "Droit d'en connaître"
-    description: ""
-    target: service
-    type: string
-    password: false
-    filtered: false
-    required: false
+      - validValues: [rens, labs, ana, con, res, san, mco]
   - name: "Format données"
     description: ""
     target: service
@@ -204,3 +134,5 @@ metaproperties:
     password: false
     filtered: false
     required: false
+    constraints:
+      - validValues: ["Texte_libre"]
