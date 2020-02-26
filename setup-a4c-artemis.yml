@@ -73,18 +73,30 @@
         phase: 'post-matched-node-setup',
         modifier_position: 7
       }
-    # - { role: 'a4c/config/disable_plugin',
-    #     pluginId: 'alien4cloud-datagouv_mls-plugin'
-    #   }
-    # - { role: 'a4c/config/disable_plugin',
-    #     pluginId: 'alien4cloud-ssi-network_policy-plugin'
-    #   }
-    # - { role: 'a4c/config/disable_plugin',
-    #     pluginId: 'alien4cloud-consul-publisher-plugin'
-    #   }
-    # - { role: 'a4c/config/disable_plugin',
-    #     pluginId: 'alien4cloud-supervision'
-    #   }
+
+      # Disable MLS stuff
+    - { role: 'a4c/config/remove_location_modifier',
+        pluginId: 'alien4cloud-datagouv_mls-plugin',
+        beanName: 'datagouv_mls-modifier',
+        phase: 'post-matched-node-setup'
+      }
+    - { role: 'a4c/config/disable_plugin',
+        pluginId: 'alien4cloud-datagouv_mls-plugin'
+      }
+
+    - { role: 'a4c/config/disable_plugin',
+        pluginId: 'alien4cloud-datagouv_mls-plugin'
+      }
+    - { role: 'a4c/config/disable_plugin',
+        pluginId: 'alien4cloud-ssi-network_policy-plugin'
+      }
+    - { role: 'a4c/config/disable_plugin',
+        pluginId: 'alien4cloud-consul-publisher-plugin'
+      }
+    - { role: 'a4c/config/disable_plugin',
+        pluginId: 'alien4cloud-supervision'
+      }
+      
     - a4c/config/upload_csars
     - { role: a4c/config/git,
         repositoryUrl: 'http://gitlab.artemis.public/infostructure/socle/service-applicatif/a4c-standardtypes.git',
