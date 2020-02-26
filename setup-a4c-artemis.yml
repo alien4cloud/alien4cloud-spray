@@ -27,45 +27,82 @@
     - { role: 'roles/a4c/config/get_orchectrator',
         orchestratorName: 'Yorc'
       }
-    # ROEM
     - { role: 'roles/a4c/config/create_location',
         location_name: 'Default',
         location_type: 'OpenStack'
       }
     - { role: 'a4c/config/setup_location_modifier',
-        pluginId: 'alien4cloud-kubernetes-plugin',
-        beanName: 'kubernetes-adapter-modifier',
-        phase: 'post-matched-node-setup',
+        pluginId: 'alien4cloud-yorc-provider',
+        beanName: 'gangja-resolver-modifier',
+        phase: 'post-node-match',
         modifier_position: 1
+      }
+    - { role: 'a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-datagouv_mls-plugin',
+        beanName: 'datagouv_mls-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 2
       }
     - { role: 'a4c/config/setup_location_modifier',
         pluginId: 'alien4cloud-kubernetes-plugin',
         beanName: 'kubernetes-adapter-modifier',
         phase: 'post-matched-node-setup',
-        modifier_position: 1
+        modifier_position: 3
+      }
+    - { role: 'a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-consul-publisher-plugin',
+        beanName: 'consul-publisher',
+        phase: 'post-matched-node-setup',
+        modifier_position: 4
+      }
+    - { role: 'a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-ssi-network_policy-plugin',
+        beanName: 'ssi-network_policy-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 5
       }
     - { role: 'a4c/config/setup_location_modifier',
         pluginId: 'alien4cloud-k8s-spark-jobs',
         beanName: 'k8s-spark-jobs-modifier',
         phase: 'post-matched-node-setup',
-        modifier_position: 2
+        modifier_position: 6
       }
-    - { role: 'a4c/config/disable_plugin',
-        pluginId: 'alien4cloud-datagouv_mls-plugin'
+    - { role: 'a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-supervision',
+        beanName: 'kubernetes-supervision-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 7
       }
-    - { role: 'a4c/config/disable_plugin',
-        pluginId: 'alien4cloud-ssi-network_policy-plugin'
-      }
+    # - { role: 'a4c/config/disable_plugin',
+    #     pluginId: 'alien4cloud-datagouv_mls-plugin'
+    #   }
+    # - { role: 'a4c/config/disable_plugin',
+    #     pluginId: 'alien4cloud-ssi-network_policy-plugin'
+    #   }
     # - { role: 'a4c/config/disable_plugin',
     #     pluginId: 'alien4cloud-consul-publisher-plugin'
     #   }
-    - { role: 'a4c/config/disable_plugin',
-        pluginId: 'alien4cloud-supervision'
-      }
+    # - { role: 'a4c/config/disable_plugin',
+    #     pluginId: 'alien4cloud-supervision'
+    #   }
     - a4c/config/upload_csars
-    - { role: 'commons/parse_kubeconfig',
-        resources_file_artifact: 'resources/kubeconfig'
+    - { role: a4c/config/git,
+        repositoryUrl: 'http://gitlab.artemis.public/infostructure/socle/service-applicatif/a4c-standardtypes.git',
+        repositoryUsername: '',
+        repositoryPassword: '',
+        branchId: '3.0.0-M3',
+        subPath: ''
       }
+    - { role: a4c/config/git,
+        repositoryUrl: 'http://gitlab.artemis.public/temp/labs_a4c.git',
+        repositoryUsername: '',
+        repositoryPassword: '',
+        branchId: '3.0.0-M3',
+        subPath: ''
+      }
+    # - { role: 'commons/parse_kubeconfig',
+    #     resources_file_artifact: 'resources/kubeconfig'
+    #   }
     - { role: 'a4c/config/create_services',
-        resources_file_artifact: 'resources/services.yaml'
+        resources_file_artifact: 'resources/services.yml'
       }

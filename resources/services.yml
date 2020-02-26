@@ -208,8 +208,8 @@ services:
         state: initial
 
   - nodeType: "org.alien4cloud.kubernetes.api.types.nodes.KubeCluster"
-    nodeTypeVersion: "3.0.0-SM"
-    name: "New_KubeCluster"
+    nodeTypeVersion: "3.0.0-M3"
+    name: "KubeCluster"
     version: "1.0-SNAPSHOT"
     nodeInstance:
       properties:

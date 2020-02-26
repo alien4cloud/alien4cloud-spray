@@ -1,0 +1,25 @@
+---
+- hosts: a4cconfig
+  name: Setup A4C with a Yorc orchestrator for Artemis.
+  become: false
+
+  roles:
+    - commons/define_commons_vars
+    - a4c/config/define_a4c_url
+    - { role: 'roles/a4c/config/get_orchectrator',
+        orchestratorName: 'Yorc'
+      }
+    - { role: roles/a4c/config/create_orchestrator,
+        orchestratorName: 'Yorc',
+        pluginId: 'alien4cloud-yorc-provider',
+        pluginBean: 'yorc-orchestrator-factory'
+      }
+    - { role: 'roles/a4c/config/get_orchectrator',
+        orchestratorName: 'Yorc'
+      }
+    # ROEM
+    - { role: 'roles/a4c/config/create_location',
+        location_name: 'Default',
+        location_type: 'OpenStack'
+      }
+    - a4c/config/upload_csars
