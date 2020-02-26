@@ -7,6 +7,8 @@
     - a4c/stop-a4c
     - a4c/upgrade-a4c
     - a4c/configure-a4c
+    - { role: a4c/config/define_a4c_url, should_login: false }
+    - a4c/configure-saml
 
 - hosts: a4c
   name: Start A4C.
