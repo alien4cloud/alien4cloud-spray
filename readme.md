@@ -24,12 +24,14 @@ If you want to activate SSL for A4C (HTTPS) you need to set 'a4c_protocol' to 'h
 
 You need a ansible inventory file (`hosts`) containing hostnames or ip addresses for the different nodes of your cluster, following this group name convention :
 
-* *consul*: list of consul cluster hosts
-* *elasticsearch*: list of Elasticsearch cluster hosts
-* *yorc*: list of Yorc cluster hosts
-* *a4c*: list of A4C cluster hosts
-* *a4cfront*: a front for a4c (HA)
-* *yorcfront*: a front for yorc (HA)
+* *consul*: list of consul cluster hosts (at least 1)
+* *elasticsearch*: list of Elasticsearch cluster hosts (0,1 or many)
+* *yorc*: list of Yorc cluster hosts (at least 1)
+* *a4c*: list of A4C cluster hosts (at least 1)
+* *a4cfront*: a front for a4c (HA) (0 or 1)
+* *yorcfront*: a front for yorc (HA) (0 or 1)
+
+Please not that if no *elasticsearch* group is provided, the A4C will started using an embeded ES node (not suitable for production).
 
 You can adapt the file regarding the configuration you need:
 
