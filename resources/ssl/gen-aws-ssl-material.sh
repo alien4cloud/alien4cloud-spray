@@ -7,6 +7,11 @@
 
 # The instance name used to filter the running AWS EC2 instances (filter using the tag 'Name')
 InstanceName=$1
+if [ -z "$1" ]; then
+  echo "Please provide an instance name as first parameter";
+  exit 1;
+fi
+
 # The folder where to generate keys and certificates
 CertificatesFolder=$2
 # pass --dry just to simulate
