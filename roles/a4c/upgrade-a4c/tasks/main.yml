@@ -362,6 +362,55 @@
   with_items: "{{ upgradePluginMap.keys() }}"
   when: (upgradePluginMap[item].inplace is not defined)
 
+- name: List all archives in place
+  become: true
+  find:
+    paths: "{{ a4c_install_dir }}/alien4cloud/init/archives/"
+    patterns: "*.zip"
+  register: inplace_archives_ls
+
+- name: List all archives in upgrade archive
+  become: true
+  find:
+    paths: "{{ temp_dir.path }}/alien4cloud/init/archives/"
+    patterns: "*.zip"
+  register: upgrade_archives_ls
+
+- name: Backup existing archives when found
+  become: true
+  become_user: "{{ a4c_user }}"
+  command: "mv {{ item.path }} {{ a4c_install_dir }}/alien4cloud/init_backup/{{ item.path | basename }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
+  with_items: "{{ inplace_archives_ls.files }}"
+  when: (a4c_update_backup)
+
+- name: Add lines in changes.log
+  become: true
+  become_user: "{{ a4c_user }}"
+  lineinfile:
+    create: yes
+    path: "{{ a4c_log_dir }}/changes.log"
+    line: "{{ ansible_date_time.iso8601 }} : Backuped {{ item.path }} to {{ a4c_install_dir }}/alien4cloud/init_backup/{{ item.path | basename }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
+  with_items: "{{ inplace_archives_ls.files }}"
+  when: (a4c_update_backup)
+
+- name: Upgrade archives in init directory
+  become: true
+  become_user: "{{ a4c_user }}"
+  copy:
+    src: "{{ item.path }}"
+    remote_src: yes
+    dest: "{{ a4c_install_dir }}/alien4cloud/init/archives/"
+  with_items: "{{ upgrade_archives_ls.files }}"
+
+- name: Add lines in changes.log
+  become: true
+  become_user: "{{ a4c_user }}"
+  lineinfile:
+    create: yes
+    path: "{{ a4c_log_dir }}/changes.log"
+    line: "{{ ansible_date_time.iso8601 }} : Upgraded {{ item.path | basename }}"
+  with_items: "{{ upgrade_archives_ls.files }}"
+
 - name: Finally remove temporary folder
   become: true
   file:
