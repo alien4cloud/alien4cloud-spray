@@ -75,6 +75,7 @@
         phase: 'post-matched-node-setup',
         modifier_position: 6
       }
+    - a4c/config/disable_plugins      
     - { role: 'a4c/config/create_metaproperties',
         resources_file_artifact: 'resources/metaproperties.yaml'
       }
