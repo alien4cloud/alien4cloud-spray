@@ -10,9 +10,8 @@
     - { role: 'a4c/config/get_orchectrator',
         orchestratorName: 'Yorc'
       }
-    - { role: 'a4c/config/create_location',
-        location_name: 'Default',
-        location_type: 'OpenStack'
+    - { role: 'a4c/config/get_location',
+        location_name: 'Default'
       }
     - { role: 'a4c/config/remove_location_modifier',
         pluginId: 'alien4cloud-datagouv_mls-plugin',

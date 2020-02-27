@@ -26,6 +26,7 @@
     - { role: spark/define-spark-home, spark_user_var: 'yorc_user' }
     - consul/start-consul
     - yorc/start-yorc
+    - yorc/configure-hp    
 
 - hosts: yorcfront
   name: Install Yorc front (Nginx).

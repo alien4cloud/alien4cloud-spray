@@ -13,24 +13,27 @@
     #     branchId: 'develop',
     #     subPath: 'org/alien4cloud/mock'
     #   }
-    - { role: 'roles/a4c/config/get_orchectrator',
+    - { role: 'a4c/config/get_orchectrator',
         orchestratorName: 'Yorc'
       }
-    - { role: roles/a4c/config/create_orchestrator,
+    - { role: a4c/config/create_orchestrator,
         orchestratorName: 'Yorc',
         pluginId: 'alien4cloud-yorc-provider',
         pluginBean: 'yorc-orchestrator-factory'
       }
-    - { role: 'roles/a4c/config/create_metaproperties',
+    - { role: 'a4c/config/create_metaproperties',
         resources_file_artifact: 'resources/metaproperties.yaml'
       }
-    - { role: 'roles/a4c/config/get_orchectrator',
+    - { role: 'a4c/config/get_orchectrator',
         orchestratorName: 'Yorc'
       }
-    # ROEM
-    - { role: 'roles/a4c/config/create_location',
+    # Create location
+    - { role: 'a4c/config/create_location',
         location_name: 'Default',
-        location_type: 'OpenStack'
+        location_type: 'HostsPool'
+      }
+    - { role: 'a4c/config/create_location_resources',
+        resources_file_artifact: 'resources/location_resources.yaml'
       }
     - { role: 'a4c/config/setup_location_modifier',
         pluginId: 'alien4cloud-kubernetes-plugin',

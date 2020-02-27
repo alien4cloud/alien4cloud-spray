@@ -32,6 +32,7 @@
     - { role: spark/define-spark-home, spark_user_var: 'yorc_user' }
     - consul/start-consul
     - yorc/start-yorc
+    - yorc/configure-hp    
 
 - hosts: yorcfront
   name: Install Yorc front (Nginx).
@@ -111,7 +112,7 @@
     - rsync/schedule-sync
     - consul/start-consul
     - rsync/start-consul-template
-    
+
 - hosts: a4c
   name: Start A4C
   gather_facts: no

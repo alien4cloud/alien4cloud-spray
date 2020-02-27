@@ -16,7 +16,10 @@
       }
     - { role: 'a4c/config/create_location',
         location_name: 'Default',
-        location_type: 'OpenStack'
+        location_type: 'HostsPool'
+      }
+    - { role: 'a4c/config/create_location_resources',
+        resources_file_artifact: 'resources/location_resources.yaml'
       }
     - { role: 'a4c/config/enable_plugin',
         pluginId: 'alien4cloud-datagouv_mls-plugin'

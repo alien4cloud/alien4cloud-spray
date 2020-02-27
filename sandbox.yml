@@ -7,7 +7,8 @@
     # - a4c/migrate-a4c-working-dir
     - commons/define_commons_vars
     - a4c/config/define_a4c_url
-    - a4c/config/git_var
+    #- a4c/config/git_var
+    - yorc/configure-hp
     # - a4c/configure-saml
     # - commons/define_commons_vars
     # - install-java

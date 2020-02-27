@@ -1,0 +1,57 @@
+# récupérer hostpool_config
+# itérer sur les entrées et lancer la command add hp
+
+- name: Here is the hostpool_config var
+  debug:
+    var: hostpool_config
+  when: hostpool_config is defined and hostpool_config | length > 0
+
+- name: Ensure ssl directory exists
+  become: true
+  file:
+    path: "{{ yorc_install_dir }}/ssl"
+    state: directory
+    owner: "{{ yorc_user }}"
+  when: hostpool_config is defined and hostpool_config | length > 0
+
+- name: Upload host key to ssl directory
+  become: true
+  become_user: "{{ yorc_user }}"
+  copy:
+    src: "{{ inventory_dir }}/{{ item.key }}"
+    dest: "{{ yorc_install_dir }}/ssl/"
+  with_items: "{{ hostpool_config }}"
+  when: hostpool_config is defined and hostpool_config | length > 0
+
+- name: Remove host from Yorc hostpool
+  become: true
+  become_user: "{{ yorc_user }}"
+  shell:
+    chdir: "{{ yorc_install_dir }}"
+    cmd: "./yorc hp delete -l Default {{ item.alias }}"
+  with_items: "{{ hostpool_config }}"
+  when: hostpool_config is defined and hostpool_config | length > 0
+
+- name: Add host to Yorc hostpool
+  become: true
+  become_user: "{{ yorc_user }}"
+  shell:
+    chdir: "{{ yorc_install_dir }}"
+    cmd: "./yorc hp add -l Default {{ item.alias }} --user {{ item.user }} --host {{ item.host }} --key {{ yorc_install_dir }}/ssl/{{ item.key | basename }}"
+  with_items: "{{ hostpool_config }}"
+  when: hostpool_config is defined and hostpool_config | length > 0
+
+- name: Here is the Yorc hostpool config
+  become: true
+  become_user: "{{ yorc_user }}"
+  shell:
+    chdir: "{{ yorc_install_dir }}"
+    cmd: "./yorc hp -l Default list"
+  register: shell_output
+  with_items: "{{ hostpool_config }}"
+  when: hostpool_config is defined and hostpool_config | length > 0
+
+- name: Here is the 'yorc hp list' command stdout
+  debug:
+    var: shell_output
+  when: hostpool_config is defined and hostpool_config | length > 0
