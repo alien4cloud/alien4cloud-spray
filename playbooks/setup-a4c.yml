@@ -29,6 +29,8 @@
     - { role: 'roles/a4c/config/create_metaproperties',
         resources_file_artifact: 'resources/metaproperties.yaml'
       }
+
+      # modifiers
     - { role: 'roles/a4c/config/get_orchectrator',
         orchestratorName: 'Yorc'
       }
@@ -95,17 +97,14 @@
     - { role: 'a4c/config/disable_plugin',
         pluginId: 'alien4cloud-ssi-network_policy-plugin'
       }
-    - { role: 'a4c/config/disable_plugin',
-        pluginId: 'alien4cloud-consul-publisher-plugin'
-      }
-    - { role: 'a4c/config/disable_plugin',
-        pluginId: 'alien4cloud-supervision'
-      }
+    # - { role: 'a4c/config/disable_plugin',
+    #     pluginId: 'alien4cloud-consul-publisher-plugin'
+    #   }
+    # - { role: 'a4c/config/disable_plugin',
+    #     pluginId: 'alien4cloud-supervision'
+    #   }
 
 
-    - { role: 'a4c/config/create_metaproperties',
-        resources_file_artifact: 'resources/metaproperties.yaml'
-      }
     - a4c/config/download_upload_csars
     - { role: 'commons/parse_kubeconfig',
         resources_file_artifact: 'resources/kubeconfig'
