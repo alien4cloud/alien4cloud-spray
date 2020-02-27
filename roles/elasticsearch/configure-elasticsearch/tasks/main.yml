@@ -45,7 +45,7 @@
     regexp: '^[#]?discovery.zen.ping.unicast.hosts:.*'
     line: "discovery.zen.ping.unicast.hosts: [\"{{ cluster_host_list | list | join ('\",\"') }}\"]"
   become: true
-  when: ES_HOST_COUNT > 1
+  when: ES_HOST_COUNT|int > 1
 
 - name: Define minimum_master_nodes
   set_fact :
@@ -57,7 +57,7 @@
     regexp: '^[#]?discovery.zen.minimum_master_nodes:.*'
     line: "discovery.zen.minimum_master_nodes: {{ minimum_master_nodes }}"
   become: true
-  when: ES_HOST_COUNT > 1
+  when: ES_HOST_COUNT|int > 1
 
 - name: Append the cluster name to ES config file
   lineinfile:
