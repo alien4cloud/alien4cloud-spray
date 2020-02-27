@@ -1,0 +1,7 @@
+# This role will delete plugins found in a4c_disabled_plugins array var
+
+# a4c_disabled_plugins:
+#   - alien4cloud-kubernetes-plugin
+#   - alien4cloud-ssi-network_policy-plugin
+#   - alien4cloud-consul-publisher-plugin
+#   - alien4cloud-datagouv_mls-plugin

@@ -1,55 +1,8 @@
 resources:
-    # The default K8S container implementation
-    - resourceType: "org.alien4cloud.kubernetes.api.types.Container"
-      resourceName: "K8S Docker container"
-      archiveName: org.alien4cloud.kubernetes.api
-      archiveVersion: a4c_version
-      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
-    # The default K8S deployment implementation
-    - resourceType: "org.alien4cloud.kubernetes.api.types.Deployment"
-      resourceName: "K8S Deployment"
-      archiveName: org.alien4cloud.kubernetes.api
-      archiveVersion: a4c_version
-      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
-      properties:
-        spec:
-          template:
-            spec:
-              imagePullSecrets:
-                - name: service-applicatif-git-secret
-    # The default K8S NodePort service implementation
-    - resourceType: "org.alien4cloud.kubernetes.api.types.Service"
-      resourceName: "K8S NodePort service"
-      archiveName: org.alien4cloud.kubernetes.api
-      archiveVersion: a4c_version
-      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
-    # The K8S ClusterIP service
-    - resourceType: "org.alien4cloud.kubernetes.api.types.Service"
-      resourceName: "K8S ClusterIP service"
-      archiveName: org.alien4cloud.kubernetes.api
-      archiveVersion: a4c_version
-      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
-      properties:
-        spec:
-          service_type: ClusterIP
-    # A K8S ClusterIP service with Ingress
-    - resourceType: "org.alien4cloud.kubernetes.api.types.IngressService"
-      resourceName: "K8S Ingress / ClusterIP service"
-      archiveName: org.alien4cloud.kubernetes.api
-      archiveVersion: a4c_version
-      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
-      properties:
-        spec:
-          service_type: ClusterIP
-    # An empty dir
-    - resourceType: "org.alien4cloud.kubernetes.api.types.volume.EmptyDirVolumeSource"
-      resourceName: "K8S EmptyDir"
-      archiveName: org.alien4cloud.kubernetes.api
-      archiveVersion: a4c_version
-      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
-    # A K8S Secret Volume
-    - resourceType: "org.alien4cloud.kubernetes.api.types.volume.SecretSource"
-      resourceName: "K8S Secret volume"
-      archiveName: org.alien4cloud.kubernetes.api
-      archiveVersion: a4c_version
-      id: "org.alien4cloud.kubernetes.api.types.Service:2.1.0-SNAPSHOT"
+  - resourceType: "yorc.nodes.hostspool.Compute"
+    resourceName: "Bloc executor host"
+    archiveName: yorc-hostspool-types
+    archiveVersion: 1.0.0
+    id: "yorc.nodes.hostspool.Compute:1.0.0"
+    properties:
+      shareable: "true"

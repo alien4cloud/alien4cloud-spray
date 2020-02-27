@@ -1,0 +1,9 @@
+yorc_install_dir: /home/yorc
+# here is the list of hosts to add to yorc hostpool
+# this role expects that a hostpool_config array var exists
+# hostpool_config:
+#   - alias: BlocExecHost
+#     user: root
+#     host: localhost
+#     # The key will be upload to yorc (PB fails if absent)
+#     key: resources/key.pem

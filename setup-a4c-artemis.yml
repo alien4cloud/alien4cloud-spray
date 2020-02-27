@@ -13,108 +13,51 @@
     #     branchId: 'develop',
     #     subPath: 'org/alien4cloud/mock'
     #   }
-    - { role: 'roles/a4c/config/get_orchectrator',
+    - { role: 'a4c/config/get_orchectrator',
         orchestratorName: 'Yorc'
       }
-    - { role: roles/a4c/config/create_orchestrator,
+    - { role: a4c/config/create_orchestrator,
         orchestratorName: 'Yorc',
         pluginId: 'alien4cloud-yorc-provider',
         pluginBean: 'yorc-orchestrator-factory'
       }
-    - { role: 'roles/a4c/config/create_metaproperties',
+    - { role: 'a4c/config/create_metaproperties',
         resources_file_artifact: 'resources/metaproperties.yaml'
       }
-    - { role: 'roles/a4c/config/get_orchectrator',
+    - { role: 'a4c/config/get_orchectrator',
         orchestratorName: 'Yorc'
       }
-    - { role: 'roles/a4c/config/create_location',
+    # Create location
+    - { role: 'a4c/config/create_location',
         location_name: 'Default',
-        location_type: 'OpenStack'
+        location_type: 'HostsPool'
       }
-    - { role: 'a4c/config/setup_location_modifier',
-        pluginId: 'alien4cloud-yorc-provider',
-        beanName: 'gangja-resolver-modifier',
-        phase: 'post-node-match',
-        modifier_position: 1
-      }
-    - { role: 'a4c/config/setup_location_modifier',
-        pluginId: 'alien4cloud-datagouv_mls-plugin',
-        beanName: 'datagouv_mls-modifier',
-        phase: 'post-matched-node-setup',
-        modifier_position: 2
+    - { role: 'a4c/config/create_location_resources',
+        resources_file_artifact: 'resources/location_resources.yaml'
       }
     - { role: 'a4c/config/setup_location_modifier',
         pluginId: 'alien4cloud-kubernetes-plugin',
         beanName: 'kubernetes-adapter-modifier',
         phase: 'post-matched-node-setup',
-        modifier_position: 3
+        modifier_position: 1
       }
     - { role: 'a4c/config/setup_location_modifier',
-        pluginId: 'alien4cloud-consul-publisher-plugin',
-        beanName: 'consul-publisher',
+        pluginId: 'alien4cloud-kubernetes-plugin',
+        beanName: 'kubernetes-adapter-modifier',
         phase: 'post-matched-node-setup',
-        modifier_position: 4
-      }
-    - { role: 'a4c/config/setup_location_modifier',
-        pluginId: 'alien4cloud-ssi-network_policy-plugin',
-        beanName: 'ssi-network_policy-modifier',
-        phase: 'post-matched-node-setup',
-        modifier_position: 5
+        modifier_position: 1
       }
     - { role: 'a4c/config/setup_location_modifier',
         pluginId: 'alien4cloud-k8s-spark-jobs',
         beanName: 'k8s-spark-jobs-modifier',
         phase: 'post-matched-node-setup',
-        modifier_position: 6
+        modifier_position: 2
       }
-    - { role: 'a4c/config/setup_location_modifier',
-        pluginId: 'alien4cloud-supervision',
-        beanName: 'kubernetes-supervision-modifier',
-        phase: 'post-matched-node-setup',
-        modifier_position: 7
-      }
-
-      # Disable MLS stuff
-    - { role: 'a4c/config/remove_location_modifier',
-        pluginId: 'alien4cloud-datagouv_mls-plugin',
-        beanName: 'datagouv_mls-modifier',
-        phase: 'post-matched-node-setup'
-      }
-    - { role: 'a4c/config/disable_plugin',
-        pluginId: 'alien4cloud-datagouv_mls-plugin'
-      }
-
-    - { role: 'a4c/config/disable_plugin',
-        pluginId: 'alien4cloud-datagouv_mls-plugin'
-      }
-    - { role: 'a4c/config/disable_plugin',
-        pluginId: 'alien4cloud-ssi-network_policy-plugin'
-      }
-    - { role: 'a4c/config/disable_plugin',
-        pluginId: 'alien4cloud-consul-publisher-plugin'
-      }
-    - { role: 'a4c/config/disable_plugin',
-        pluginId: 'alien4cloud-supervision'
-      }
-      
+    - a4c/config/disable_plugins
     - a4c/config/upload_csars
-    - { role: a4c/config/git,
-        repositoryUrl: 'http://gitlab.artemis.public/infostructure/socle/service-applicatif/a4c-standardtypes.git',
-        repositoryUsername: '',
-        repositoryPassword: '',
-        branchId: '3.0.0-M3',
-        subPath: ''
+    - { role: 'commons/parse_kubeconfig',
+        resources_file_artifact: 'resources/kubeconfig'
       }
-    - { role: a4c/config/git,
-        repositoryUrl: 'http://gitlab.artemis.public/temp/labs_a4c.git',
-        repositoryUsername: '',
-        repositoryPassword: '',
-        branchId: '3.0.0-M3',
-        subPath: ''
-      }
-    # - { role: 'commons/parse_kubeconfig',
-    #     resources_file_artifact: 'resources/kubeconfig'
-    #   }
     - { role: 'a4c/config/create_services',
-        resources_file_artifact: 'resources/services.yml'
+        resources_file_artifact: 'resources/services.yaml'
       }

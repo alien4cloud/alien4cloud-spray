@@ -31,6 +31,7 @@
     - { role: spark/define-spark-home, spark_user_var: 'yorc_user' }
     - consul/start-consul
     - yorc/start-yorc
+    - yorc/configure-hp    
 
 - hosts: elasticsearch
   name: Install configure and start Elasticsearch.

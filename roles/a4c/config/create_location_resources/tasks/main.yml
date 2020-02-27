@@ -1,8 +1,5 @@
 ---
 
-- set_fact:
-    alien_url: "{{ a4c_protocol }}://{{ a4c_ip }}:{{ a4c_port }}"
-
 - name: Create temporary folder
   tempfile:
     state: directory
@@ -65,7 +62,8 @@
     method: POST
     return_content: yes
     validate_certs: no
-    HEADER_cookie: "{{ session_id }}"
+    headers:
+      Cookie: "{{ session_id }}"
     body:
       resourceType: "{{ item['resourceType'] }}"
       resourceName: "{{ item['resourceName'] }}"
@@ -121,7 +119,8 @@
     method: POST
     return_content: yes
     validate_certs: no
-    HEADER_cookie: "{{ session_id }}"
+    headers:
+      Cookie: "{{ session_id }}"
     body:
       propertyName: "{{item['propertyName']}}"
       propertyValue: "{{item['propertyValue']}}"
@@ -157,7 +156,8 @@
     method: POST
     return_content: yes
     validate_certs: no
-    HEADER_cookie: "{{ session_id }}"
+    headers:
+      Cookie: "{{ session_id }}"
     body:
       propertyName: "{{item['propertyName']}}"
       propertyValue: "{{item['propertyValue']}}"
@@ -171,4 +171,3 @@
   file:
     path: "{{ temp_dir.path }}"
     state: absent
-    
