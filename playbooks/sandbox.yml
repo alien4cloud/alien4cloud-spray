@@ -3,5 +3,5 @@
 - hosts: a4c
   name: Sandbox, play with plays ! The role of your life
   roles:
-    - roles/commons/define_commons_vars
-    - { role: roles/a4c/config/define_a4c_url, should_login: false }
+    - commons/define_commons_vars
+    - { role: a4c/config/define_a4c_url, should_login: false }
