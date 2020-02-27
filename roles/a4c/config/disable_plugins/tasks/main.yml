@@ -1,0 +1,27 @@
+---
+
+- name: Search for plugin
+  uri:
+    url: "{{ alien_url }}/rest/latest/plugins?from=0&query={{ item }}&size=1"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body_format: json
+    status_code: 200
+  register: plugin_list_result
+  with_items: "{{ a4c_disabled_plugins }}"
+  when: a4c_disabled_plugins is defined
+
+- name: Disable plugin
+  uri:
+    url: "{{ alien_url }}/rest/latest/plugins/{{ (item.content|from_json).data.data[0].id }}/disable"
+    method: GET
+    return_content: no
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    status_code: 200
+  with_items: "{{ plugin_list_result.results }}"
+  when: a4c_disabled_plugins is defined
