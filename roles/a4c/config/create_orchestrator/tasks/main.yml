@@ -100,7 +100,7 @@
 - name: Use 'yorcfront' if exists
   set_fact:
     yorc_address: "{{ groups['yorcfront'][0] }}{{ appendable_private_domain_name }}"
-  when: "groups['yorcfront'] | length > 0"
+  when: groups['yorcfront'] is defined
 
 - name: Define yorc url
   set_fact:
