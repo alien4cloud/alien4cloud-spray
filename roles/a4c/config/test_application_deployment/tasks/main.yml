@@ -230,8 +230,8 @@
     status_code: 200
   register: result
   until: (result.json.data == "DEPLOYED") or (result.json.data == "FAILED")
-  retries: 10
-  delay: 30
+  retries: 30
+  delay: 60
   ignore_errors: yes
 
 - name: Here is the deployment status
@@ -264,8 +264,8 @@
     status_code: 200
   register: result
   until: result.json.data == "UNDEPLOYED"
-  retries: 10
-  delay: 30
+  retries: 30
+  delay: 60
   ignore_errors: yes
 
 - name: Delete application
