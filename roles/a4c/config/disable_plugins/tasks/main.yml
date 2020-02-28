@@ -1,6 +1,6 @@
 ---
 
-- name: Search for plugin
+- name: Search for plugins
   uri:
     url: "{{ alien_url }}/rest/latest/plugins?from=0&query={{ item }}&size=1"
     method: GET
@@ -14,7 +14,7 @@
   with_items: "{{ a4c_disabled_plugins }}"
   when: a4c_disabled_plugins is defined
 
-- name: Disable plugin
+- name: Disable plugins
   uri:
     url: "{{ alien_url }}/rest/latest/plugins/{{ (item.content|from_json).data.data[0].id }}/disable"
     method: GET
@@ -24,4 +24,4 @@
       Cookie: "{{ session_id }}"
     status_code: 200
   with_items: "{{ plugin_list_result.results }}"
-  when: a4c_disabled_plugins is defined
+  when: a4c_disabled_plugins is defined and (item.content|from_json).data.totalResults > 0
