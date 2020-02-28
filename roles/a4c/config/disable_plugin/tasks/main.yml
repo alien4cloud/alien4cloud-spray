@@ -14,6 +14,7 @@
       Cookie: "{{ session_id }}"
     body_format: json
     status_code: 200
+    timeout: 120
   register: plugin_list_result
 
 - name: Parse the plugin list as JSON
@@ -37,5 +38,6 @@
     headers:
       Cookie: "{{ session_id }}"
     status_code: 200
+    timeout: 120
   register: result
   when: (plugin_found)

@@ -27,6 +27,7 @@
     return_content: yes
     validate_certs: no
     status_code: 302
+    timeout: 120
     headers:
       Content-Type: "application/x-www-form-urlencoded"
   register: login

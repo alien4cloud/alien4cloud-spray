@@ -51,6 +51,7 @@
     method: POST
     return_content: yes
     status_code: 302
+    timeout: 120
     validate_certs: no
     headers:
       Content-Type: "application/x-www-form-urlencoded"
@@ -74,6 +75,7 @@
       #id: "{{ item['id'] }}"
     body_format: json
     status_code: 200
+    timeout: 120
   register: result
   with_items: "{{resources}}"
 
@@ -127,6 +129,7 @@
       propertyValue: "{{item['propertyValue']}}"
     body_format: json
     status_code: 200
+    timeout: 120
   register: result
   with_items: "{{propertyValuesPerResource}}"
 

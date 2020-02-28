@@ -59,6 +59,7 @@
       phase: "{{ item['phase'] }}"
     body_format: json
     status_code: 200
+    timeout: 120
   register: result
   with_items: "{{modifiers}}"
   when: modifiers | length > 0
@@ -79,6 +80,7 @@
     headers:
       Cookie: "{{ session_id }}"
     status_code: 200
+    timeout: 120
   register: result
   with_items: "{{orders}}"
   when: orders | length > 0

@@ -9,6 +9,7 @@
     headers:
       Cookie: "{{ session_id }}"
     body_format: json
+    timeout: 120
     status_code: 200
   register: result
 
@@ -44,6 +45,7 @@
       name: "{{ location_name }}"
       infrastructureType: "{{ location_type }}"
     body_format: json
+    timeout: 120
     status_code: 201
   register: result
   when: (locationId is not defined)

@@ -10,6 +10,7 @@
       Cookie: "{{ session_id }}"
     body_format: json
     status_code: 200
+    timeout: 120
   register: plugin_list_result
   with_items: "{{ a4c_disabled_plugins }}"
   when: a4c_disabled_plugins is defined
@@ -23,5 +24,6 @@
     headers:
       Cookie: "{{ session_id }}"
     status_code: 200
+    timeout: 120
   with_items: "{{ plugin_list_result.results }}"
   when: a4c_disabled_plugins is defined and (item.content|from_json).data.totalResults > 0

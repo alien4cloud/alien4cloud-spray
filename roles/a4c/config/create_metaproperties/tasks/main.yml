@@ -53,6 +53,7 @@
       from: 0
       size: 500
     body_format: json
+    timeout: 120
     status_code: 200
   register: search_metaproperties_result
   when: (metaproperties_to_create is defined)
@@ -86,6 +87,7 @@
       Content-Type: "application/json"
     body: "{{ item | to_json }}"
     body_format: json
+    timeout: 120
     status_code: 200
   register: result
   with_items: "{{metaproperties_to_create}}"
