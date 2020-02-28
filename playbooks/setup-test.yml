@@ -1,0 +1,118 @@
+---
+
+- hosts: a4cconfig
+  name: Setup A4C with a Yorc orchestrator.
+  become: false
+  roles:
+    - commons/define_commons_vars
+    - a4c/config/define_a4c_url
+      # Orchestrator & Location
+    - { role: 'a4c/config/get_orchectrator',
+        orchestratorName: 'Yorc'
+      }
+    - { role: 'a4c/config/create_orchestrator',
+        orchestratorName: 'Yorc',
+        pluginId: 'alien4cloud-yorc-provider',
+        pluginBean: 'yorc-orchestrator-factory'
+      }
+    - { role: 'a4c/config/create_location',
+        location_name: 'Default',
+        location_type: 'HostsPool'
+      }
+    - { role: 'a4c/config/create_location_resources',
+        resources_file_artifact: 'resources/location_resources.yaml'
+      }
+      # Location modifiers
+    - { role: 'a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-yorc-provider',
+        beanName: 'gangja-resolver-modifier',
+        phase: 'post-node-match',
+        modifier_position: 1
+      }
+    - { role: 'a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-datagouv_mls-plugin',
+        beanName: 'datagouv_mls-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 2
+      }
+    - { role: 'a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-kubernetes-plugin',
+        beanName: 'kubernetes-adapter-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 3
+      }
+    - { role: 'a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-consul-publisher-plugin',
+        beanName: 'consul-publisher',
+        phase: 'post-matched-node-setup',
+        modifier_position: 4
+      }
+    - { role: 'a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-ssi-network_policy-plugin',
+        beanName: 'ssi-network_policy-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 5
+      }
+    - { role: 'a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-k8s-spark-jobs',
+        beanName: 'k8s-spark-jobs-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 6
+      }
+    - { role: 'a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-supervision',
+        beanName: 'kubernetes-supervision-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 7
+      }
+      # Eventually disable some plugins
+    - a4c/config/disable_plugins
+    - { role: 'a4c/config/create_metaproperties',
+        resources_file_artifact: 'resources/metaproperties.yaml'
+      }
+    - a4c/config/git_var
+    - a4c/config/download_upload_csars
+    - { role: 'commons/parse_kubeconfig',
+        resources_file_artifact: 'resources/kubeconfig'
+      }
+    - { role: 'a4c/config/create_services',
+        resources_file_artifact: 'resources/services.yaml'
+      }
+
+- hosts: a4cconfig
+  name: Test the setup deploying an application based on mocks.
+  gather_facts: yes
+  become: false
+  roles:
+    - commons/define_commons_vars
+    - a4c/config/define_a4c_url
+    - { role: 'a4c/config/get_orchectrator',
+        orchestratorName: 'Yorc'
+      }
+    - { role: 'a4c/config/get_location',
+        location_name: 'Default'
+      }
+    - { role: 'a4c/config/remove_location_modifier',
+        pluginId: 'alien4cloud-datagouv_mls-plugin',
+        beanName: 'datagouv_mls-modifier',
+        phase: 'post-matched-node-setup'
+      }
+    - { role: 'a4c/config/disable_plugin',
+        pluginId: 'alien4cloud-datagouv_mls-plugin'
+      }
+    - a4c/config/test_application_deployment
+    # - { role: 'a4c/config/test_application_deployment',
+    #     topologyTemplateVersionId: '1TinyMock:2.1.0-SNAPSHOT',
+    #     applicationName: 'SetupTestApp'
+    #   }
+    - { role: 'a4c/config/enable_plugin',
+        pluginId: 'alien4cloud-datagouv_mls-plugin'
+      }
+      # Eventually disable some plugins
+    - a4c/config/disable_plugins
+    - { role: 'a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-datagouv_mls-plugin',
+        beanName: 'datagouv_mls-modifier',
+        phase: 'post-matched-node-setup',
+        modifier_position: 1
+      }
