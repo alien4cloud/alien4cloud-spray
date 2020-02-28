@@ -13,6 +13,7 @@
       size: 1
     body_format: json
     status_code: 200
+    timeout: 120
   register: result
 
 - name: Parse search application result
@@ -43,6 +44,7 @@
       topologyTemplateVersionId: "{{ topologyTemplateVersionId }}"
     body_format: json
     status_code: 201
+    timeout: 120
   register: result
   when: (applicationId is not defined)
 
@@ -70,6 +72,7 @@
       size: 1
     body_format: json
     status_code: 200
+    timeout: 120
   register: result
 
 - name: Parse search environment result
@@ -96,6 +99,7 @@
       Cookie: "{{ session_id }}"
     body_format: json
     status_code: 200
+    timeout: 120
   register: result
   ignore_errors: yes
 
@@ -129,6 +133,7 @@
       environmentId: "{{ environmentId }}"
     body_format: json
     status_code: 200
+    timeout: 120
   register: result
   when: (deploymentId is not defined)
 
@@ -170,6 +175,7 @@
       groupsToLocations: "{'_A4C_ALL':'{{ locationId }}'}"
     body_format: json
     status_code: 200
+    timeout: 120
   register: result
   when: (deploymentId is not defined) and (orchestratorId is defined) and (locationId is defined)
 
@@ -186,6 +192,7 @@
       applicationEnvironmentId: "{{ environmentId }}"
     body_format: json
     status_code: 200
+    timeout: 120
   register: result
   when: (deploymentId is not defined) and (orchestratorId is defined) and (locationId is defined)
 
@@ -199,6 +206,7 @@
       Cookie: "{{ session_id }}"
     body_format: json
     status_code: 200
+    timeout: 120
   register: result
   ignore_errors: yes
   when: (deploymentId is not defined)
@@ -228,6 +236,7 @@
       Cookie: "{{ session_id }}"
       Content-Type: "application/json"
     status_code: 200
+    timeout: 120
   register: result
   until: (result.json.data == "DEPLOYED") or (result.json.data == "FAILED")
   retries: 30
@@ -251,6 +260,7 @@
     headers:
       Cookie: "{{ session_id }}"
     status_code: 200
+    timeout: 120
 
 - name: Wait for undeployment success
   uri:
@@ -262,6 +272,7 @@
       Cookie: "{{ session_id }}"
       Content-Type: "application/json"
     status_code: 200
+    timeout: 120
   register: result
   until: result.json.data == "UNDEPLOYED"
   retries: 30
@@ -277,6 +288,7 @@
     headers:
       Cookie: "{{ session_id }}"
     status_code: 200
+    timeout: 120
 
 # DELETE /rest/latest/applications/${applicationName}/environments/${environmentId}/deployment
 
