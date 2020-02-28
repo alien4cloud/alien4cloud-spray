@@ -48,6 +48,8 @@ yorc_tls: false
 discriminator: ART_YORK_
 # Inidicates of TLS should be activated for ES cluster
 elasticsearch_tls: false
+# ES data directory if not default
+# elasticsearch_home: /var/lib/elasticsearch
 
 # SSL TLS
 # The local path where certificates can be found for SSL configs on nodes
