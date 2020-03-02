@@ -1,4 +1,5 @@
 yorc_log_dir: /var/log/yorc
 yorc_install_dir: /home/yorc
-yorc_remote_ansible_tmp: /home/yorc/.ansible/tmp
+yorc_remote_ansible_tmp: ~/.ansible/tmp
+yorc_local_ansible_tmp: ~/.ansible/tmp
 #yorc_working_dir: /home/yorc/work

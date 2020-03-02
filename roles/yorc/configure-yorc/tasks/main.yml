@@ -13,6 +13,13 @@
     path: "{{ yorc_remote_ansible_tmp }}"
     state: directory
 
+- name: Ensure the yorc_local_ansible_tmp directory exists
+  become: true
+  become_user: "{{ yorc_user }}"
+  file:
+    path: "{{ yorc_local_ansible_tmp }}"
+    state: directory
+
 - name: Default Yorc location file
   template:
     src: config.locations.json.j2
