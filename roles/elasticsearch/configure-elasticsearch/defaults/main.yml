@@ -1,2 +1,3 @@
 elasticsearch_user: elasticsearch
 elasticsearch_group: elasticsearch
+elasticsearch_home: /var/lib/elasticsearch
