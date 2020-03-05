@@ -147,6 +147,12 @@
       }
       # Location modifiers
     - { role: 'a4c/config/setup_location_modifier',
+        pluginId: 'alien4cloud-consul-publisher-plugin',
+        beanName: 'consul-notifier',
+        phase: 'pre-node-match',
+        modifier_position: 0
+      }
+    - { role: 'a4c/config/setup_location_modifier',
         pluginId: 'alien4cloud-yorc-provider',
         beanName: 'gangja-resolver-modifier',
         phase: 'post-node-match',
