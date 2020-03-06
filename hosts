@@ -1,18 +1,21 @@
 [consul]
-52.210.254.194
-
+192.168.0.10
+192.168.0.11
+192.168.0.12
 
 [yorc]
-52.18.240.26
+192.168.0.20
 
 [elasticsearch]
-52.210.254.194
+192.168.0.10
+192.168.0.11
+192.168.0.12
 
 [a4c]
-52.18.240.26
+192.168.0.30
 
 [a4cfront]
-52.18.240.26
+192.168.0.30
 
 [samba]
 
@@ -22,6 +25,6 @@
 # This group is used to play A4C config playbooks (roles in roles/a4c/config)
 # We need to have here a single node, it can be any node in the cluster
 # The target A4C url will be defined regarding cluster configuration
-52.18.240.26
+192.168.0.30
 
 #localhost ansible_connection=local
