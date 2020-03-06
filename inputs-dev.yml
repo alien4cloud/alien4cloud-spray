@@ -1,0 +1,16 @@
+
+a4c_admin_usr: admin
+a4c_admin_pwd: admin
+
+# We generally use a local a4c instance in dev
+alien_url: http://localhost:8088
+
+inventory_dir: "../"
+a4c_version: 3.0.0-SNAPSHOT
+
+# the folder where your plugin projects are
+dev_projects_path: /Users/xdegenne/work/src
+
+# Use your own yorc here
+yorc_url: http://52.18.240.26:8800
+discriminator: ART_YORK_

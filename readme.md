@@ -161,13 +161,13 @@ export ANSIBLE_HOST_KEY_CHECKING=False
 Then, launch the playbook:
 
 ```
-ansible-playbook -i hosts --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v install-a4c-consul-yorc.yml
+ansible-playbook -i hosts --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v playbooks/install-a4c-consul-yorc.yml
 ```
 
 If you don't use a SSH key but a password authentication (which is not recommended !) you can use:
 
 ```
-ansible-playbook -i hosts --user $REMOTE_USER --extra-vars "@inputs.yml" -v --extra-vars "ansible_user=root ansible_password=yourpassword"  install-a4c-consul-yorc.yml
+ansible-playbook -i hosts --user $REMOTE_USER --extra-vars "@inputs.yml" -v --extra-vars "ansible_user=root ansible_password=yourpassword"  playbooks/install-a4c-consul-yorc.yml
 ```
 
 # Installation in _offline_ mode
@@ -185,7 +185,7 @@ Il you need some additional CSARs library, place the zip files in the `resources
 This playbook will configure the orchestrator, a location, and services on the A4C instance :
 
 ```
-ansible-playbook -i hosts --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v  setup-a4c-artemis.yml
+ansible-playbook -i hosts --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v  playbooks/setup-a4c.yml
 ```
 
 That's all folk, the full system should be available.
@@ -195,7 +195,7 @@ That's all folk, the full system should be available.
 This playbook will make a simple integration by deploying a simple mock based application, ensuring all the stack is available and all stuff well connected together.
 
 ```
-ansible-playbook -i hosts --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v test-a4c-artemis.yml
+ansible-playbook -i hosts --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v playbooks/test-deployment.yml
 ```
 
 To test manually the integration between A4C and Yorc:
@@ -228,7 +228,19 @@ Please not that:
 * If `a4c_upgrade_plugins` is defined but empty, no plugin will be upgraded.
 
 ```
-ansible-playbook -i hosts --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v upgrade-a4c.yml
+ansible-playbook -i hosts --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v playbooks/upgrade-a4c.yml
 ```
 
-During upgrade, all changes will be logs in 'changes.log' in a4c log folder.
+During upgrade, all changes will be logged in 'changes.log' in a4c log folder.
+
+# Development setup
+
+A playbook has be written to help you setup a development environment. It just setup an empty running localhost A4C (in your IDE for example), and automatize repetitive tasks in order to have a full working and configured A4C without any pain.
+
+It needs that all plugins projects are localized in the same directory and built.
+
+Just fill the `inputs-dev.yml` input file in order to fit your needs.
+
+```
+ansible-playbook -i hosts --extra-vars "@inputs-dev.yml" playbooks/setup-dev.yml
+```

@@ -81,6 +81,9 @@
     #     plugin_artifact: 'yorc-a4c-plugin/alien4cloud-yorc-plugin/target/alien4cloud-yorc-plugin-3.0.0-SNAPSHOT.zip',
     #     INSTANCE: 'local'
     #   }
+    - { role: 'roles/a4c/config/get_orchectrator',
+        orchestratorName: 'Yorc'
+      }
     - { role: 'a4c/config/create_orchestrator',
         orchestratorName: 'Yorc',
         pluginId: 'alien4cloud-yorc-provider',

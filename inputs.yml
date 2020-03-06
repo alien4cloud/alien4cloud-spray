@@ -20,8 +20,8 @@ a4c_front_port: 443
 a4c_admin_usr: admin
 a4c_admin_pwd: admin
 a4c_saml_enabled: false
-#alien_url: http://52.30.184.122:8088
-inventory_dir: "."
+# alien_url: http://localhost:8088
+inventory_dir: "../"
 
 consul_user: consul
 consul_install_dir: /opt/consul
@@ -45,6 +45,8 @@ yorc_install_dir: /opt/yorc
 # If true yorc http server will be secured using TLS (certificates nedded)
 yorc_tls: false
 yorc_debug: 0
+yorc_remote_ansible_tmp: /tmp/ansible/remote
+yorc_local_ansible_tmp: /tmp/ansible/local
 discriminator: ART_YORK_
 
 # Inidicates of TLS should be activated for ES cluster
@@ -153,7 +155,7 @@ a4c_version: 3.0.0-SNAPSHOT
 #topologyTemplateVersionId: "3MockWithRel:2.1.0-SNAPSHOT"
 #applicationName: SetupTest
 
-#a4c_upgrade_plugins: []
+# a4c_upgrade_plugins: []
 #   - alien4cloud-kubernetes-plugin
 #   - alien4cloud-ssi-network_policy-plugin
 should_use_rsync_for_a4c_ha: true
@@ -212,3 +214,6 @@ a4c_config_addons:
 #     repositoryPassword: *******
 #     branchId: 'develop'
 #     subPath: ''
+
+topologyTemplateVersionId: "3MockWithRel:2.1.0-SNAPSHOT"
+applicationName: "SetupTestApp"

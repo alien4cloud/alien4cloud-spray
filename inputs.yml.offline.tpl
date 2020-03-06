@@ -19,7 +19,7 @@ a4c_front_port: 80
 a4c_admin_usr: admin
 a4c_admin_pwd: 4dm1n
 a4c_version: 3.0.0-M2
-inventory_dir: "."
+inventory_dir: "../"
 
 consul_user: consul
 consul_install_dir: /opt/consul
