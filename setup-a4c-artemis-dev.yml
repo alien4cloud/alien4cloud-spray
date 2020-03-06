@@ -21,9 +21,9 @@
     # - { role: 'roles/a4c/config/create_services',
     #     resources_file_artifact: 'resources/services.yaml'
     #   }
-    # - { role: 'roles/a4c/config/create_metaproperties',
-    #     resources_file_artifact: 'resources/metaproperties.yaml'
-    #   }
+    - { role: 'roles/a4c/config/create_metaproperties',
+        resources_file_artifact: 'resources/metaproperties.yaml'
+      }
     # - { role: 'a4c/config/disable_plugin',
     #     pluginId: 'alien4cloud-datagouv_mls-plugin'
     #   }
@@ -52,14 +52,14 @@
         repositoryUrl: 'https://github.com/alien4cloud/alien4cloud-extended-types.git',
         repositoryUsername: '',
         repositoryPassword: '',
-        branchId: '3.0.0-SM3',
+        branchId: '3.0.0-SNAPSHOT',
         subPath: 'alien-base-types'
       }
     - { role: a4c/config/git,
         repositoryUrl: 'https://github.com/alien4cloud/docker-tosca-types.git',
         repositoryUsername: '',
         repositoryPassword: '',
-        branchId: '3.0.0-SM3',
+        branchId: '3.0.0-SNAPSHOT',
         subPath: 'docker-types'
       }
     # - { role: roles/git,
