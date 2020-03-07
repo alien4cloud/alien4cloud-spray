@@ -64,7 +64,7 @@ ssl_key_password: changeit
 
 # # Download urls in online mode
 elasticsearch_rmp_url: https://nexus.technique.artemis/repository/Artemis-Raw/infostructure/socle/service-applicatif/elasticsearch/elasticsearch-6.6.2.rpm
-ALIEN_DIST_URL: https://nexus.technique.artemis/repository/Artemis-Raw/infostructure/socle/service-applicatif/a4c/alien4cloud-artemis-dist-3.0.0-SNAPSHOT-202002081104-dist.tar.gz
+ALIEN_DIST_URL: https://nexus.technique.artemis/repository/Artemis-Raw/infostructure/socle/service-applicatif/a4c/alien4cloud-artemis-dist-3.0.0-SNAPSHOT-202003071722-dist.tar.gz
 CONSUL_DIST_URL: https://nexus.technique.artemis/repository/Artemis-Raw/infostructure/socle/service-applicatif/consul/consul_1.2.3_linux_amd64.zip
 YORC_DIST_URL: https://nexus.technique.artemis/repository/Artemis-Raw/infostructure/socle/service-applicatif/yorc/yorc-4.0.0-M6.tgz
 TERRAFORM_DIST_URL: https://nexus.technique.artemis/repository/Artemis-Raw/infostructure/socle/service-applicatif/terraform/terraform_0.11.8_linux_amd64.zip

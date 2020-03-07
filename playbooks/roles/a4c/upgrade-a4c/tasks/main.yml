@@ -109,7 +109,7 @@
     suffix: upgrade_a4c
   register: temp_dir
 
-- name: Extract alien4cloud archive
+- name: "Extract alien4cloud archive into {{ temp_dir.path }}"
   unarchive:
     src: "{{ ALIEN_DIST_URL }}"
     dest: "{{ temp_dir.path }}"
@@ -200,7 +200,7 @@
 
 - name: Fail if not only 1 war has been found (should not occur !) (ssl)
   fail:
-    msg: "Not one and only on war has been found (source or target)"
+    msg: "Not one and only on war has been found ({{ upgrade_war_files.files | length }} upgrade_war_files found, {{ inplace_war_files.files | length }} inplace_war_files found)"
   when: (upgrade_war_files.files | length != 1) or (inplace_war_files.files | length != 1)
 
 - name: Here are the upgrade war files (ssl)
@@ -286,19 +286,25 @@
   become_user: "{{ a4c_user }}"
   find:
     paths: "{{ a4c_install_dir }}/alien4cloud/init/plugins"
-    patterns: "^({{ item }})-\\d\\.\\d\\.\\d-[A-Z\\d\\-]+\\.zip$"
+    patterns: "^({{ item.key | replace('-', '\\-') }})\\-\\d\\.\\d\\.\\d\\-[A-Z\\d\\-]+\\.zip$"
     use_regex: yes
   register: inplace_plugin_files
-  with_items: "{{ upgradePluginMap.keys() }}"
+  loop: "{{ upgradePluginMap | dict2items }}"
 
-- name: Here are the upgrade plugin files
+- name: Here are the inplace plugin files
   debug:
     var: inplace_plugin_files
 
 - name: Feed the map with inplace plugins when found
+  debug:
+    msg: "item is : {{ item }}"
+  loop: "{{ inplace_plugin_files.results }}"
+  when: item.files | length > 0
+
+- name: Feed the map with inplace plugins when found
   set_fact:
-    upgradePluginMap: "{{ upgradePluginMap |combine({item.item: upgradePluginMap[item.item]|combine({'inplace': item.files[0].path})}) }}"
-  with_items: "{{ inplace_plugin_files.results }}"
+    upgradePluginMap: "{{ upgradePluginMap |combine({item.item.key: upgradePluginMap[item.item.key]|combine({'inplace': item.files[0].path})}) }}"
+  loop: "{{ inplace_plugin_files.results }}"
   when: item.files | length > 0
 
 - name: Here are the plugins to install/upgrade
