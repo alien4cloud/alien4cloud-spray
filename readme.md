@@ -235,11 +235,11 @@ During upgrade, all changes will be logged in 'changes.log' in a4c log folder.
 
 # Development setup
 
-A playbook has be written to help you setup a development environment. It just setup an empty running localhost A4C (in your IDE for example), and automatize repetitive tasks in order to have a full working and configured A4C without any pain.
+The playbook [playbooks/setup-dev.yml](playbooks/setup-dev.yml) has be written to help you setup a development environment. It just setup an empty running localhost A4C (in your IDE for example), and automatize repetitive tasks in order to have a full working and configured A4C without any pain.
 
 It needs that all plugins projects are localized in the same directory and built.
 
-Just fill the `inputs-dev.yml` input file in order to fit your needs.
+Just fill the [inputs-dev.yml](inputs-dev.yml) input file in order to fit your needs.
 
 ```
 ansible-playbook -i hosts --extra-vars "@inputs-dev.yml" playbooks/setup-dev.yml
