@@ -279,6 +279,14 @@
   delay: 60
   ignore_errors: yes
 
+- fail:
+    msg: "The test application did not UNDEPLOY successfully, something went wrong !"
+  when: (result.json.data != 'UNDEPLOYED')
+
+- name: Just pause few seconds to avoid errors when deleting application
+  pause:
+    seconds: 30
+
 - name: Delete application
   uri:
     url: "{{ alien_url }}/rest/latest/applications/{{ applicationId }}"
@@ -289,8 +297,3 @@
       Cookie: "{{ session_id }}"
     status_code: 200
     timeout: 120
-
-# DELETE /rest/latest/applications/${applicationName}/environments/${environmentId}/deployment
-
-
-# DELETE /rest/latest/applications/${applicationName}
