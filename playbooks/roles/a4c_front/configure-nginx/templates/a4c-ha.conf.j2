@@ -17,7 +17,11 @@ server {
 
         server_name {{ a4c_front_server_name if (a4c_front_server_name is defined) else inventory_hostname }};
 
+{% if a4c_front_location_path is defined and a4c_front_location_path != "" %}
+        location ~ ^{{ a4c_front_location_path }}/(.*)$ {
+{% else %}
         location / {
+{% endif %}
                 try_files $uri $uri/ =404;
 
                 proxy_connect_timeout      1000;

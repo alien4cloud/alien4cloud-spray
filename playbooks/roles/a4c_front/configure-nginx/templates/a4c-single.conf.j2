@@ -13,8 +13,12 @@ server {
         ssl_prefer_server_ciphers on;
 {% endif %}
 
+{% if a4c_front_location_path is defined and a4c_front_location_path != "" %}
+        location ~ ^{{ a4c_front_location_path }}/(.*)$ {
+{% else %}
         location / {
-                proxy_pass {{ a4c_protocol }}://{{ groups['a4c'][0] }}:{{ a4c_port }};
+{% endif %}
+                proxy_pass {{ a4c_protocol }}://{{ groups['a4c'][0] }}:{{ a4c_port }}{{ '/$1$is_args$args' if (a4c_front_location_path is defined and a4c_front_location_path != "") else '' }};
                 # necessary for websockets to work correctly behind a the proxy
                 proxy_set_header Host {{ a4c_front_server_name if (a4c_front_server_name is defined) else inventory_hostname }};
                 proxy_set_header X-Forwarded-Proto $scheme;

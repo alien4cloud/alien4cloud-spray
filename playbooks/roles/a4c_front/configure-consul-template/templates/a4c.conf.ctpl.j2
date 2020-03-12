@@ -11,8 +11,12 @@ server {
         ssl_ciphers RC4:HIGH:!aNULL:!MD5;
         ssl_prefer_server_ciphers on;
 {% endif %}
+{% if a4c_front_location_path is defined and a4c_front_location_path != "" %}
+        location ~ ^{{ a4c_front_location_path }}/(.*)$ {
+{% else %}
         location / {
-                proxy_pass {{ a4c_protocol }}://{{ '{{' }} key "service/a4c/leader" {{ '}}' }};
+{% endif %}
+                proxy_pass {{ a4c_protocol }}://{{ '{{' }} key "service/a4c/leader" {{ '}}' }}{{ '/$1$is_args$args' if (a4c_front_location_path is defined and a4c_front_location_path != "") else '' }};
                 proxy_set_header Host {{ a4c_front_server_name if (a4c_front_server_name is defined) else inventory_hostname }};
                 proxy_set_header X-Forwarded-Proto $scheme;
                 proxy_set_header X-Forwarded-Port $server_port;
@@ -47,7 +51,11 @@ server {
         # Make site accessible from http://localhost/
         server_name {{ a4c_front_server_name if (a4c_front_server_name is defined) else inventory_hostname }};
 
+{% if a4c_front_location_path is defined and a4c_front_location_path != "" %}
+        location ~ ^{{ a4c_front_location_path }}/(.*)$ {
+{% else %}
         location / {
+{% endif %}
                 try_files $uri $uri/ =404;
         }
 }

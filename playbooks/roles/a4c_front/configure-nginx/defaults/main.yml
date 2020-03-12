@@ -1,2 +1,4 @@
 # Id defined, will be used in place of inventory hostname
 #a4c_front_server_name: alien4cloud
+# If defined, will add the path to the location, for example : /a4c
+a4c_front_location_path: ""
