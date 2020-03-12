@@ -12,7 +12,7 @@
     remote_src: no
   when: a4c_saml_enabled
 
-- name: Recursively find /tmp files older than 4 weeks and equal or greater than 1 megabyte
+- name: Recursively search for idp-metadata.xml file
   find:
     paths: "{{ temp_dir.path }}"
     patterns: 'idp-metadata.xml'
