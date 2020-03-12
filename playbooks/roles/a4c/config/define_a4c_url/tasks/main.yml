@@ -8,13 +8,23 @@
     alien_url: "{{ a4c_front_protocol }}://{{ groups['a4cfront'][0] }}:{{ a4c_front_port }}"
   when: groups['a4cfront'] | length > 0
 
+- name: Define a4c url when A4C is behind a nginx and a4c_front_location_path is defined
+  set_fact:
+    alien_url: "{{ a4c_front_protocol }}://{{ groups['a4cfront'][0] }}:{{ a4c_front_port }}{{ a4c_front_location_path }}"
+  when: groups['a4cfront'] | length > 0 and (a4c_front_location_path is defined)
+
 - name: Define a4c url when A4C is behind a nginx and a4c_front_server_name is defined
   set_fact:
     alien_url: "{{ a4c_front_protocol }}://{{ a4c_front_server_name }}:{{ a4c_front_port }}"
   when: (groups['a4cfront'] | length > 0) and (a4c_front_server_name is defined)
 
+- name: Define a4c url when A4C is behind a nginx and a4c_front_server_name is defined and a4c_front_location_path is defined
+  set_fact:
+    alien_url: "{{ a4c_front_protocol }}://{{ a4c_front_server_name }}:{{ a4c_front_port }}{{ a4c_front_location_path }}"
+  when: (groups['a4cfront'] | length > 0) and (a4c_front_server_name is defined) and (a4c_front_location_path is defined)
+
 - set_fact:
-    url: "{{ alien_url }}/login?username={{ a4c_admin_usr }}&password={{ a4c_admin_pwd }}&submit=Login"
+    url: "{{ alien_url }}/login"
 
 - name: Finally use this url to reach a4c
   debug:
@@ -24,6 +34,11 @@
   uri:
     url: "{{url}}"
     method: POST
+    body_format: form-urlencoded
+    body:
+    - [ username, "{{ a4c_admin_usr }}" ]
+    - [ password, "{{ a4c_admin_pwd }}" ]
+    - [ submit, Login ]
     return_content: yes
     validate_certs: no
     status_code: 302
