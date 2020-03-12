@@ -14,6 +14,8 @@ a4c_working_dir: /opt/a4c/workdir
 a4c_tls: false
 a4c_port: 8088
 a4c_front_protocol: https
+# a4c_front_location_path: /a4c
+# a4c_url_path: /a4c
 # WARNING : use 80 for http and 443 for SSL
 # We have issues running correctly A4C behind a proxy
 a4c_front_port: 443
@@ -27,7 +29,7 @@ consul_user: consul
 consul_install_dir: /opt/consul
 consul_http_port: 8500
 # If true the Gossip protocol will we encrypted
-consul_gossip_encrypt: true
+consul_gossip_encrypt: false
 # If Gossip is encrypted, the path where the key will be found
 # The key is generated on a consul node in the role roles/consul/configure-consul-gossip-keygen
 # It's copied in this local folder and used on all nodes
@@ -70,7 +72,7 @@ elasticsearch_rmp_url: https://artifacts.elastic.co/downloads/elasticsearch/elas
 ALIEN_DIST_URL: http://34.242.40.25/dist/alien4cloud/alien4cloud-artemis-dist/3.0.0-SNAPSHOT/alien4cloud-artemis-dist-3.0.0-SNAPSHOT-dist.tar.gz
 JAVA_DIST_URL: http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
 CONSUL_DIST_URL: https://releases.hashicorp.com/consul/1.2.3/consul_1.2.3_linux_amd64.zip
-YORC_DIST_URL: https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.0-M6%2Fyorc-4.0.0-M6.tgz
+YORC_DIST_URL: https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.0-M9%2Fyorc-4.0.0-M9.tgz
 TERRAFORM_DIST_URL: https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
 CONSUL_TEMPLATE_DL_URL: https://releases.hashicorp.com/consul-template/0.23.0/consul-template_0.23.0_linux_amd64.zip
 terraform_plugins:
@@ -78,6 +80,7 @@ terraform_plugins:
   - https://releases.hashicorp.com/terraform-provider-google/1.18.0/terraform-provider-google_1.18.0_linux_amd64.zip
   - https://releases.hashicorp.com/terraform-provider-openstack/1.9.0/terraform-provider-openstack_1.9.0_linux_amd64.zip
   - https://releases.hashicorp.com/terraform-provider-aws/1.36.0/terraform-provider-aws_1.36.0_linux_amd64.zip
+  - https://releases.hashicorp.com/terraform-provider-null/1.0.0/terraform-provider-null_1.0.0_linux_amd64.zip
 yorc_dependencies_rpm_urls:
   #- http://www.rpmfind.net/linux/opensuse/tumbleweed/repo/oss/x86_64/jq-1.6-2.1.x86_64.rpm
 #  - https://rpmfind.net/linux/mageia/distrib/6/x86_64/media/core/release/lib64onig2-5.9.6-2.mga6.x86_64.rpm
@@ -163,6 +166,7 @@ should_use_rsync_for_a4c_ha: true
 use_localhost_for_local_connections: true
 
 a4c_config_addons:
+
   datagouv_mls:
     # kafkaServers : 10.197.214.173:9027
     topic : ATLAS_HOOK

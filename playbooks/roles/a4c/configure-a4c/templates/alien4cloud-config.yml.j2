@@ -3,6 +3,9 @@ server:
   port: {{ a4c_port }}
   # Should be true when running behind a proxy (H.A. setting for example).
   use-forward-headers: true
+{% if a4c_url_path is defined %}
+  url_path: {{ a4c_url_path }}
+{% endif %}
   # If you want to enable SSL comment the previous line and un-comment the following lines.
 {% if a4c_protocol == 'https' %}
   ssl:
