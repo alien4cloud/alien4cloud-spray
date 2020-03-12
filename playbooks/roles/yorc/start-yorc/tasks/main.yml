@@ -44,11 +44,11 @@
   when: (yorc_tls)
 
 - set_fact:
-    yorc_url: "{{ yorc_scheme }}://localhost:8800/health"
+    yorc_health_url: "{{ yorc_scheme }}://localhost:8800/server/health"
 
-- name: "Wait for Yorc to be reachable at {{ yorc_url }}"
+- name: "Wait for Yorc to be reachable at {{ yorc_health_url }}"
   uri:
-    url: "{{ yorc_url }}"
+    url: "{{ yorc_health_url }}"
     method: GET
     return_content: yes
     validate_certs: no
@@ -61,9 +61,9 @@
   delay: 10
   ignore_errors: yes
 
-- name: Fail when Yorc is not reachable at {{ yorc_url }}
+- name: Fail when Yorc is not reachable at {{ yorc_health_url }}
   fail:
-    msg: "Not able to reach Yorc at {{ yorc_url }} after 30 retries ! Response was : {{ result.status }} "
+    msg: "Not able to reach Yorc at {{ yorc_health_url }} after 30 retries ! Response was : {{ result.status }} "
   when: (result.status != 200)
 
 - name: Parse Ryoc health response
