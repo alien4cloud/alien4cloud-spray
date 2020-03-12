@@ -13,24 +13,7 @@
     - { role: 'a4c/config/get_location',
         location_name: 'Default'
       }
-    - { role: 'a4c/config/remove_location_modifier',
-        pluginId: 'alien4cloud-datagouv_mls-plugin',
-        beanName: 'datagouv_mls-modifier',
-        phase: 'post-matched-node-setup'
-      }
-    - { role: 'a4c/config/disable_plugin',
-        pluginId: 'alien4cloud-datagouv_mls-plugin'
-      }
     - { role: 'a4c/config/test_application_deployment',
         topologyTemplateVersionId: '1TinyMock:2.1.0-SNAPSHOT',
         applicationName: 'SetupTestApp'
-      }
-    - { role: 'a4c/config/enable_plugin',
-        pluginId: 'alien4cloud-datagouv_mls-plugin'
-      }
-    - { role: 'a4c/config/setup_location_modifier',
-        pluginId: 'alien4cloud-datagouv_mls-plugin',
-        beanName: 'datagouv_mls-modifier',
-        phase: 'post-matched-node-setup',
-        modifier_position: 1
       }
