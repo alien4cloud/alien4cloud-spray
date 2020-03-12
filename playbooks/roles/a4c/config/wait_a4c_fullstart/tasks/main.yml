@@ -1,7 +1,7 @@
 ---
 
 - set_fact:
-    url: "{{ alien_url }}/login?username={{ a4c_admin_usr }}&password={{ a4c_admin_pwd }}&submit=Login"
+    url: "{{ alien_url }}/login"
 
 - name: Finally use this url to reach a4c
   debug:
@@ -11,6 +11,11 @@
   uri:
     url: "{{url}}"
     method: POST
+    body_format: form-urlencoded
+    body:
+    - [ username, "{{ a4c_admin_usr }}" ]
+    - [ password, "{{ a4c_admin_pwd }}" ]
+    - [ submit, Login ]
     return_content: yes
     validate_certs: no
     status_code: 302
@@ -33,6 +38,11 @@
   uri:
     url: "{{url}}"
     method: POST
+    body_format: form-urlencoded
+    body:
+    - [ username, "{{ a4c_admin_usr }}" ]
+    - [ password, "{{ a4c_admin_pwd }}" ]
+    - [ submit, Login ]    
     return_content: yes
     validate_certs: no
     status_code: 302
@@ -49,7 +59,7 @@
   debug:
     var: session_id
 
-- name: Get application list
+- name: "Get application list using {{ alien_url }}/rest/latest/applications/search"
   uri:
     url: "{{ alien_url }}/rest/latest/applications/search"
     method: POST
@@ -68,3 +78,8 @@
   retries: 30
   delay: 30
   ignore_errors: yes
+
+- name: Not able to get application list using rest API call
+  fail:
+    msg: "Not able to get application list using rest API call {{ alien_url }}/rest/latest/applications/search after 30 retries !"
+  when: (result.status != 200)
