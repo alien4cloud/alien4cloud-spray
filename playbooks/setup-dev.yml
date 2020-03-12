@@ -62,6 +62,7 @@
         branchId: '3.0.0-SNAPSHOT',
         subPath: 'docker-types'
       }
+    - a4c/config/upload_csars
     # - { role: roles/git,
     #     repositoryUrl: 'https://git.artemis.public/artemis_use_cases/service_applicatif.git',
     #     repositoryUsername: 'service_applicatif',

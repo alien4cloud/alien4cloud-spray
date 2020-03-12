@@ -30,7 +30,6 @@
   when: csar_folder.stat.exists and csar_folder.stat.isdir
 
 - name: Finally remove temporary folder
-  become: true
   file:
     path: "{{ temp_dir.path }}"
     state: absent
