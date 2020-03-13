@@ -1,27 +1,36 @@
-modifiers:
-    # - pluginId: "alien4cloud-datagouv_mls-plugin"
-    #   beanName: "datagouv_mls-modifier"
-    #   phase: "post-matched-node-setup"
-    # - pluginId: "alien4cloud-kubernetes-plugin"
-    #   beanName: "kubernetes-adapter-modifier"
-    #   phase: "post-matched-node-setup"
-    # - pluginId: "alien4cloud-consul-publisher-plugin"
-    #   beanName: "consul-publisher"
-    #   phase: "post-matched-node-setup"
-    # - pluginId: "alien4cloud-ssi-network_policy-plugin"
-    #   beanName: "ssi-network_policy-modifier"
-    #   phase: "post-matched-node-setup"
-    # - pluginId: "alien4cloud-k8s-spark-jobs"
-    #   beanName: "k8s-spark-jobs-modifier"
-    #   phase: "post-matched-node-setup"
-    # - pluginId: "alien4cloud-supervision"
-    #   beanName: "kubernetes-supervision-modifier"
-    #   phase: "post-matched-node-setup"
-
-
-orders:
-#     # Change the order : the kubernetes-adapter-modifier must be executed before yorc modifiers
-    # - from: 4
-    #   to: 1
-    - from: 5
-      to: 2
+orchestrator_config:
+  Yorc:
+    Default:
+      location_modifiers:
+        - pluginId: 'alien4cloud-consul-publisher-plugin'
+          beanName: 'consul-notifier'
+          phase: 'pre-node-match'
+          modifier_position: 0
+        - pluginId: 'alien4cloud-yorc-provider'
+          beanName: 'gangja-resolver-modifier'
+          phase: 'post-node-match'
+          modifier_position: 1
+        - pluginId: 'alien4cloud-datagouv_mls-plugin'
+          beanName: 'datagouv_mls-modifier'
+          phase: 'post-matched-node-setup'
+          modifier_position: 2
+        - pluginId: 'alien4cloud-kubernetes-plugin'
+          beanName: 'kubernetes-adapter-modifier'
+          phase: 'post-matched-node-setup'
+          modifier_position: 3
+        - pluginId: 'alien4cloud-consul-publisher-plugin'
+          beanName: 'consul-publisher'
+          phase: 'post-matched-node-setup'
+          modifier_position: 4
+        - pluginId: 'alien4cloud-ssi-network_policy-plugin'
+          beanName: 'ssi-network_policy-modifier'
+          phase: 'post-matched-node-setup'
+          modifier_position: 5
+        - pluginId: 'alien4cloud-k8s-spark-jobs'
+          beanName: 'k8s-spark-jobs-modifier'
+          phase: 'post-matched-node-setup'
+          modifier_position: 6
+        - pluginId: 'alien4cloud-supervision'
+          beanName: 'kubernetes-supervision-modifier'
+          phase: 'post-matched-node-setup'
+          modifier_position: 7

@@ -9,7 +9,7 @@ find resources/bin/ ! -name 'readme.txt' -type f -exec rm -f {} +
 download () {
   IFS='/' read -ra ADDR <<< "$2"
   resourceFileName="${ADDR[@]: -1}"
-  dl_cmd="curl -f"
+  dl_cmd="curl -# -f"
   if [ ! -z "$3" ]; then
     resourceFileName="$3"
   fi
@@ -40,6 +40,10 @@ download () {
     exit 1
   fi
 }
+
+download resources/bin/terraform-plugins https://releases.hashicorp.com/terraform-provider-null/1.0.0/terraform-provider-null_1.0.0_linux_amd64.zip
+exit 0
+
 #
 # Get Java
 download resources/bin/java http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz jdk-8u131-linux-x64.tar.gz "-H \"Cookie: oraclelicense=a\" -kLO"
@@ -49,7 +53,7 @@ download resources/bin http://34.242.40.25/dist/alien4cloud/alien4cloud-artemis-
 download resources/bin https://releases.hashicorp.com/consul/1.2.3/consul_1.2.3_linux_amd64.zip
 download resources/bin https://releases.hashicorp.com/consul-template/0.23.0/consul-template_0.23.0_linux_amd64.zip
 download resources/bin https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
-download resources/bin https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.0-M6%2Fyorc-4.0.0-M6.tgz yorc-4.0.0-M6.tgz "-L"
+download resources/bin https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.0-M9%2Fyorc-4.0.0-M9.tgz yorc-4.0.0-M9.tgz "-L"
 download resources/bin/elasticsearch https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.6.2.rpm
 download resources/bin https://archive.apache.org/dist/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz
 # Get rpm dependencies
@@ -63,6 +67,7 @@ download resources/bin/terraform-plugins https://releases.hashicorp.com/terrafor
 download resources/bin/terraform-plugins https://releases.hashicorp.com/terraform-provider-google/1.18.0/terraform-provider-google_1.18.0_linux_amd64.zip
 download resources/bin/terraform-plugins https://releases.hashicorp.com/terraform-provider-openstack/1.9.0/terraform-provider-openstack_1.9.0_linux_amd64.zip
 download resources/bin/terraform-plugins https://releases.hashicorp.com/terraform-provider-aws/1.36.0/terraform-provider-aws_1.36.0_linux_amd64.zip
+download resources/bin/terraform-plugins https://releases.hashicorp.com/terraform-provider-null/1.0.0/terraform-provider-null_1.0.0_linux_amd64.zip
 
 # Get kubectl
 download resources/bin/usr https://storage.googleapis.com/kubernetes-release/release/v1.14.1/bin/linux/amd64/kubectl

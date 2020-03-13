@@ -1,0 +1,71 @@
+---
+
+- name: Here are the modifier to order
+  debug:
+    var: location_modifier_to_order
+
+- name: Get all modifiers for orchestrator/location
+  uri:
+    url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/modifiers"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body_format: json
+    status_code: 200
+  register: result
+
+- name: Parse the modifier list as JSON
+  set_fact:
+    location_modifiers: "{{ result.content | from_json }}"
+
+- name: Just to add array index as a property
+  set_fact:
+    location_modifiers: |
+      {% set result = [] -%}
+      {% for modifier in location_modifiers.data -%}
+        {% set ignored = result.extend([{'pluginId': modifier['pluginId'], 'beanName': modifier['beanName'], 'phase': modifier['phase'], 'index': loop.index0 }]) -%}
+      {%- endfor %}
+      {{ result }}
+
+- name: Build the JSON query for searching location modifier for this plugin
+  set_fact:
+    query: "[? pluginId=='{{ location_modifier_to_order.pluginId }}' && beanName=='{{ location_modifier_to_order.beanName }}' && phase=='{{ location_modifier_to_order.
+
+    phase }}']"
+
+# This is important since this role can be played several times in the same play
+# that's also why we test (plugin_modifier is defined) and (plugin_modifier.pluginId is defined) below
+- name: override plugin_modifier to null
+  set_fact:
+    plugin_modifier:
+
+- name: Search for modifier
+  set_fact:
+    plugin_modifiers: "{{ location_modifiers | json_query(query) }}"
+
+- name: Here is the plugin_modifiers length
+  debug:
+    msg: "{{ plugin_modifiers | length }}"
+
+- name: Get the first in the list
+  set_fact:
+    plugin_modifier: "{{ plugin_modifiers | first }}"
+  when: plugin_modifiers | length > 0
+
+- name: Here is the modifier
+  debug:
+    var: plugin_modifier
+  when: (plugin_modifier is defined) and (plugin_modifier.pluginId is defined)
+
+- name: Change location modifiers orders
+  uri:
+    url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/modifiers/from/{{ plugin_modifier.index }}/to/{{ location_modifier_to_order.modifier_position }}"
+    method: PUT
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    status_code: 200
+  when: plugin_modifier.index != location_modifier_to_order.modifier_position

@@ -21,61 +21,12 @@
     - { role: 'a4c/config/create_location_resources',
         resources_file_artifact: 'resources/location_resources.yaml'
       }
-    - { role: 'a4c/config/enable_plugin',
-        pluginId: 'alien4cloud-datagouv_mls-plugin'
+    - a4c/config/disable_plugins
+    - { role: 'a4c/config/create_location_modifiers',
+        orchestratorName: 'Yorc',
+        location_name: 'Default'
       }
-    - { role: 'a4c/config/setup_location_modifier',
-        pluginId: 'alien4cloud-datagouv_mls-plugin',
-        beanName: 'datagouv_mls-modifier',
-        phase: 'post-matched-node-setup',
-        modifier_position: 1
-      }
-    - { role: 'a4c/config/enable_plugin',
-        pluginId: 'alien4cloud-kubernetes-plugin'
-      }
-    - { role: 'a4c/config/setup_location_modifier',
-        pluginId: 'alien4cloud-kubernetes-plugin',
-        beanName: 'kubernetes-adapter-modifier',
-        phase: 'post-matched-node-setup',
-        modifier_position: 2
-      }
-    - { role: 'a4c/config/enable_plugin',
-        pluginId: 'alien4cloud-consul-publisher-plugin'
-      }
-    - { role: 'a4c/config/setup_location_modifier',
-        pluginId: 'alien4cloud-consul-publisher-plugin',
-        beanName: 'consul-publisher',
-        phase: 'post-matched-node-setup',
-        modifier_position: 3
-      }
-    - { role: 'a4c/config/enable_plugin',
-        pluginId: 'alien4cloud-ssi-network_policy-plugin'
-      }
-    - { role: 'a4c/config/setup_location_modifier',
-        pluginId: 'alien4cloud-ssi-network_policy-plugin',
-        beanName: 'ssi-network_policy-modifier',
-        phase: 'post-matched-node-setup',
-        modifier_position: 4
-      }
-    - { role: 'a4c/config/enable_plugin',
-        pluginId: 'alien4cloud-k8s-spark-jobs'
-      }
-    - { role: 'a4c/config/setup_location_modifier',
-        pluginId: 'alien4cloud-k8s-spark-jobs',
-        beanName: 'k8s-spark-jobs-modifier',
-        phase: 'post-matched-node-setup',
-        modifier_position: 5
-      }
-    - { role: 'a4c/config/enable_plugin',
-        pluginId: 'alien4cloud-supervision'
-      }
-    - { role: 'a4c/config/setup_location_modifier',
-        pluginId: 'alien4cloud-supervision',
-        beanName: 'kubernetes-supervision-modifier',
-        phase: 'post-matched-node-setup',
-        modifier_position: 6
-      }
-    - a4c/config/disable_plugins      
+    - a4c/config/order_location_modifiers_it    
     - { role: 'a4c/config/create_metaproperties',
         resources_file_artifact: 'resources/metaproperties.yaml'
       }

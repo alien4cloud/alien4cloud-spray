@@ -12,5 +12,5 @@ a4c_version: 3.0.0-SNAPSHOT
 dev_projects_path: /Users/xdegenne/work/src
 
 # Use your own yorc here
-yorc_url: http://52.18.240.26:8800
+yorc_url: http://18.203.230.207:8800
 discriminator: ART_YORK_

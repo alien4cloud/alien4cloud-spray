@@ -1,0 +1,110 @@
+---
+
+- name: Initialize a variable containing all modifiers to set for current location
+  set_fact:
+    location_modifiers_to_create: "{{ orchestrator_config[orchestratorName][location_name].location_modifiers }}"
+  ignore_errors: yes
+
+- name: Here are the modifiers to set for current location
+  debug:
+    var: location_modifiers_to_create
+  when: location_modifiers_to_create is defined
+
+- name: Get all plugins list
+  uri:
+    url: "{{ alien_url }}/rest/latest/plugins?from=0&size=1000"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body_format: json
+    status_code: 200
+  register: plugin_list_result
+  when: location_modifiers_to_create is defined
+
+- name: Filter plugin modifiers to create regarding found and enabled plugins
+  set_fact:
+    location_modifiers_to_create: |
+      {% set result = [] -%}
+      {% for location_modifier in location_modifiers_to_create -%}
+        {% set query = "data.data[? id=='" + location_modifier.pluginId + "' && enabled]" -%}
+        {% if plugin_list_result.content | from_json | json_query(query) | length == 1 -%}
+          {% set ignored = result.extend([location_modifier]) -%}
+        {%- endif %}
+      {%- endfor %}
+      {{ result }}
+  when: location_modifiers_to_create is defined
+
+- name: Here are the modifiers to create for current location (after filtering)
+  debug:
+    var: location_modifiers_to_create
+  when: location_modifiers_to_create is defined
+
+- name: Get all modifiers for orchestrator/location
+  uri:
+    url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/modifiers"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body_format: json
+    status_code: 200
+  register: result
+  when: location_modifiers_to_create is defined
+
+- name: Parse the modifier list as JSON
+  set_fact:
+    location_modifiers: "{{ result.content | from_json }}"
+  when: location_modifiers_to_create is defined
+
+- name: Just to add array index as a property
+  set_fact:
+    location_modifiers: |
+      {% set result = [] -%}
+      {% for modifier in location_modifiers.data -%}
+        {% set ignored = result.extend([{'pluginId': modifier['pluginId'], 'beanName': modifier['beanName'], 'phase': modifier['phase'], 'index': loop.index0 }]) -%}
+      {%- endfor %}
+      {{ result }}
+  when: location_modifiers_to_create is defined
+
+- debug:
+    var: location_modifiers
+  when: location_modifiers_to_create is defined
+
+- name: Enrich modifier list with actual position when found
+  set_fact:
+    location_modifiers_to_create: |
+      {% set result = [] -%}
+      {% for location_modifier in location_modifiers_to_create -%}
+        {% set query = "[? pluginId=='" + location_modifier.pluginId  + "' && beanName=='" + location_modifier.beanName + "' && phase=='" + location_modifier.phase + "']" -%}
+        {% if location_modifiers | json_query(query) | length == 1 -%}
+          {% set ignored = result.extend([location_modifier | combine({'found': true, 'actual_position': (location_modifiers | json_query(query) | first).index }) ]) -%}
+        {% else -%}
+          {% set ignored = result.extend([location_modifier | combine({'found': false})]) -%}
+        {%- endif %}
+      {%- endfor %}
+      {{ result }}
+  when: location_modifiers_to_create is defined
+
+- debug:
+    var: location_modifiers_to_create
+  when: location_modifiers_to_create is defined
+
+- name: Create location modifier when it can not be found
+  uri:
+    url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/modifiers"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ session_id }}"
+    body:
+      pluginId: "{{ item.pluginId }}"
+      beanName: "{{ item.beanName }}"
+      phase: "{{ item.phase }}"
+    body_format: json
+    status_code: 200
+  loop: "{{ location_modifiers_to_create }}"
+  when: (location_modifiers_to_create is defined) and not item.found

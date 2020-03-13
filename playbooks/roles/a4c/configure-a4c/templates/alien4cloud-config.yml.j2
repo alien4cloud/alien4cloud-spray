@@ -206,10 +206,6 @@ features:
   # autocompletion in editor (dangling requirements auto feed)
   editor_auto_completion: false
 
-languages:
-  default: fr-fr
-  prefix: artemis
-
 consul:
   url: {{ 'https' if _consul_tls else 'http' }}://{{ ha_consulAgentIp }}:{{ consul_https_port if _consul_tls else consul_http_port }}
 {% if (_consul_tls) %}

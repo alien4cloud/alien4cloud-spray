@@ -1,0 +1,11 @@
+---
+
+- name: order_location_modifiers
+  with_items: "{{ location_modifiers_to_create }}"
+  include_role:
+    name: a4c/config/order_location_modifiers
+  when: location_modifiers_to_create is defined
+  vars:
+    location_modifier_to_order: "{{ item }}"
+    orchestratorName: "{{ orchestratorName }}"
+    location_name: "{{ location_name }}"
