@@ -118,7 +118,7 @@
   become: true
   become_user: "{{ a4c_user }}"
 
-- name: Find upgrade A4C wars (no ssl)
+- name: Find upgrade A4C wars
   become: true
   become_user: "{{ a4c_user }}"
   find:
@@ -127,7 +127,7 @@
     use_regex: yes
   register: upgrade_war_files
 
-- name: Find inplace A4C wars (no ssl)
+- name: Find inplace A4C wars
   become: true
   become_user: "{{ a4c_user }}"
   find:
@@ -136,20 +136,20 @@
     use_regex: yes
   register: inplace_war_files
 
-- name: Fail if more than 1 war has been found (should not occur !)  (no ssl)
+- name: Fail if more than 1 war has been found (should not occur !)
   fail:
     msg: "More than one war has been found (source or target)"
   when: (upgrade_war_files.files | length != 1) or (inplace_war_files.files | length != 1)
 
-- name: Here are the upgrade war files (no ssl)
+- name: Here are the upgrade war files
   debug:
     var: upgrade_war_files.files[0].path
 
-- name: Here are the inplace war files (no ssl)
+- name: Here are the inplace war files
   debug:
     var: inplace_war_files.files[0].path
 
-- name: Backup old war files (no ssl)
+- name: Backup old war files
   become: true
   become_user: "{{ a4c_user }}"
   command: "mv {{ inplace_war_files.files[0].path }} {{ inplace_war_files.files[0].path }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
@@ -164,7 +164,7 @@
     line: "{{ ansible_date_time.iso8601 }} : Backuped {{ inplace_war_files.files[0].path }} to {{ inplace_war_files.files[0].path }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
   when: (a4c_update_backup)
 
-- name: Replace inplace war file (no ssl)
+- name: Replace inplace war file
   copy:
     src: "{{ upgrade_war_files.files[0].path }}"
     remote_src: yes
@@ -180,63 +180,63 @@
   become: true
   become_user: "{{ a4c_user }}"
 
-- name: Find upgrade A4C wars (ssl)
-  become: true
-  become_user: "{{ a4c_user }}"
-  find:
-    paths: "{{ temp_dir.path }}/alien4cloud/"
-    patterns: "^(.*\\-\\d\\.\\d\\.\\d-[A-Z\\d\\-]+)\\-ssl\\.war$"
-    use_regex: yes
-  register: upgrade_war_files
+# - name: Find upgrade A4C wars (ssl)
+#   become: true
+#   become_user: "{{ a4c_user }}"
+#   find:
+#     paths: "{{ temp_dir.path }}/alien4cloud/"
+#     patterns: "^(.*\\-\\d\\.\\d\\.\\d-[A-Z\\d\\-]+)\\-ssl\\.war$"
+#     use_regex: yes
+#   register: upgrade_war_files
 
-- name: Find inplace A4C wars (ssl)
-  become: true
-  become_user: "{{ a4c_user }}"
-  find:
-    paths: "{{ a4c_install_dir }}/alien4cloud/"
-    patterns: "^(.*\\-\\d\\.\\d\\.\\d-[A-Z\\d\\-]+)\\-ssl\\.war$"
-    use_regex: yes
-  register: inplace_war_files
+# - name: Find inplace A4C wars (ssl)
+#   become: true
+#   become_user: "{{ a4c_user }}"
+#   find:
+#     paths: "{{ a4c_install_dir }}/alien4cloud/"
+#     patterns: "^(.*\\-\\d\\.\\d\\.\\d-[A-Z\\d\\-]+)\\-ssl\\.war$"
+#     use_regex: yes
+#   register: inplace_war_files
 
-- name: Fail if not only 1 war has been found (should not occur !) (ssl)
-  fail:
-    msg: "Not one and only on war has been found ({{ upgrade_war_files.files | length }} upgrade_war_files found, {{ inplace_war_files.files | length }} inplace_war_files found)"
-  when: (upgrade_war_files.files | length != 1) or (inplace_war_files.files | length != 1)
-
-- name: Here are the upgrade war files (ssl)
-  debug:
-    var: upgrade_war_files.files[0].path
-
-- name: Backup old war files (ssl)
-  become: true
-  become_user: "{{ a4c_user }}"
-  command: "mv {{ inplace_war_files.files[0].path }} {{ inplace_war_files.files[0].path }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
-  when: (a4c_update_backup)
-
-- name: Add lines in changes.log
-  become: true
-  become_user: "{{ a4c_user }}"
-  lineinfile:
-    create: yes
-    path: "{{ a4c_log_dir }}/changes.log"
-    line: "{{ ansible_date_time.iso8601 }} : Backuped {{ inplace_war_files.files[0].path }} to {{ inplace_war_files.files[0].path }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
-  when: (a4c_update_backup)
-
-- name: Replace inplace war file (ssl)
-  copy:
-    src: "{{ upgrade_war_files.files[0].path }}"
-    remote_src: yes
-    dest: "{{ inplace_war_files.files[0].path }}"
-  become: true
-  become_user: "{{ a4c_user }}"
-
-- name: Add lines in changes.log
-  lineinfile:
-    create: yes
-    path: "{{ a4c_log_dir }}/changes.log"
-    line: "{{ ansible_date_time.iso8601 }} : Replaced {{ inplace_war_files.files[0].path }} by {{ upgrade_war_files.files[0].path }}"
-  become: true
-  become_user: "{{ a4c_user }}"
+# - name: Fail if not only 1 war has been found (should not occur !) (ssl)
+#   fail:
+#     msg: "Not one and only on war has been found ({{ upgrade_war_files.files | length }} upgrade_war_files found, {{ inplace_war_files.files | length }} inplace_war_files found)"
+#   when: (upgrade_war_files.files | length != 1) or (inplace_war_files.files | length != 1)
+#
+# - name: Here are the upgrade war files (ssl)
+#   debug:
+#     var: upgrade_war_files.files[0].path
+#
+# - name: Backup old war files (ssl)
+#   become: true
+#   become_user: "{{ a4c_user }}"
+#   command: "mv {{ inplace_war_files.files[0].path }} {{ inplace_war_files.files[0].path }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
+#   when: (a4c_update_backup)
+#
+# - name: Add lines in changes.log
+#   become: true
+#   become_user: "{{ a4c_user }}"
+#   lineinfile:
+#     create: yes
+#     path: "{{ a4c_log_dir }}/changes.log"
+#     line: "{{ ansible_date_time.iso8601 }} : Backuped {{ inplace_war_files.files[0].path }} to {{ inplace_war_files.files[0].path }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
+#   when: (a4c_update_backup)
+#
+# - name: Replace inplace war file (ssl)
+#   copy:
+#     src: "{{ upgrade_war_files.files[0].path }}"
+#     remote_src: yes
+#     dest: "{{ inplace_war_files.files[0].path }}"
+#   become: true
+#   become_user: "{{ a4c_user }}"
+#
+# - name: Add lines in changes.log
+#   lineinfile:
+#     create: yes
+#     path: "{{ a4c_log_dir }}/changes.log"
+#     line: "{{ ansible_date_time.iso8601 }} : Replaced {{ inplace_war_files.files[0].path }} by {{ upgrade_war_files.files[0].path }}"
+#   become: true
+#   become_user: "{{ a4c_user }}"
 
 - name: Find upgrade plugins
   become: true
