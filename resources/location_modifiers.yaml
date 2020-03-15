@@ -34,3 +34,15 @@ orchestrator_config:
           beanName: 'kubernetes-supervision-modifier'
           phase: 'post-matched-node-setup'
           modifier_position: 7
+        - pluginId: 'alien4cloud-yorc-provider'
+          beanName: 'yorc-wf-operation-host-modifier'
+          phase: 'post-matched-node-setup'
+          modifier_position: 8
+        - pluginId: 'alien4cloud-yorc-provider'
+          beanName: 'yorc-service-topology-modifier'
+          phase: 'post-matched-node-setup'
+          modifier_position: 9
+        - pluginId: 'alien4cloud-yorc-provider'
+          beanName: 'yorc-location-modifier'
+          phase: 'post-matched-node-setup'
+          modifier_position: 10

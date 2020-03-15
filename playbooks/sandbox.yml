@@ -14,6 +14,7 @@
         location_name: 'Default',
         location_type: 'HostsPool'
       }
+    - a4c/config/disable_plugins  
     - { role: 'a4c/config/create_location_modifiers',
         orchestratorName: 'Yorc',
         location_name: 'Default'
