@@ -74,3 +74,19 @@
   fail:
     msg: "Yorc health response doesn't sounds good : '{{ yorc_health_response.value }}' instead of 'passing' !"
   when: (yorc_health_response.value != "passing")
+
+- name: "Get Yorc server info"
+  uri:
+    url: "{{ yorc_scheme }}://localhost:8800/server/info"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Accept: "application/json"
+    status_code: 200
+  register: result
+  until: result.status == 200
+
+- name: Here is the Yorc version
+  debug:
+    var: result.content

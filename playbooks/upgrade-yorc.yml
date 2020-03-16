@@ -1,0 +1,11 @@
+---
+
+- hosts: yorc
+  name: Upgrade Yorc.
+  roles:
+    - commons/define_commons_vars
+    - yorc/stop-yorc
+    - yorc/install-dependencies
+    - { role: yorc/install-yorc, yorc_upgrade: True }
+    - yorc/configure-yorc
+    - yorc/start-yorc

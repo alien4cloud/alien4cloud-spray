@@ -137,7 +137,7 @@
     remote_src: yes
   become: true
   become_user: "{{ yorc_user }}"
-  when: (not offline) and (not yorc_installed)
+  when: (not offline) and (not yorc_installed or (yorc_upgrade is defined and yorc_upgrade))
 
 - name: Extract Yorc from local source
   unarchive:
@@ -147,7 +147,7 @@
     remote_src: no
   become: true
   become_user: "{{ yorc_user }}"
-  when: (offline) and (not yorc_installed)
+  when: (offline) and (not yorc_installed or (yorc_upgrade is defined and yorc_upgrade))
 
 - name: Usage of yorc jinja2 template for service creation
   template:
