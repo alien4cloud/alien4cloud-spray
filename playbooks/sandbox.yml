@@ -7,7 +7,9 @@
     - commons/define_commons_vars
     - { role: 'a4c/config/fetch_keypass_certificate',
         keypass_key: 'Plateforme/Service applicatif/a4c/Certificat Serveur - front',
-        machine_name: 'sva-a4c-front-1'
+        machine_name: 'sva-a4c-front-1',
+        keypass_custom_property: 'cert.certificate',
+        file_suffix_var_name: 'ssl_host_cert_suffix'
       }
     # - commons/define_commons_vars
     # - a4c/config/define_a4c_url
