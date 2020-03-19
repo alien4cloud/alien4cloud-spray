@@ -1,0 +1,49 @@
+---
+
+- name: Here is the key we need to look for in keypass
+  debug:
+    var: keypass_key
+
+- name: Here is the machine_name we need to get the certificates for
+  debug:
+    var: machine_name
+
+- name: Define a var containing the local file path
+  set_fact:
+    local_certificate_file_path: "{{ inventory_dir }}/{{ certificates_path }}/{{ machine_name }}{{ ssl_host_cert_suffix }}"
+
+- name: Locally Check for certificate file
+  local_action: "stat path={{ local_certificate_file_path }}"
+  register: local_certificate_file
+
+- name: Get cert content
+  set_fact:
+    cert_content: "Plateforme/Service applicatif/a4c/Certificat Serveur: {{ lookup('keepass', keypass_key, 'custom_properties')['cert.certificate'] }}"
+  ignore_errors: yes
+  when: not local_certificate_file.stat.exists
+
+- name: Create temporary file to store certificate content
+  tempfile:
+    state: file
+    suffix: temp
+  register: cert_file
+  when: not local_certificate_file.stat.exists and cert_content is defined and cert_content != ""
+
+- copy:
+    content: "{{ cert_content }}"
+    dest: "{{ cert_file.path }}"
+  when: not local_certificate_file.stat.exists and cert_content is defined and cert_content != ""
+
+- name: Store certificate in a local file
+  fetch:
+    src: "{{ cert_file.path }}"
+    dest: "{{ local_certificate_file_path }}"
+    flat: yes
+    validate_checksum: no
+  when: not local_certificate_file.stat.exists and cert_content is defined and cert_content != ""
+
+- name: Finally remove temporary folder
+  file:
+    path: "{{ cert_file.path }}"
+    state: absent
+  when: not local_certificate_file.stat.exists
