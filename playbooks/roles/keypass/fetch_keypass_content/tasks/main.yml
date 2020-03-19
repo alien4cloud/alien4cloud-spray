@@ -1,0 +1,54 @@
+---
+
+- name: Here is the key we need to look for in keypass
+  debug:
+    var: keypass_key
+
+- name: Here is the key custom_property we need to look for in keypass
+  debug:
+    var: keypass_custom_property
+
+- name: Here is the local file name where we expect to find/write the keypass content
+  debug:
+    var: local_keypass_content_file_path
+
+- name: Locally Check for certificate file
+  local_action: "stat path={{ local_keypass_content_file_path }}"
+  register: local_keypass_content_file
+
+- name: Does the local certificate file exist ?
+  debug:
+    var: local_keypass_content_file.stat.exists
+
+- name: Get keypass content
+  set_fact:
+    cert_content: "{{ lookup('keepass', keypass_key, 'custom_properties')[keypass_custom_property] }}"
+  ignore_errors: yes
+  when: not local_keypass_content_file.stat.exists
+
+- name: Create temporary file to store keypass content
+  tempfile:
+    state: file
+    suffix: temp
+  register: remote_keypass_content_file
+  when: not local_keypass_content_file.stat.exists and cert_content is defined and cert_content != ""
+
+- name: Store keypass content in a remote file
+  copy:
+    content: "{{ cert_content }}"
+    dest: "{{ remote_keypass_content_file.path }}"
+  when: not local_keypass_content_file.stat.exists and cert_content is defined and cert_content != ""
+
+- name: Store keypass content in a local file
+  fetch:
+    src: "{{ remote_keypass_content_file.path }}"
+    dest: "{{ local_keypass_content_file_path }}"
+    flat: yes
+    validate_checksum: no
+  when: not local_keypass_content_file.stat.exists and cert_content is defined and cert_content != ""
+
+- name: Finally remove temporary folder
+  file:
+    path: "{{ remote_keypass_content_file.path }}"
+    state: absent
+  when: not local_keypass_content_file.stat.exists

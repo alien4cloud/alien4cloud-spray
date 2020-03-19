@@ -1,0 +1,13 @@
+---
+
+- name: Define a var containing the local file path
+  set_fact:
+    local_file_path: "{{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
+
+- name: Fetch host certif/key content
+  include_role:
+    name: keypass/fetch_keypass_content
+  vars:
+    local_keypass_content_file_path: "{{ local_file_path }}"
+    keypass_custom_property: "{{ keypass_custom_property }}"
+    keypass_key: "{{ keypass_key }}"
