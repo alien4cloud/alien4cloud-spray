@@ -1,0 +1,47 @@
+---
+- hosts: a4cconfig
+  name: Fetch keypass certificates / keys
+  become: false
+
+  roles:
+    - commons/define_commons_vars
+    - { role: 'keypass/fetch_keypass_ca_certificate',
+        keypass_key: 'Plateforme/Securite/pki/Autorite de Certification Secondaire - Plateforme',
+        keypass_custom_property: 'fullchain'
+      }
+    - { role: 'keypass/fetch_keypass_host_certificate_key',
+        keypass_key: 'Plateforme/Service applicatif/a4c/Certificat Serveur - front',
+        machine_name: 'sva-a4c-front-1',
+        keypass_custom_property: 'cert.certificate',
+        file_suffix_var_name: 'ssl_host_cert_suffix'
+      }
+    - { role: 'keypass/fetch_keypass_host_certificate_key',
+        keypass_key: 'Plateforme/Service applicatif/a4c/Certificat Serveur - front',
+        machine_name: 'sva-a4c-front-1',
+        keypass_custom_property: 'cert.private.key',
+        file_suffix_var_name: 'ssl_host_key_suffix'
+      }
+    - { role: 'keypass/fetch_keypass_host_certificate_key',
+        keypass_key: 'Plateforme/Service applicatif/a4c/Certificat Serveur - a4c - vm1',
+        machine_name: 'sva-a4c-a4c-1',
+        keypass_custom_property: 'cert.certificate',
+        file_suffix_var_name: 'ssl_host_cert_suffix'
+      }
+    - { role: 'keypass/fetch_keypass_host_certificate_key',
+        keypass_key: 'Plateforme/Service applicatif/a4c/Certificat Serveur - a4c - vm1',
+        machine_name: 'sva-a4c-a4c-1',
+        keypass_custom_property: 'cert.private.key',
+        file_suffix_var_name: 'ssl_host_key_suffix'
+      }
+    - { role: 'keypass/fetch_keypass_host_certificate_key',
+        keypass_key: 'Plateforme/Service applicatif/a4c/Certificat Serveur - a4c - vm2',
+        machine_name: 'sva-a4c-a4c-2',
+        keypass_custom_property: 'cert.certificate',
+        file_suffix_var_name: 'ssl_host_cert_suffix'
+      }
+    - { role: 'keypass/fetch_keypass_host_certificate_key',
+        keypass_key: 'Plateforme/Service applicatif/a4c/Certificat Serveur - a4c - vm2',
+        machine_name: 'sva-a4c-a4c-2',
+        keypass_custom_property: 'cert.private.key',
+        file_suffix_var_name: 'ssl_host_key_suffix'
+      }
