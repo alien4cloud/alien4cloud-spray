@@ -12,9 +12,17 @@
   set_fact:
     local_certificate_file_path: "{{ inventory_dir }}/{{ certificates_path }}/{{ machine_name }}{{ ssl_host_cert_suffix }}"
 
+- name: Here is the local file name where we expect to find/write the certificate
+  debug:
+    var: local_certificate_file_path
+
 - name: Locally Check for certificate file
   local_action: "stat path={{ local_certificate_file_path }}"
   register: local_certificate_file
+
+- name: Does the local certificate file exist ?
+  debug:
+    var: local_certificate_file_path.stat.exists
 
 - name: Get cert content
   set_fact:
