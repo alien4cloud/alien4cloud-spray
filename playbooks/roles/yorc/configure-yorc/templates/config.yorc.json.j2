@@ -15,5 +15,13 @@
   },
   "terraform": {
     "plugins_dir": "/var/terraform/plugins"
-  }
+  },
+  "storage":{
+    "stores": [{
+       "name": "fileStore",
+       "implementation": "fileCache",
+       "migrate_data_from_consul": true,
+       "types": ["Deployment", "Log", "Event"]
+     }]
+   }
 }
