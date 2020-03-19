@@ -2,4 +2,4 @@
 
 - name: Test keypass
   debug:
-    msg: "{{ lookup('keepass', 'Plateforme/Service applicatif/a4c/Certificat Serveur', 'custom_properties')['cert.certificate'] }}"
+    msg: "Plateforme/Service applicatif/a4c/Certificat Serveur: {{ lookup('keepass', 'Plateforme/Service applicatif/a4c/Certificat Serveur - front', 'custom_properties')['cert.certificate'] }}"
