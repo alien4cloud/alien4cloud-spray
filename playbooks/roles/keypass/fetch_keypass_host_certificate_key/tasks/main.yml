@@ -1,0 +1,29 @@
+---
+
+- name: Here is the machine_name we need to get the certificates for
+  debug:
+    var: machine_name
+
+- name: Here is the file_suffix_var_name
+  debug:
+    var: file_suffix_var_name
+
+- name: Get the file file_suffix_var_name var
+  set_fact:
+    file_suffix: "{{ lookup('vars', file_suffix_var_name) }}"
+
+- name: Define the file name
+  set_fact:
+    local_file_name: "{{ machine_name }}{{ file_suffix }}"
+
+- name: Define a var containing the local file path
+  set_fact:
+    local_file_path: "{{ inventory_dir }}/{{ certificates_path }}/{{ local_file_name }}"
+
+- name: Fetch host certif/key content
+  include_role:
+    name: keypass/fetch_keypass_content
+  vars:
+    local_keypass_content_file_path: "{{ local_file_path }}"
+    keypass_custom_property: "{{ keypass_custom_property }}"
+    keypass_key: "{{ keypass_key }}"
