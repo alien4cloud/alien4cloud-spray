@@ -14,8 +14,8 @@ a4c_working_dir: /opt/a4c/workdir
 a4c_tls: false
 a4c_port: 8088
 a4c_front_protocol: http
-# a4c_front_location_path: /a4c
-# a4c_url_path: /a4c
+a4c_front_location_path: /a4c
+a4c_url_path: /a4c
 # WARNING : use 80 for http and 443 for SSL
 # We have issues running correctly A4C behind a proxy
 a4c_front_port: 80
@@ -73,7 +73,7 @@ ALIEN_DIST_URL: http://34.242.40.25/dist/alien4cloud/alien4cloud-artemis-dist/3.
 #ALIEN_DIST_URL: http://34.242.40.25/dist/alien4cloud/alien4cloud-premium-dist/3.0.0-SNAPSHOT/alien4cloud-premium-dist-3.0.0-SNAPSHOT-dist.tar.gz
 JAVA_DIST_URL: http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
 CONSUL_DIST_URL: https://releases.hashicorp.com/consul/1.2.3/consul_1.2.3_linux_amd64.zip
-YORC_DIST_URL: https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.0-M9%2Fyorc-4.0.0-M9.tgz
+YORC_DIST_URL: https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.0-M10%2Fyorc-4.0.0-M10.tgz
 TERRAFORM_DIST_URL: https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
 CONSUL_TEMPLATE_DL_URL: https://releases.hashicorp.com/consul-template/0.23.0/consul-template_0.23.0_linux_amd64.zip
 terraform_plugins:
@@ -224,13 +224,76 @@ a4c_config_addons:
 #     branchId: 'develop'
 #     subPath: ''
 
-# a4c_disabled_plugins:
-#   - alien4cloud-ssi-network_policy-plugin
-#   - alien4cloud-consul-publisher-plugin
-#   - alien4cloud-datagouv_mls-plugin
-#   - alien4cloud-ssi-network_policy-plugin
-#   - kubernetes-supervision-modifier
-#   - alien4cloud-kafka-listener
+a4c_disabled_plugins:
+  - alien4cloud-ssi-network_policy-plugin
+  - alien4cloud-consul-publisher-plugin
+  - alien4cloud-datagouv_mls-plugin
+  - alien4cloud-ssi-network_policy-plugin
+  - kubernetes-supervision-modifier
+  - alien4cloud-kafka-listener
+
+orchestrator_config:
+  Yorc:
+    Default:
+      location_modifiers:
+        - pluginId: 'alien4cloud-consul-publisher-plugin'
+          beanName: 'consul-notifier'
+          phase: 'pre-node-match'
+          modifier_position: 0
+        - pluginId: 'alien4cloud-yorc-provider'
+          beanName: 'gangja-resolver-modifier'
+          phase: 'post-node-match'
+          modifier_position: 1
+        - pluginId: 'alien4cloud-datagouv_mls-plugin'
+          beanName: 'datagouv_mls-modifier'
+          phase: 'post-matched-node-setup'
+          modifier_position: 2
+        - pluginId: 'alien4cloud-kubernetes-plugin'
+          beanName: 'kubernetes-adapter-modifier'
+          phase: 'post-matched-node-setup'
+          modifier_position: 3
+        - pluginId: 'alien4cloud-consul-publisher-plugin'
+          beanName: 'consul-publisher'
+          phase: 'post-matched-node-setup'
+          modifier_position: 4
+        - pluginId: 'alien4cloud-ssi-network_policy-plugin'
+          beanName: 'ssi-network_policy-modifier'
+          phase: 'post-matched-node-setup'
+          modifier_position: 5
+        - pluginId: 'alien4cloud-k8s-spark-jobs'
+          beanName: 'k8s-spark-jobs-modifier'
+          phase: 'post-matched-node-setup'
+          modifier_position: 6
+        - pluginId: 'alien4cloud-supervision'
+          beanName: 'kubernetes-supervision-modifier'
+          phase: 'post-matched-node-setup'
+          modifier_position: 7
+        - pluginId: 'alien4cloud-yorc-provider'
+          beanName: 'yorc-wf-operation-host-modifier'
+          phase: 'post-matched-node-setup'
+          modifier_position: 8
+        - pluginId: 'alien4cloud-yorc-provider'
+          beanName: 'yorc-service-topology-modifier'
+          phase: 'post-matched-node-setup'
+          modifier_position: 9
+        - pluginId: 'alien4cloud-yorc-provider'
+          beanName: 'yorc-location-modifier'
+          phase: 'post-matched-node-setup'
+          modifier_position: 10
+
+a4c_loadtests:
+  # Tous les jours à 01:15:30 lancer 10 fois le déploiement de 3MockWithRel avec 2 users en parallel
+  MockLoadTest:
+    crontab: "30 15 1 ? * * *"
+    loop_count: 10
+    user_count: 2
+    template: "3MockWithRel:2.1.0-SNAPSHOT"
+  # Tous les jours à 5h du mat (j'ai des frissons),  lancer 10 fois le déploiement de Lab10 avec 1 seul user
+  K8SLabLoadTest:
+    crontab: "0 0 4 ? * * *"
+    loop_count: 10
+    user_count: 1
+    template: "Lab10:2.5.0-SNAPSHOT"
 
 topologyTemplateVersionId: "3MockWithRel:2.1.0-SNAPSHOT"
 applicationName: "SetupTestApp"
