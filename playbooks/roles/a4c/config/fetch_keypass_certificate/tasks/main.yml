@@ -4,13 +4,25 @@
   debug:
     var: keypass_key
 
+- name: Here is the key custom_property we need to look for in keypass
+  debug:
+    var: keypass_custom_property
+
 - name: Here is the machine_name we need to get the certificates for
   debug:
     var: machine_name
 
+- name: Here is the file_suffix_var_name
+  debug:
+    var: file_suffix_var_name
+
+- name: Get the file file_suffix_var_name var
+  set_fact:
+    file_suffix: "{{ lookup('vars', file_suffix_var_name) }}"
+
 - name: Define a var containing the local file path
   set_fact:
-    local_certificate_file_path: "{{ inventory_dir }}/{{ certificates_path }}/{{ machine_name }}{{ ssl_host_cert_suffix }}"
+    local_certificate_file_path: "{{ inventory_dir }}/{{ certificates_path }}/{{ machine_name }}{{ file_suffix }}"
 
 - name: Here is the local file name where we expect to find/write the certificate
   debug:
@@ -22,11 +34,11 @@
 
 - name: Does the local certificate file exist ?
   debug:
-    var: local_certificate_file_path.stat.exists
+    var: local_certificate_file.stat.exists
 
 - name: Get cert content
   set_fact:
-    cert_content: "Plateforme/Service applicatif/a4c/Certificat Serveur: {{ lookup('keepass', keypass_key, 'custom_properties')['cert.certificate'] }}"
+    cert_content: "{{ lookup('keepass', keypass_key, 'custom_properties')[keypass_custom_property] }}"
   ignore_errors: yes
   when: not local_certificate_file.stat.exists
 
