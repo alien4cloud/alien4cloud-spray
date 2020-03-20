@@ -5,12 +5,23 @@
     suffix: saml_a4c
   register: temp_dir
 
-- name: Extract SAML config archive
+- name: Locally Check for IDP metadata archive
+  local_action: "stat path={{ inventory_dir }}/{{ a4c_saml_config_archive_path }}"
+  register: idp_metadata_file
+
+- name: Extract IDP metadata archive
   unarchive:
     src: "{{ inventory_dir }}/{{ a4c_saml_config_archive_path }}"
     dest: "{{ temp_dir.path }}"
     remote_src: no
-  when: a4c_saml_enabled
+  when: a4c_saml_enabled and idp_metadata_file.stat.exists
+
+- name: "Download IDP metadata file"
+  get_url:
+    url: "{{ a4c_saml_config_url }}"
+    dest: "{{ temp_dir.path }}/idp-metadata.xml"
+    force: true
+  when: a4c_saml_config_url is defined
 
 - name: Recursively search for idp-metadata.xml file
   find:
