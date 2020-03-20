@@ -1,0 +1,94 @@
+
+- name: Ensure consul_front_protocol variable is defined
+  set_fact:
+    consul_front_protocol: "http"
+  when: consul_front_protocol is not defined
+
+- name: The 'consul_front_protocol' variable defines consul front protocol
+  debug:
+    var: consul_front_protocol
+
+- name: Ensure consul_front_port variable is defined
+  set_fact:
+    consul_front_port: 8500
+  when: (consul_front_port is not defined) and (consul_front_protocol == 'http')
+
+- name: Ensure consul_front_port variable is defined
+  set_fact:
+    consul_front_port: 8501
+  when: (consul_front_port is not defined) and (consul_front_protocol == 'https')
+
+- name: The 'consul_front_port' variable defines consul front port
+  debug:
+    var: consul_front_port
+
+- name: Configure nginx
+  template:
+    src: consul.conf.j2
+    dest: /etc/nginx/conf.d/consul.conf
+    force: yes
+  become: true
+
+- name: Ensure securize_nginx variable is defined
+  set_fact:
+    securize_nginx: false
+
+- name: We will securise nginx when consul_front is in https
+  set_fact:
+    securize_nginx: true
+  when: (consul_front_protocol == 'https')
+
+- name: The 'securize_nginx' variable defines if nginx should be secured
+  debug:
+    var: securize_nginx
+
+- name: Find the front port using semanage
+  shell: "semanage port -l |grep {{ consul_front_port }}"
+  become: true
+  ignore_errors: yes
+  register: find_front_port_semanage_cmd
+
+- name: Ensure nginx can bind listen port {{ consul_front_port }}
+  become: true
+  ignore_errors: yes
+  shell: "semanage port -a -t http_port_t  -p tcp {{ consul_front_port }}"
+  when: (find_front_port_semanage_cmd.rc != 0)
+
+- name: Locally Check for Host key file
+  local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+  register: stat_hostkey_path
+  when: (_consul_tls) or (securize_nginx)
+
+- fail:
+    msg: "The nginx should be secured by no host key file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }} ! Please provide host key file."
+  when: (consul_tls or securize_nginx) and (not stat_hostkey_path.stat.exists)
+
+- name: Locally Check for Host cert file
+  local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+  register: stat_hostcert_path
+  when: (_consul_tls) or (securize_nginx)
+
+- fail:
+    msg: "The nginx should be secured by no host certificate file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }} ! Please provide host certificate file."
+  when: (_consul_tls or securize_nginx) and (not stat_hostcert_path.stat.exists)
+
+- name: Creates nginx ssl directory
+  file:
+    path: "/etc/nginx/ssl"
+    state: directory
+  become: true
+  when: (_consul_tls) or (securize_nginx)
+
+- name: Copy host key file
+  copy:
+    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+    dest: "/etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+  become: true
+  when: (_consul_tls) or (securize_nginx)
+
+- name: Copy host cert file
+  copy:
+    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+    dest: "/etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+  become: true
+  when: (_consul_tls) or (securize_nginx)

@@ -15,6 +15,16 @@
     - { role: consul/configure-consul, consul_mode: 'server' }
     - consul/start-consul
 
+- hosts: consulfront
+  name: Install consul front (Nginx).
+  gather_facts: no
+  roles:
+    - commons/define_commons_vars
+    - nginx/stop-nginx
+    - nginx/install-nginx
+    - consul/configure-nginx
+    - nginx/start-nginx
+
 - hosts: yorc
   name: Install configure and start Yorc.
   roles:
