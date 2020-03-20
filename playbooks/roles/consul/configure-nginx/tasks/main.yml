@@ -22,13 +22,6 @@
   debug:
     var: consul_front_port
 
-- name: Configure nginx
-  template:
-    src: consul.conf.j2
-    dest: /etc/nginx/conf.d/consul.conf
-    force: yes
-  become: true
-
 - name: Ensure securize_nginx variable is defined
   set_fact:
     securize_nginx: false
@@ -41,6 +34,13 @@
 - name: The 'securize_nginx' variable defines if nginx should be secured
   debug:
     var: securize_nginx
+
+- name: Configure nginx
+  template:
+    src: consul.conf.j2
+    dest: /etc/nginx/conf.d/consul.conf
+    force: yes
+  become: true
 
 - name: Find the front port using semanage
   shell: "semanage port -l |grep {{ consul_front_port }}"
