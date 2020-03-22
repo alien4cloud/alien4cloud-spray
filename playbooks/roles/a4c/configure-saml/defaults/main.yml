@@ -1,6 +1,6 @@
 a4c_saml_enabled: false
 # archive where we expect to find idp-metadata.xml
-a4c_saml_config_archive_path: resources/keycloak-mod-auth-mellon-sp-config.zip
+#a4c_saml_config_archive_path: resources/keycloak-mod-auth-mellon-sp-config.zip
 # An alternative way to retrieve the idp-metadata.xml
 #a4c_saml_config_url: https://keycloak/auth/realms/artemis/protocol/saml/descriptor
 a4c_saml_entityId: a4c
