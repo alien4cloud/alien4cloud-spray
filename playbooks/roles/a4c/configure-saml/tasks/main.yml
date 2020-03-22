@@ -15,14 +15,14 @@
     src: "{{ inventory_dir }}/{{ a4c_saml_config_archive_path }}"
     dest: "{{ temp_dir.path }}"
     remote_src: no
-  when: a4c_saml_enabled and idp_metadata_file.stat.exists
+  when: a4c_saml_enabled and a4c_saml_config_archive_path is defined and idp_metadata_file.stat.exists
 
 - name: "Download IDP metadata file"
   get_url:
     url: "{{ a4c_saml_config_url }}"
     dest: "{{ temp_dir.path }}/idp-metadata.xml"
     force: true
-  when: a4c_saml_config_url is defined
+  when: a4c_saml_enabled and a4c_saml_config_url is defined 
 
 - name: Recursively search for idp-metadata.xml file
   find:
