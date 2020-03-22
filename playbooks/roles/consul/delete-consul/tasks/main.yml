@@ -1,8 +1,8 @@
 
-# - pause:
-#     prompt: "Do you want to remove all consul files on {{ a4c_ip }} ? (type 'yes I do !' to confirm)?"
-#   register: ask_for_confirmation
-#   delegate_to: localhost
+- pause:
+    prompt: "Do you want to remove all consul files on {{ a4c_ip }} ? (type 'yes I do !' to confirm)?"
+  register: ask_for_confirmation
+  delegate_to: localhost
 
 # - fail:
 #     msg: "Aborted by user."
@@ -16,3 +16,4 @@
   with_items:
     - "{{ consul_install_dir }}"
     - /etc/systemd/system/consul.service
+  when: ask_for_confirmation.user_input == "yes I do !"
