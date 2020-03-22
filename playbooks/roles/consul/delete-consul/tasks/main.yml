@@ -16,4 +16,4 @@
   with_items:
     - "{{ consul_install_dir }}"
     - /etc/systemd/system/consul.service
-  when: ask_for_confirmation.user_input == "yes I do !"
+  when: ask_for_confirmation is defined and ask_for_confirmation.user_input == "yes I do !"
