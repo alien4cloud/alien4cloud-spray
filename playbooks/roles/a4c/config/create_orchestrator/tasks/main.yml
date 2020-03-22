@@ -89,9 +89,6 @@
     yorc_address: "{{ groups['yorc'][0] }}{{ appendable_private_domain_name }}"
   when: yorc_url is not defined
 
-- debug:
-    msg: "inventory_hostname: {{ inventory_hostname }}, groups['yorc'][0]: {{ groups['yorc'][0] }}"
-
 - name: Use 'localhost' if a4c and yorc are single and co-hosted
   set_fact:
     yorc_address: "localhost"
