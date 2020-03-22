@@ -8,6 +8,7 @@
 - name: Locally Check for IDP metadata archive
   local_action: "stat path={{ inventory_dir }}/{{ a4c_saml_config_archive_path }}"
   register: idp_metadata_file
+  when: a4c_saml_enabled and a4c_saml_config_archive_path is defined
 
 - name: Extract IDP metadata archive
   unarchive:
