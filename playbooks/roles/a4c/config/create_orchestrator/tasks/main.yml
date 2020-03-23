@@ -318,6 +318,7 @@
     url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/instance"
     method: POST
     validate_certs: no
+    timeout: 60
     headers:
       Cookie: "{{ session_id }}"
       Content-Type: "application/json"
