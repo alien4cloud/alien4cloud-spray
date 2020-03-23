@@ -17,7 +17,7 @@ saml:
       file: "{{ a4c_install_dir }}/alien4cloud/config/idp-metadata.xml"
     sp:
       entityId: "{{ a4c_saml_entityId }}"
-      entityBaseURL: "{{ alien_url }}"
+      entityBaseURL: "{{ a4c_saml_entityBaseURL }}"
 
 # - regexp: '(\s*)#*(\s*)(enabled)\s*:.*$'
 #   line: '\1\2\3: true'

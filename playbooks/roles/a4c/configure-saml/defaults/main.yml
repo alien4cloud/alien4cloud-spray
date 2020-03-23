@@ -4,3 +4,5 @@ a4c_saml_enabled: false
 # An alternative way to retrieve the idp-metadata.xml
 #a4c_saml_config_url: https://keycloak/auth/realms/artemis/protocol/saml/descriptor
 a4c_saml_entityId: a4c
+# Our URL from a user point of view
+#a4c_saml_entityBaseURL:
