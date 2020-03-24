@@ -356,7 +356,7 @@
     remote_src: yes
     dest: "{{ a4c_install_dir }}/alien4cloud/init/plugins/"
   with_items: "{{ upgradePluginMap.keys() }}"
-  when: (upgradePluginMap[item].inplace is not defined)
+  when: (upgradePluginMap[item].inplace is not defined) and (upgradePluginMap|length > 0)
 
 - name: Add lines in changes.log
   become: true
@@ -366,7 +366,7 @@
     path: "{{ a4c_log_dir }}/changes.log"
     line: "{{ ansible_date_time.iso8601 }} : Install new plugin {{ upgradePluginMap[item].upgrade }} in {{ a4c_install_dir }}/alien4cloud/init/plugins/"
   with_items: "{{ upgradePluginMap.keys() }}"
-  when: (upgradePluginMap[item].inplace is not defined)
+  when: (upgradePluginMap[item].inplace is not defined) and (upgradePluginMap|length > 0)
 
 - name: List all archives in place
   become: true
