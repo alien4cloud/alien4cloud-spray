@@ -22,7 +22,7 @@
     url: "{{ a4c_saml_config_url }}"
     dest: "{{ temp_dir.path }}/idp-metadata.xml"
     force: true
-  when: a4c_saml_enabled and a4c_saml_config_url is defined 
+  when: a4c_saml_enabled and a4c_saml_config_url is defined
 
 - name: Recursively search for idp-metadata.xml file
   find:
@@ -59,6 +59,16 @@
 - name: Decode a4c config
   set_fact:
     a4c_config: "{{ a4c_config['content'] | b64decode | from_yaml }}"
+
+- name: Ensure a4c_config_added variable exists
+  set_fact:
+    a4c_saml_config_added: ""
+  when: (a4c_saml_config_addon is not defined)
+
+- name: Feed a4c_config_added variable
+  set_fact:
+    a4c_saml_config_added: "{{ a4c_saml_config_addon | to_nice_yaml(indent=2, indentfirst=True) }}"
+  when: (a4c_saml_config_addon is defined)
 
 - name: Render SAML config in temp directory
   template:
