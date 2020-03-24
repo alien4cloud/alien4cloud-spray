@@ -51,6 +51,9 @@ yorc_remote_ansible_tmp: /tmp/ansible/remote
 yorc_local_ansible_tmp: /tmp/ansible/local
 discriminator: ART_YORK_
 
+jmeter_user: jmeter
+jmeter_install_dir: /opt/jmeter
+
 # Inidicates of TLS should be activated for ES cluster
 elasticsearch_tls: false
 # ES data directory if not default
@@ -74,6 +77,7 @@ ALIEN_DIST_URL: http://34.242.40.25/dist/alien4cloud/alien4cloud-artemis-dist/3.
 JAVA_DIST_URL: http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
 CONSUL_DIST_URL: https://releases.hashicorp.com/consul/1.2.3/consul_1.2.3_linux_amd64.zip
 YORC_DIST_URL: https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.0-M10%2Fyorc-4.0.0-M10.tgz
+JMETER_DIST_URL: https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-3.1.tgz
 TERRAFORM_DIST_URL: https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
 CONSUL_TEMPLATE_DL_URL: https://releases.hashicorp.com/consul-template/0.23.0/consul-template_0.23.0_linux_amd64.zip
 terraform_plugins:
@@ -285,7 +289,7 @@ a4c_loadtests:
   # Tous les jours à 01:15:30 lancer 10 fois le déploiement de 3MockWithRel avec 2 users en parallel
   MockLoadTest:
     crontab: "30 15 1 ? * * *"
-    loop_count: 10
+    loop_count: 2
     user_count: 2
     template: "3MockWithRel:2.1.0-SNAPSHOT"
   # Tous les jours à 5h du mat (j'ai des frissons),  lancer 10 fois le déploiement de Lab10 avec 1 seul user

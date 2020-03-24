@@ -1,0 +1,12 @@
+---
+
+- name: Create Shell
+  template:
+    src: run.sh.j2
+    dest: "{{ jmeter_install_dir }}/loadtests/{{ loadtest_instance }}.sh"
+    force: yes
+    mode: 0744
+  become: true
+  become_user: "{{ jmeter_user }}"
+
+

@@ -21,6 +21,8 @@
 
 [yorcfront]
 
+[jmeter]
+
 [a4cconfig]
 # This group is used to play A4C config playbooks (roles in roles/a4c/config)
 # We need to have here a single node, it can be any node in the cluster
