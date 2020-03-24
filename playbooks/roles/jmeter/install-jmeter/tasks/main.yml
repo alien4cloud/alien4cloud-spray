@@ -1,0 +1,47 @@
+- name: Add the user '{{ jmeter_user }}'
+  user:
+    name: "{{ jmeter_user }}"
+    home: "{{ jmeter_install_dir }}"
+    state: present
+  become: true
+  when: jmeter_user is defined
+  
+- name: Check if jmeter is installed
+  shell: "command -v {{ jmeter_install_dir }}/apache-jmeter >/dev/null 2>&1"
+  register: is_jmeter_exist
+  ignore_errors: yes
+  become: true
+  become_user: "{{ jmeter_user }}"
+
+- name: Is jmeter installed ?
+  debug: msg="{{ is_jmeter_exist.rc }}" # it returns rc 0 
+
+- name: Creates jmeter directory
+  file:
+    path: "{{ jmeter_install_dir }}/apache-jmeter"
+    state: directory
+    owner: "{{ jmeter_user }}"
+  become: true
+
+- name: Extract archive from remote source
+  unarchive:
+    src: "{{ JMETER_DIST_URL }}"
+    dest: "{{ jmeter_install_dir }}/apache-jmeter"
+    list_files: yes
+    remote_src: yes
+    extra_opts: [--strip-components=1]
+  become: true
+  become_user: "{{ jmeter_user }}"
+  when: (is_jmeter_exist.rc != 0) and (not offline)
+
+- name: Extract archive from local source
+  unarchive:
+    src: "{{ JMETER_DIST_URL }}"
+    dest: "{{ jmeter_install_dir }}/apache-jmeter"
+    remote_src: no
+    extra_opts: [--strip-components=1]
+  become: true
+  become_user: "{{ jmeter_user }}"
+  when: (is_jmeter_exist.rc != 0) and (offline)
+
+
