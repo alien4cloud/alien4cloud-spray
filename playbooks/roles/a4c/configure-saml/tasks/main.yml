@@ -63,35 +63,45 @@
 - name: Ensure a4c_config_added variable exists
   set_fact:
     a4c_saml_config_added: ""
-  when: (a4c_saml_config_addon is not defined)
+  when: a4c_saml_enabled and (a4c_saml_config_addon is not defined)
 
 - name: Feed a4c_config_added variable
   set_fact:
     a4c_saml_config_added: "{{ a4c_saml_config_addon | to_nice_yaml | indent(width=2, indentfirst=True) }}"
-  when: (a4c_saml_config_addon is defined)
+  when: a4c_saml_enabled and (a4c_saml_config_addon is defined)
 
 - name: Render SAML config in temp directory
   template:
     src: alien4cloud-saml-config.yml.j2
     dest: "{{ temp_dir.path }}/alien4cloud-saml-config.yml"
     force: yes
+  when: a4c_saml_enabled
 
 - name: Slurp the SAML config file
   slurp:
     src: "{{ temp_dir.path }}/alien4cloud-saml-config.yml"
   register: a4c_saml_config
+  when: a4c_saml_enabled
 
 - name: Decode SAML config
   set_fact:
     a4c_saml_config: "{{ a4c_saml_config['content'] | b64decode | from_yaml }}"
+  when: a4c_saml_enabled
 
 - name: Debug the a4c_saml_config config
   debug:
     var: a4c_saml_config
+  when: a4c_saml_enabled
 
 - name: Add 'saml' to A4C config
   set_fact:
     a4c_config: "{{ a4c_config|combine({'saml': a4c_saml_config.saml}, recursive=True) }}"
+  when: a4c_saml_enabled
+
+- name: Add 'saml' to A4C config
+  set_fact:
+    a4c_config: "{{ a4c_config|combine({'saml': {'enabled': false}}, recursive=True) }}"
+  when: (not a4c_saml_enabled)
 
 - name: Debug the a4c config before serializing it to file system
   debug:
