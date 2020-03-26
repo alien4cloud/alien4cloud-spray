@@ -65,6 +65,16 @@
     should_use_rsync_for_a4c_ha: false
   when: should_use_rsync_for_a4c_ha is not defined
 
+- name: Ensure consul_http_port variable is defined
+  set_fact:
+    consul_http_port: 8500
+  when: consul_http_port is not defined
+
+- name: Ensure consul_https_port variable is defined
+  set_fact:
+    consul_https_port: 8501
+  when: consul_https_port is not defined
+
 - name: Ensure _consul_tls variable is defined
   set_fact:
     _consul_tls: false

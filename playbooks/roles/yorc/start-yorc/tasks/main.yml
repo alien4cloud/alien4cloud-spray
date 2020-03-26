@@ -60,6 +60,37 @@
   retries: 30
   delay: 10
   ignore_errors: yes
+  when: (not yorc_tls)
+
+- name: Define host cert file path
+  set_fact:
+    hostcert_file_path: "{{ yorc_install_dir }}/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+  when: (yorc_tls)
+
+- name: Define host key file path
+  set_fact:
+    hostkey_file_path: "{{ yorc_install_dir }}/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+  when: (yorc_tls)
+
+- name: "Wait for Yorc to be reachable at {{ yorc_health_url }}"
+  become: true
+  become_user: "{{ yorc_user }}"
+  uri:
+    url: "{{ yorc_health_url }}"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    client_cert: "{{ hostcert_file_path }}"
+    client_key: "{{ hostkey_file_path }}"
+    headers:
+      Accept: "application/json"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 30
+  delay: 10
+  ignore_errors: yes
+  when: (yorc_tls)
 
 - name: Fail when Yorc is not reachable at {{ yorc_health_url }}
   fail:
@@ -86,6 +117,24 @@
     status_code: 200
   register: result
   until: result.status == 200
+  when: (not yorc_tls)
+
+- name: "Get Yorc server info"
+  become: true
+  become_user: "{{ yorc_user }}"
+  uri:
+    url: "{{ yorc_scheme }}://localhost:8800/server/info"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    client_cert: "{{ hostcert_file_path }}"
+    client_key: "{{ hostkey_file_path }}"
+    headers:
+      Accept: "application/json"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  when: (yorc_tls)
 
 - name: Here is the Yorc version
   debug:

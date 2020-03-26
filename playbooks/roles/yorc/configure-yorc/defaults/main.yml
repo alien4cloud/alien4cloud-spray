@@ -3,3 +3,5 @@ yorc_install_dir: /home/yorc
 yorc_remote_ansible_tmp: ~/.ansible/tmp
 yorc_local_ansible_tmp: ~/.ansible/tmp
 #yorc_working_dir: /home/yorc/work
+consul_http_port: 8500
+consul_https_port: 8501
