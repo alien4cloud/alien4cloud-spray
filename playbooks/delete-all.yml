@@ -1,5 +1,10 @@
 ---
 
+- hosts: jmeter
+  name: Uninstall loadtests
+  roles:
+    - loadtests/delete-loadtests
+
 - hosts: a4cfront
   gather_facts: no
   name: Delete A4C front (Nginx, consul and consul-template).

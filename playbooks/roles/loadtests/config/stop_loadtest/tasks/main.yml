@@ -1,0 +1,17 @@
+---
+
+- debug:
+    var: loadtest_instance  
+
+- name: Creates the cron entry
+  cron:
+    name: "{{ loadtest_instance}}"
+    user: "{{ jmeter_user }}" 
+    job: "{{ jmeter_install_dir }}/loadtests/{{ loadtest_instance }}.sh" 
+    minute: "{{ a4c_loadtests[loadtest_instance].crontab.split()[0] }}"
+    hour: "{{ a4c_loadtests[loadtest_instance].crontab.split()[1] }}"
+    day: "{{ a4c_loadtests[loadtest_instance].crontab.split()[2] }}"
+    month: "{{ a4c_loadtests[loadtest_instance].crontab.split()[3] }}"
+    weekday: "{{ a4c_loadtests[loadtest_instance].crontab.split()[4] }}"
+    disabled: true
+  become: true

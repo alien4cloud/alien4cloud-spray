@@ -1,0 +1,11 @@
+- name: Remove the user '{{ jmeter_user }}'
+  user:
+    name: "{{ jmeter_user }}"
+    home: "{{ jmeter_install_dir }}"
+    state: absent
+    remove: true
+  become: true
+  when: jmeter_user is defined
+  
+
+

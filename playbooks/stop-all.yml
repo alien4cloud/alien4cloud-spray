@@ -1,5 +1,10 @@
 ---
 
+- hosts: jmeter
+  name: Stop loadtests
+  roles:
+    - loadtests/stop-loadtests
+
 - hosts: a4cfront
   name: Stop A4C front (Nginx, consul and consul-template).
   gather_facts: no
@@ -42,3 +47,4 @@
   gather_facts: no
   roles:
     - elasticsearch/stop-elasticsearch
+

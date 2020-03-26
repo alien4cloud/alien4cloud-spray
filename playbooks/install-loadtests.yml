@@ -1,12 +1,13 @@
 ---
 - hosts: jmeter
-  name: Install all common dependencies
+  name: Install loadtests
   roles:
     - commons/install-common-dependencies
     - commons/add_dns_server
     - commons/define_commons_vars
     - a4c/config/define_a4c_url 
     - install-java
-    - jmeter/install-jmeter
-    - jmeter/configure-jmeter
+    - loadtests/install-loadtests
+    - loadtests/configure-loadtests
+    - loadtests/start-loadtests
 

@@ -286,15 +286,15 @@ orchestrator_config:
           modifier_position: 10
 
 a4c_loadtests:
-  # Tous les jours à 01:15:30 lancer 10 fois le déploiement de 3MockWithRel avec 2 users en parallel
+  # Tous les jours à 01:15:00 lancer 10 fois le déploiement de 3MockWithRel avec 2 users en parallel
   MockLoadTest:
-    crontab: "30 15 1 ? * * *"
+    crontab: "15 1 * * *"
     loop_count: 2
     user_count: 2
     template: "3MockWithRel:2.1.0-SNAPSHOT"
   # Tous les jours à 5h du mat (j'ai des frissons),  lancer 10 fois le déploiement de Lab10 avec 1 seul user
   K8SLabLoadTest:
-    crontab: "0 0 4 ? * * *"
+    crontab: "0 5 * * *"
     loop_count: 10
     user_count: 1
     template: "Lab10:2.5.0-SNAPSHOT"

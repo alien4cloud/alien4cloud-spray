@@ -10,7 +10,7 @@ export A4C_IP={{ alien_url | urlsplit('hostname') }}
 export A4C_PORT={{ alien_url | urlsplit('port') }}
 export A4C_USR={{ a4c_admin_usr }}
 export A4C_PWD={{ a4c_admin_pwd }}
-export A4C_TEARDOWN=false
+export A4C_TEARDOWN=true
 export A4C_TEMPLATE={{ a4c_loadtests[loadtest_instance].template }}
 
 # to Create Deploy, wait for deployment finished, then eventually Undeploy Delete

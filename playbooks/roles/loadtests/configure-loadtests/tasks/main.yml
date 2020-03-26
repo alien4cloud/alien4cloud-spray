@@ -25,7 +25,7 @@
 - name: Iterates on loadtests
   with_items: "{{ a4c_loadtests }}"
   include_role:
-    name: playbooks/roles/jmeter/config/config_loadtest
+    name: playbooks/roles/loadtests/config/config_loadtest
   when: a4c_loadtests is defined
   vars:
     loadtest_instance: "{{ item }}"
