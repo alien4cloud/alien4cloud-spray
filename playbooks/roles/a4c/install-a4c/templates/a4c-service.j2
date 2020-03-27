@@ -7,7 +7,8 @@ After=network-online.target
 User={{ a4c_user }}
 Restart=on-failure
 WorkingDirectory={{ a4c_install_dir }}/alien4cloud
-ExecStart=/bin/bash -c './alien4cloud.sh >alien_start.log 2>&1'
+
+ExecStart=/bin/bash -c 'export JAVA_OPTIONS="-server -showversion -XX:+AggressiveOpts {{ a4c_jvm_options }} -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=\"{{ a4c_log_dir }}\" -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75 -XX:+UseCMSInitiatingOccupancyOnly -XX:+ScavengeBeforeFullGC -XX:+CMSScavengeBeforeRemark -XX:+DisableExplicitGC" && ./alien4cloud.sh >{{ a4c_log_dir }}/alien_start.log 2>&1'
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGTERM
 
