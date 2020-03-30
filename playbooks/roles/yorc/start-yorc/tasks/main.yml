@@ -107,7 +107,7 @@
   ignore_errors: yes
   when: (yorc_tls)
 
-- name: Fail when Yorc is not reachable at {{ yorc_health_url }}
+- name: "Fail when Yorc is not reachable at {{ yorc_health_url }}"
   fail:
     msg: "Not able to reach Yorc at {{ yorc_health_url }} after 30 retries ! Response was : {{ result.status }} "
   when: (yorc_tls) and (result.status != 200)

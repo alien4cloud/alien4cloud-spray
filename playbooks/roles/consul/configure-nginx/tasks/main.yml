@@ -92,3 +92,10 @@
     dest: "/etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
   become: true
   when: (_consul_tls) or (securize_nginx)
+
+- name: Set httpd_can_network_connect flag
+  seboolean:
+    name: httpd_can_network_connect
+    state: yes
+    persistent: yes
+  become: true
