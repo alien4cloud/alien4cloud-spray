@@ -65,7 +65,7 @@
 - name: Fail when Yorc is not reachable at {{ yorc_health_url }}
   fail:
     msg: "Not able to reach Yorc at {{ yorc_health_url }} after 30 retries ! Response was : {{ result.status }} "
-  when: (result.status != 200) and (not yorc_tls)
+  when: (not yorc_tls) and (result.status != 200) 
 
 
 
@@ -102,7 +102,7 @@
 - name: Fail when Yorc is not reachable at {{ yorc_health_url }}
   fail:
     msg: "Not able to reach Yorc at {{ yorc_health_url }} after 30 retries ! Response was : {{ result.status }} "
-  when: (result.status != 200) and (yorc_tls)
+  when: (yorc_tls) and (result.status != 200)
 
 
 
