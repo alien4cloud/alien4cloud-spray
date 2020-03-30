@@ -192,3 +192,13 @@
     #     topologyTemplateVersionId: '1TinyMock:2.1.0-SNAPSHOT',
     #     applicationName: 'SetupTestApp'
     #   }
+
+- hosts: jmeter
+  name: Install loadtests
+  roles:
+    - commons/define_commons_vars
+    - a4c/config/define_a4c_url 
+    - install-java
+    - loadtests/install-loadtests
+    - loadtests/configure-loadtests
+    - loadtests/start-loadtests
