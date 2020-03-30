@@ -65,7 +65,7 @@
 - name: Fail when Yorc is not reachable at {{ yorc_health_url }}
   fail:
     msg: "Not able to reach Yorc at {{ yorc_health_url }} after 30 retries ! Response was : {{ result.status }} "
-  when: (not yorc_tls) and (result.status != 200) 
+  when: (not yorc_tls) and (result.status != 200)
 
 - name: Parse Yorc health response
   set_fact:
@@ -112,8 +112,6 @@
     msg: "Not able to reach Yorc at {{ yorc_health_url }} after 30 retries ! Response was : {{ result.status }} "
   when: (yorc_tls) and (result.status != 200)
 
-
-
 - name: Parse Yorc health response
   set_fact:
     yorc_health_response: "{{ result.content | from_json }}"
@@ -137,6 +135,11 @@
   until: result.status == 200
   when: (not yorc_tls)
 
+- name: Here is the Yorc version
+  debug:
+    var: result.content
+  when: (not yorc_tls)
+
 - name: "Get Yorc server info"
   become: true
   become_user: "{{ yorc_user }}"
@@ -157,3 +160,4 @@
 - name: Here is the Yorc version
   debug:
     var: result.content
+  when: (yorc_tls)
