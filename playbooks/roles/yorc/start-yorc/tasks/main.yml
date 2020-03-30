@@ -67,7 +67,15 @@
     msg: "Not able to reach Yorc at {{ yorc_health_url }} after 30 retries ! Response was : {{ result.status }} "
   when: (not yorc_tls) and (result.status != 200) 
 
+- name: Parse Yorc health response
+  set_fact:
+    yorc_health_response: "{{ result.content | from_json }}"
+  when: (not yorc_tls)
 
+- name: Fail when Yorc response is not 'passing'
+  fail:
+    msg: "Yorc health response doesn't sounds good : '{{ yorc_health_response.value }}' instead of 'passing' !"
+  when: (not yorc_tls) and (yorc_health_response.value != "passing")
 
 - name: Define host cert file path
   set_fact:
@@ -106,14 +114,15 @@
 
 
 
-- name: Parse Ryoc health response
+- name: Parse Yorc health response
   set_fact:
     yorc_health_response: "{{ result.content | from_json }}"
+  when: (yorc_tls)
 
 - name: Fail when Yorc response is not 'passing'
   fail:
     msg: "Yorc health response doesn't sounds good : '{{ yorc_health_response.value }}' instead of 'passing' !"
-  when: (yorc_health_response.value != "passing")
+  when: (yorc_tls) and (yorc_health_response.value != "passing")
 
 - name: "Get Yorc server info"
   uri:
