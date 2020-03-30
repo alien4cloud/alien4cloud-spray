@@ -62,6 +62,13 @@
   ignore_errors: yes
   when: (not yorc_tls)
 
+- name: Fail when Yorc is not reachable at {{ yorc_health_url }}
+  fail:
+    msg: "Not able to reach Yorc at {{ yorc_health_url }} after 30 retries ! Response was : {{ result.status }} "
+  when: (result.status != 200) and (not yorc_tls)
+
+
+
 - name: Define host cert file path
   set_fact:
     hostcert_file_path: "{{ yorc_install_dir }}/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
@@ -95,7 +102,9 @@
 - name: Fail when Yorc is not reachable at {{ yorc_health_url }}
   fail:
     msg: "Not able to reach Yorc at {{ yorc_health_url }} after 30 retries ! Response was : {{ result.status }} "
-  when: (result.status != 200)
+  when: (result.status != 200) and (yorc_tls)
+
+
 
 - name: Parse Ryoc health response
   set_fact:
