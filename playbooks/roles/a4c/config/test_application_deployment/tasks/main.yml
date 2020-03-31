@@ -285,7 +285,7 @@
 
 - name: Just pause few seconds to avoid errors when deleting application
   pause:
-    seconds: 30
+    seconds: 60
 
 - name: Delete application
   uri:
