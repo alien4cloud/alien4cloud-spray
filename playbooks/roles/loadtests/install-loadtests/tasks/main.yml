@@ -5,16 +5,16 @@
     state: present
   become: true
   when: jmeter_user is defined
-  
+
 - name: Check if jmeter is installed
-  shell: "command -v {{ jmeter_install_dir }}/apache-jmeter >/dev/null 2>&1"
+  shell: "command -v {{ jmeter_install_dir }}/apache-jmeter/bin/jmeter >/dev/null 2>&1"
   register: is_jmeter_exist
   ignore_errors: yes
   become: true
   become_user: "{{ jmeter_user }}"
 
 - name: Is jmeter installed ?
-  debug: msg="{{ is_jmeter_exist.rc }}" # it returns rc 0 
+  debug: msg="{{ is_jmeter_exist.rc }}" # it returns rc 0
 
 - name: Creates jmeter directory
   file:
@@ -43,5 +43,3 @@
   become: true
   become_user: "{{ jmeter_user }}"
   when: (is_jmeter_exist.rc != 0) and (offline)
-
-
