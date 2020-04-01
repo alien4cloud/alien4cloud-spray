@@ -13,6 +13,12 @@
     <hashTree>
       <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
         <collectionProp name="Arguments.arguments">
+          <elementProp name="a4c_protocol" elementType="Argument">
+            <stringProp name="Argument.name">a4c_protocol</stringProp>
+            <stringProp name="Argument.value">${__P(a4c_protocol,http)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">The A4C webapp Protocol</stringProp>
+          </elementProp>
           <elementProp name="a4c_ip" elementType="Argument">
             <stringProp name="Argument.name">a4c_ip</stringProp>
             <stringProp name="Argument.value">${__P(a4c_ip,127.0.0.1)}</stringProp>
@@ -23,6 +29,12 @@
             <stringProp name="Argument.name">a4c_port</stringProp>
             <stringProp name="Argument.value">${__P(a4c_port,9999)}</stringProp>
             <stringProp name="Argument.desc">The A4C webapp port</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="a4c_base" elementType="Argument">
+            <stringProp name="Argument.name">a4c_base</stringProp>
+            <stringProp name="Argument.value">${__P(a4c_base,)}</stringProp>
+            <stringProp name="Argument.desc">The A4C webapp base url</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="a4c_user" elementType="Argument">
@@ -63,7 +75,7 @@
           </elementProp>
           <elementProp name="resultFolder" elementType="Argument">
             <stringProp name="Argument.name">resultFolder</stringProp>
-            <stringProp name="Argument.value">${__P(resultFolder,/opt/jmeter/results)}</stringProp>
+            <stringProp name="Argument.value">${__P(resultFolder,C:\work\dev\a4c\ws3.0\jmeter)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">A folder where to write CSV result files</stringProp>
           </elementProp>
@@ -96,7 +108,7 @@
         <stringProp name="HTTPSampler.port">${a4c_port}</stringProp>
         <stringProp name="HTTPSampler.connect_timeout"></stringProp>
         <stringProp name="HTTPSampler.response_timeout"></stringProp>
-        <stringProp name="HTTPSampler.protocol"></stringProp>
+        <stringProp name="HTTPSampler.protocol">${a4c_protocol}</stringProp>
         <stringProp name="HTTPSampler.contentEncoding"></stringProp>
         <stringProp name="HTTPSampler.path"></stringProp>
         <stringProp name="HTTPSampler.concurrentPool">6</stringProp>
@@ -168,6 +180,8 @@ boolean tearDown = Boolean.parseBoolean(vars.get(&quot;tearDown&quot;));
 // we will tear down if tearDown is set to &apos;true&apos; or loopCount greater than 1
 vars.put(&quot;doTearDown&quot;, &quot;&quot; + ((loopCount &gt; 1) || tearDown));
 
+log.info(&quot;A4C_BASE: &quot; + vars.get(&quot;a4c_base&quot;));
+
 String prefix = vars.get(&quot;applicationNamePrefix&quot;);
 String filePath = vars.get(&quot;resultFolder&quot;) + File.separator + prefix + &quot;-startUp.csv&quot;;
 try {
@@ -231,9 +245,9 @@ vars.put(&quot;topologyId&quot;, vars.get(&quot;applicationName&quot;) + &quot;:
             <stringProp name="HTTPSampler.port"></stringProp>
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
-            <stringProp name="HTTPSampler.protocol">http</stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/login</stringProp>
+            <stringProp name="HTTPSampler.path">${a4c_base}/login</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -292,9 +306,9 @@ vars.put(&quot;topologyId&quot;, vars.get(&quot;applicationName&quot;) + &quot;:
             <stringProp name="HTTPSampler.port"></stringProp>
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
-            <stringProp name="HTTPSampler.protocol">http</stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-            <stringProp name="HTTPSampler.path">/rest/latest/applications</stringProp>
+            <stringProp name="HTTPSampler.path">${a4c_base}/rest/latest/applications</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -319,9 +333,9 @@ vars.put(&quot;topologyId&quot;, vars.get(&quot;applicationName&quot;) + &quot;:
             <stringProp name="HTTPSampler.port"></stringProp>
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
-            <stringProp name="HTTPSampler.protocol">http</stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-            <stringProp name="HTTPSampler.path">/rest/latest/applications/${applicationName}/environments/search</stringProp>
+            <stringProp name="HTTPSampler.path">${a4c_base}/rest/latest/applications/${applicationName}/environments/search</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -354,9 +368,9 @@ vars.put(&quot;topologyId&quot;, vars.get(&quot;applicationName&quot;) + &quot;:
             <stringProp name="HTTPSampler.port"></stringProp>
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
-            <stringProp name="HTTPSampler.protocol">http</stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-            <stringProp name="HTTPSampler.path">/rest/latest/topologies/${applicationName}:${applicationVersion}/locations</stringProp>
+            <stringProp name="HTTPSampler.path">${a4c_base}/rest/latest/topologies/${applicationName}:${applicationVersion}/locations</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -394,9 +408,9 @@ vars.put(&quot;topologyId&quot;, vars.get(&quot;applicationName&quot;) + &quot;:
             <stringProp name="HTTPSampler.port"></stringProp>
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
-            <stringProp name="HTTPSampler.protocol">http</stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-            <stringProp name="HTTPSampler.path">/rest/latest/applications/${applicationName}/environments/${environmentId}/deployment-topology/location-policies</stringProp>
+            <stringProp name="HTTPSampler.path">${a4c_base}/rest/latest/applications/${applicationName}/environments/${environmentId}/deployment-topology/location-policies</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -430,9 +444,9 @@ vars.put(&quot;topologyId&quot;, vars.get(&quot;applicationName&quot;) + &quot;:
             <stringProp name="HTTPSampler.port"></stringProp>
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
-            <stringProp name="HTTPSampler.protocol">http</stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
-            <stringProp name="HTTPSampler.path">/rest/latest/applications/deployment</stringProp>
+            <stringProp name="HTTPSampler.path">${a4c_base}/rest/latest/applications/deployment</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -464,9 +478,9 @@ vars.put(&quot;startDate&quot;, sdf.format(new Date()));   </stringProp>
             <stringProp name="HTTPSampler.port"></stringProp>
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
-            <stringProp name="HTTPSampler.protocol">http</stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-            <stringProp name="HTTPSampler.path">/rest/latest/applications/${applicationName}/environments/${environmentId}/active-deployment</stringProp>
+            <stringProp name="HTTPSampler.path">${a4c_base}/rest/latest/applications/${applicationName}/environments/${environmentId}/active-deployment</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -506,9 +520,9 @@ vars.put(&quot;startDate&quot;, sdf.format(new Date()));   </stringProp>
               <stringProp name="HTTPSampler.port"></stringProp>
               <stringProp name="HTTPSampler.connect_timeout"></stringProp>
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              <stringProp name="HTTPSampler.protocol">http</stringProp>
+              <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-              <stringProp name="HTTPSampler.path">/rest/latest/deployments/${deploymentId}/status</stringProp>
+              <stringProp name="HTTPSampler.path">${a4c_base}/rest/latest/deployments/${deploymentId}/status</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -574,9 +588,9 @@ vars.put(&quot;startDate&quot;, sdf.format(new Date()));   </stringProp>
               <stringProp name="HTTPSampler.port"></stringProp>
               <stringProp name="HTTPSampler.connect_timeout"></stringProp>
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              <stringProp name="HTTPSampler.protocol">http</stringProp>
+              <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-              <stringProp name="HTTPSampler.path">/rest/latest/applications/${applicationName}/environments/${environmentId}/logs/search</stringProp>
+              <stringProp name="HTTPSampler.path">${a4c_base}/rest/latest/applications/${applicationName}/environments/${environmentId}/logs/search</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -669,9 +683,9 @@ log.info(&quot;DEBUG applicationName: &quot; + vars.get(&quot;applicationName&qu
               <stringProp name="HTTPSampler.port"></stringProp>
               <stringProp name="HTTPSampler.connect_timeout"></stringProp>
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              <stringProp name="HTTPSampler.protocol">http</stringProp>
+              <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/rest/latest/applications/${applicationName}/environments/${environmentId}/deployment</stringProp>
+              <stringProp name="HTTPSampler.path">${a4c_base}/rest/latest/applications/${applicationName}/environments/${environmentId}/deployment</stringProp>
               <stringProp name="HTTPSampler.method">DELETE</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -681,9 +695,15 @@ log.info(&quot;DEBUG applicationName: &quot; + vars.get(&quot;applicationName&qu
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSamplerProxy>
             <hashTree/>
+            <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="Reset endDate" enabled="true">
+              <stringProp name="BeanShellSampler.query">vars.put(&quot;endDate&quot;,&quot;&quot;);</stringProp>
+              <stringProp name="BeanShellSampler.filename"></stringProp>
+              <stringProp name="BeanShellSampler.parameters"></stringProp>
+              <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
+            </BeanShellSampler>
+            <hashTree/>
             <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="Log" enabled="false">
-              <stringProp name="BeanShellSampler.query">vars.put(&quot;endDate&quot;,&quot;&quot;);
-log.info(&quot;DEBUG BGN &quot; + ctx.getThreadNum() + &quot;-&quot; + vars.getIteration() + &quot; : &quot; + vars.get(&quot;deploymentStatus&quot;));
+              <stringProp name="BeanShellSampler.query">log.info(&quot;DEBUG BGN &quot; + ctx.getThreadNum() + &quot;-&quot; + vars.getIteration() + &quot; : &quot; + vars.get(&quot;deploymentStatus&quot;));
 log.info(&quot;DEBUG BGN &quot; + ctx.getThreadNum() + &quot;-&quot; + vars.getIteration() + &quot; : &quot; + vars.get(&quot;endDate&quot;));</stringProp>
               <stringProp name="BeanShellSampler.filename"></stringProp>
               <stringProp name="BeanShellSampler.parameters"></stringProp>
@@ -708,7 +728,7 @@ log.info(&quot;DEBUG BGN &quot; + ctx.getThreadNum() + &quot;-&quot; + vars.getI
                 <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 <stringProp name="HTTPSampler.protocol"></stringProp>
                 <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">/rest/latest/deployments/${deploymentId}</stringProp>
+                <stringProp name="HTTPSampler.path">${a4c_base}/rest/latest/deployments/${deploymentId}</stringProp>
                 <stringProp name="HTTPSampler.method">GET</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -750,9 +770,9 @@ log.info(&quot;DEBUG END &quot; + ctx.getThreadNum() + &quot;-&quot; + vars.getI
               <stringProp name="HTTPSampler.port"></stringProp>
               <stringProp name="HTTPSampler.connect_timeout"></stringProp>
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              <stringProp name="HTTPSampler.protocol">http</stringProp>
+              <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/rest/latest/applications/${applicationName}</stringProp>
+              <stringProp name="HTTPSampler.path">${a4c_base}/rest/latest/applications/${applicationName}</stringProp>
               <stringProp name="HTTPSampler.method">DELETE</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
