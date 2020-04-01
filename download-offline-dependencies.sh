@@ -41,9 +41,6 @@ download () {
   fi
 }
 
-download resources/bin/terraform-plugins https://releases.hashicorp.com/terraform-provider-null/1.0.0/terraform-provider-null_1.0.0_linux_amd64.zip
-exit 0
-
 #
 # Get Java
 download resources/bin/java http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz jdk-8u131-linux-x64.tar.gz "-H \"Cookie: oraclelicense=a\" -kLO"
