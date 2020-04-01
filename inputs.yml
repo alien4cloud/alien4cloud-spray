@@ -297,7 +297,7 @@ a4c_loadtests:
     crontab: "0 5 * * *"
     loop_count: 10
     user_count: 1
-    template: "Lab10:2.5.0-SNAPSHOT"
+    template: "artemis.loadtests.containers.topology.LOADTESTCONTAINER:2.5-SNAPSHOT"
 
 topologyTemplateVersionId: "3MockWithRel:2.1.0-SNAPSHOT"
 applicationName: "SetupTestApp"
