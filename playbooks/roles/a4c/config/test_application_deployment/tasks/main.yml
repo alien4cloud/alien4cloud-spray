@@ -264,7 +264,7 @@
 
 - name: Wait for undeployment success
   uri:
-    url: "{{ alien_url }}/rest/latest/deployments/{{ deploymentId }}/status"
+    url: "{{ alien_url }}/rest/latest/deployments/{{ deploymentId }}"
     method: GET
     return_content: yes
     validate_certs: no
@@ -274,18 +274,14 @@
     status_code: 200
     timeout: 120
   register: result
-  until: result.json.data == "UNDEPLOYED"
+  until: result.json.data.deployment.endDate is defined
   retries: 30
   delay: 60
   ignore_errors: yes
 
 - fail:
     msg: "The test application did not UNDEPLOY successfully, something went wrong !"
-  when: (result.json.data != 'UNDEPLOYED')
-
-- name: Just pause few seconds to avoid errors when deleting application
-  pause:
-    seconds: 60
+  when: (result.json.data.deployment.endDate is not defined)
 
 - name: Delete application
   uri:
