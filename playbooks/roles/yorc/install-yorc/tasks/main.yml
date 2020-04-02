@@ -68,7 +68,7 @@
 
 - name: Copy terraform plugins
   copy:
-    src: resources/bin/terraform-plugins/
+    src: "{{ inventory_dir }}/resources/bin/terraform-plugins/"
     dest: /var/terraform/plugins.zip
   become: true
   when: (offline)

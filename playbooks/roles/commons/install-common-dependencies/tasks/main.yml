@@ -15,7 +15,7 @@
 
 - name: Copy Unzip
   copy:
-    src: resources/bin/unzip/
+    src: "{{ inventory_dir }}/resources/bin/unzip/"
     dest: /tmp/rpms/
   when: (offline)
 

@@ -150,7 +150,10 @@ Where `Spray-A4C` is the name of the instance(s) (label name in EC2).
 All the SSL stuff will be generated for all hosts having this label (I usually use the output to feed the `hosts` inventory file).
 
 # Installation
-The playbook `install-a4c-consul-yorc.yml` will install all stack on the remote machine(s):
+
+> The following explanations will detail separate steps for installation, configuration and tests but you can use the all in one `install-all-setup-test.yml` playbook instead.
+
+The playbook `install-all.yml` will install all stack on the remote machine(s):
 
 First off all, if you didn't attempt to connect to the remote machines, you will probably need to deactivate the host key checking:
 
@@ -161,13 +164,13 @@ export ANSIBLE_HOST_KEY_CHECKING=False
 Then, launch the playbook:
 
 ```
-ansible-playbook -i hosts --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v playbooks/install-a4c-consul-yorc.yml
+ansible-playbook -i hosts --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --extra-vars "@inputs.yml" -v playbooks/install-all.yml
 ```
 
 If you don't use a SSH key but a password authentication (which is not recommended !) you can use:
 
 ```
-ansible-playbook -i hosts --user $REMOTE_USER --extra-vars "@inputs.yml" -v --extra-vars "ansible_user=root ansible_password=yourpassword"  playbooks/install-a4c-consul-yorc.yml
+ansible-playbook -i hosts --user $REMOTE_USER --extra-vars "@inputs.yml" -v --extra-vars "ansible_user=root ansible_password=yourpassword"  playbooks/install-all.yml
 ```
 
 # Installation in _offline_ mode

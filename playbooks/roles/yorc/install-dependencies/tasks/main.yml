@@ -56,7 +56,7 @@
 
 - name: Copy RPMs
   copy:
-    src: resources/bin/rpms/
+    src: "{{ inventory_dir }}/resources/bin/rpms/"
     dest: "{{ temp_rpm_dir.path }}"
   when: (offline)
 
@@ -73,7 +73,7 @@
 
 - name: Copy python and ansible
   copy:
-    src: resources/bin/python/
+    src: "{{ inventory_dir }}/resources/bin/python/"
     dest: /tmp/python/
   when: (offline)
 
@@ -114,7 +114,7 @@
 
 - name: Copy usr binaries
   copy:
-    src: resources/bin/usr/
+    src: "{{ inventory_dir }}/resources/bin/usr/"
     dest: /tmp/usr/
   when: (offline)
 

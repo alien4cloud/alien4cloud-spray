@@ -39,7 +39,7 @@
 
 - name: Copy java
   copy:
-    src: resources/bin/java/
+    src: "{{ inventory_dir }}/resources/bin/java/"
     dest: /tmp/java/
   when: (not java8_installed) and (offline)
 
