@@ -26,10 +26,11 @@
         orchestratorName: 'Yorc',
         location_name: 'Default'
       }
-    - a4c/config/order_location_modifiers_it    
+    - a4c/config/order_location_modifiers_it
     - { role: 'a4c/config/create_metaproperties',
         resources_file_artifact: 'resources/metaproperties.yaml'
       }
+    - a4c/config/upload_csars      
     - a4c/config/download_upload_csars
     - { role: 'commons/parse_kubeconfig',
         resources_file_artifact: 'resources/kubeconfig'
