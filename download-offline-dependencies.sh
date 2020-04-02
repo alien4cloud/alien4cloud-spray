@@ -46,11 +46,11 @@ download () {
 download resources/bin/java http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz jdk-8u131-linux-x64.tar.gz "-H \"Cookie: oraclelicense=a\" -kLO"
 
 # Get a4c ecosystem binaries
-download resources/bin http://34.242.40.25/dist/alien4cloud/alien4cloud-artemis-dist/3.0.0-SNAPSHOT/alien4cloud-artemis-dist-3.0.0-SNAPSHOT-dist.tar.gz
+download resources/bin http://34.242.40.25/dist/alien4cloud/alien4cloud-artemis-dist/3.0.0-M4/alien4cloud-artemis-dist-3.0.0-M4-dist.tar.gz
 download resources/bin https://releases.hashicorp.com/consul/1.2.3/consul_1.2.3_linux_amd64.zip
 download resources/bin https://releases.hashicorp.com/consul-template/0.23.0/consul-template_0.23.0_linux_amd64.zip
 download resources/bin https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
-download resources/bin https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.0-M9%2Fyorc-4.0.0-M9.tgz yorc-4.0.0-M9.tgz "-L"
+download resources/bin https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.0-M10%2Fyorc-4.0.0-M10.tgz yorc-4.0.0-M10.tgz "-L"
 download resources/bin/elasticsearch https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.6.2.rpm
 download resources/bin https://archive.apache.org/dist/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz
 # Get rpm dependencies
