@@ -1,0 +1,21 @@
+- name: Get keypass content
+  set_fact:
+    keepass_value: "{{ lookup('keepass', keypass_key, keypass_property) }}"
+
+- name: Slurp the target file
+  slurp:
+    src: "{{ target_file }}"
+  register: target
+
+- name: Extract target data
+  set_fact:
+    target: "{{ target['content'] | b64decode | from_yaml}}"
+
+- name: Add {{target_field}} to config
+  set_fact:
+    target: "{{ target|combine({ target_field: keepass_value }) }}"
+
+- name: Serialize target
+  copy:
+    content: "{{ target | to_nice_yaml(indent=2) }}"
+    dest: "{{ target_file }}"
