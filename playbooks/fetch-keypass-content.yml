@@ -45,12 +45,6 @@
         keypass_custom_property: 'cert.private.key',
         file_suffix_var_name: 'ssl_host_key_suffix'
       }
-
-- hosts: localhost
-  name: Fetch keypass secrets
-  become: false
-
-  roles:
     - { role: 'keypass/fetch_keypass_property_to_file',
         keypass_key: 'Plateforme/Service applicatif/a4c/Compte par default - Admin A4C',
         keypass_property: 'password',

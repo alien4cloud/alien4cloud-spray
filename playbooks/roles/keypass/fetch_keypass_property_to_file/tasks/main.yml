@@ -2,6 +2,11 @@
   set_fact:
     keepass_value: "{{ lookup('keepass', keypass_key, keypass_property) }}"
 
+- name: Copy target file to remote
+  copy:
+    src: "{{ target_file }}"
+    dest: "{{ target_file }}"
+
 - name: Slurp the target file
   slurp:
     src: "{{ target_file }}"
@@ -19,3 +24,15 @@
   copy:
     content: "{{ target | to_nice_yaml(indent=2) }}"
     dest: "{{ target_file }}"
+
+- name: Copy target file to local
+  fetch:
+    src: "{{ target_file }}"
+    dest: "{{ target_file }}"
+    flat: yes
+    validate_checksum: no
+
+- name: Finally remove target file from remote
+  file:
+    path: "{{ target_file }}"
+    state: absent
