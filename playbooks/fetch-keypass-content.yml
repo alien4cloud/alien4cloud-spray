@@ -58,7 +58,7 @@
         target_field: 'a4c_admin_pwd'
       }
     - { role: 'keypass/fetch_keypass_property_pair_to_file',
-        keypass_key: "Plateforme/Controle d'acces et firewall/smd/Compte Technique A4C",
+        keypass_key: "Plateforme/Controle d'acces et Firewall/smd/Compte Technique A4C",
         keypass_property1: 'username',
         keypass_property2: 'password',
         target_file_path: '{{ inventory_dir }}/keepass.yml',
