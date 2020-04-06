@@ -25,11 +25,11 @@
 
 - name: Get keypass content for {{ keypass_property1 }}
   set_fact:
-    keepass_value: "{{ lookup('keepass', keypass_key, keypass_property1) }}"
+    keepass_value1: "{{ lookup('keepass', keypass_key, keypass_property1) }}"
 
 - name: Get keypass content for {{ keypass_property2 }}
   set_fact:
-    keepass_value: "{{ lookup('keepass', keypass_key, keypass_property2) }}"
+    keepass_value2: "{{ lookup('keepass', keypass_key, keypass_property2) }}"
 
 - name: Init target
   set_fact:
