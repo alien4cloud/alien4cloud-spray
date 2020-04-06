@@ -65,3 +65,19 @@
         plugin_name: 'datagouv_mls',
         target_field: 'applicationPostCredentials'
       }
+    - { role: 'keypass/fetch_keypass_property_pair_to_file',
+        keypass_key: "Plateforme/Controle d'acces et Firewall/smd/Compte Technique A4C",
+        keypass_property1: 'username',
+        keypass_property2: 'password',
+        target_file_path: '{{ inventory_dir }}/keepass.yml',
+        plugin_name: 'datagouv_mls',
+        target_field: 'getPdsCredentials'
+      }
+    - { role: 'keypass/fetch_keypass_property_pair_to_file',
+        keypass_key: "Plateforme/Gestion de la donnee/atlas/Compte technique a4c",
+        keypass_property1: 'username',
+        keypass_property2: 'password',
+        target_file_path: '{{ inventory_dir }}/keepass.yml',
+        plugin_name: 'datagouv_mls',
+        target_field: 'applicationDeleteCredentials'
+      }
