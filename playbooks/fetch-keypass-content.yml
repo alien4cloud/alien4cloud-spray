@@ -50,5 +50,5 @@
         keypass_property: 'password',
         target_file_path: '{{ inventory_dir }}/keepass.yml',
         target_field: 'a4c_admin_pwd'
-      ]
+      }
       
