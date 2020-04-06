@@ -1,0 +1,61 @@
+- name: Locally Check for target file
+  local_action: "stat path={{ target_file_path }}"
+  register: target_file
+
+- name: Create temporary file to store keypass content
+  tempfile:
+    state: file
+    suffix: temp
+  register: remote_keypass_content_file
+
+- name: Copy target file to remote
+  copy:
+    src: "{{ target_file_path }}"
+    dest: "{{ remote_keypass_content_file.path }}"
+  when: target_file.stat.exists
+
+- name: Slurp the target file
+  slurp:
+    src: "{{ remote_keypass_content_file.path }}"
+  register: target
+
+- name: Extract target data
+  set_fact:
+    target: "{{ target['content'] | b64decode | from_yaml}}"
+
+- name: Get keypass content for {{ keypass_property1 }}
+  set_fact:
+    keepass_value: "{{ lookup('keepass', keypass_key, keypass_property1) }}"
+
+- name: Get keypass content for {{ keypass_property2 }}
+  set_fact:
+    keepass_value: "{{ lookup('keepass', keypass_key, keypass_property2) }}"
+
+- name: Init target
+  set_fact:
+    target: []
+  when: target == ""
+
+- name: Add {{plugin_name}} : {{target_field}} to config
+  set_fact:
+    target: "{{ target|combine({ 'a4c_config_addons': { plugin_name: {target_field: keepass_value1 + ':' + keypass_property2 }}}, recursive=true) }}"
+  when: target != ""
+
+- name: Serialize target
+  copy:
+    content: "{{ target | to_nice_yaml(indent=2) }}"
+    dest: "{{ remote_keypass_content_file.path }}"
+
+- name: Copy target file to local
+  fetch:
+    src: "{{ remote_keypass_content_file.path }}"
+    dest: "{{ target_file_path }}"
+    flat: yes
+    validate_checksum: no
+
+- name: Finally remove target file from remote
+  file:
+    path: "{{ remote_keypass_content_file.path }}"
+    state: absent
+
+
