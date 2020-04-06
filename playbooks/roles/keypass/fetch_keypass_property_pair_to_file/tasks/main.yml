@@ -38,7 +38,7 @@
 
 - name: Add {{plugin_name}} {{target_field}} to config
   set_fact:
-    target: "{{ target|combine({ 'a4c_config_addons': { plugin_name: {target_field: keepass_value1 + ':' + keypass_property2 }}}, recursive=true) }}"
+    target: "{{ target|combine({ 'a4c_config_addons': { plugin_name: {target_field: keepass_value1 + ':' + keepass_value2 }}}, recursive=true) }}"
   when: target != ""
 
 - name: Serialize target
