@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: "consul:consulfront:yorc:yorcfront:elasticsearch:a4c:a4cfront:jmeter"
   name: Install all common dependencies
   roles:
     - commons/install-common-dependencies
@@ -197,7 +197,7 @@
   name: Install loadtests
   roles:
     - commons/define_commons_vars
-    - a4c/config/define_a4c_url 
+    - a4c/config/define_a4c_url
     - install-java
     - loadtests/install-loadtests
     - loadtests/configure-loadtests

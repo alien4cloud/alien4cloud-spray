@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: "consul:consulfront:yorc:yorcfront:elasticsearch:a4c:a4cfront:jmeter"
   name: Install all common dependencies
   roles:
     - commons/install-common-dependencies
@@ -32,7 +32,7 @@
     - { role: spark/define-spark-home, spark_user_var: 'yorc_user' }
     - consul/start-consul
     - yorc/start-yorc
-    - yorc/configure-hp    
+    - yorc/configure-hp
 
 - hosts: yorcfront
   name: Install Yorc front (Nginx).

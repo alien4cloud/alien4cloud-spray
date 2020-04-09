@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: "consul:consulfront:yorc:yorcfront:elasticsearch:a4c:a4cfront:jmeter"
   gather_facts: yes
   name: Install all common dependencies.
   roles:
