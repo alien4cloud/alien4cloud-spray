@@ -8,9 +8,6 @@
         <Console name="STDOUT">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %c{1}:%L - %m%n" />
         </Console>
-        <File name="FILE" fileName="{{ a4c_log_dir }}/alien4cloud.log">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %c{1}:%L - %m%n" />
-        </File>
         <RollingFile name="DEPLOYMENT_LOGS_APPENDER" fileName="${deployment_path}/deployments.log"
                      filePattern="${deployment_path}/deployments-%d{yyyy-MM-dd}.log.gz">
             <PatternLayout pattern="%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %-5p %.-4096m%n" />
@@ -37,7 +34,6 @@
     <Loggers>
         <root level="info">
             <AppenderRef ref="STDOUT" />
-            <AppenderRef ref="FILE" />
         </root>
         <logger name="DEPLOYMENT_LOGS_LOGGER" level="info" additivity="false">
             <AppenderRef ref="DEPLOYMENT_LOGS_APPENDER" />

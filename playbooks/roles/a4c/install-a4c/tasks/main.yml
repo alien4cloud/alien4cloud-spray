@@ -82,6 +82,15 @@
   become_user: "{{ a4c_user }}"
   when: (offline) and (not a4c_installed)
 
+- name: Usage of a4c jinja2 template for env file creation
+  template:
+    src: a4c.env.j2
+    dest: "{{ a4c_install_dir }}/alien4cloud/a4c.env"
+    mode: 0444
+    force: yes
+  become: true
+  become_user: "{{ a4c_user }}"
+
 - name: Usage of a4c jinja2 template for service creation
   template:
     src: a4c-service.j2

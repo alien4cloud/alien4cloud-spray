@@ -6,7 +6,9 @@ After=consul.service
 User={{ yorc_user }}
 Restart=on-failure
 WorkingDirectory={{ yorc_install_dir }}
-ExecStart=/bin/bash -c 'sleep 30 && export YORC_LOG={{ yorc_debug }} && ./yorc server >{{ yorc_log_dir }}/yorc.log 2>&1'
+Environment=YORC_LOG={{ yorc_debug }}
+ExecStartPre=/bin/sleep 30
+ExecStart={{ yorc_install_dir }}/yorc server 2>&1
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGTERM
 
