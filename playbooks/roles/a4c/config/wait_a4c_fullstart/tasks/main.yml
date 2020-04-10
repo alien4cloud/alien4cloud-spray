@@ -28,6 +28,10 @@
   delay: 30
   ignore_errors: yes
 
+- name: Not able to logon to A4C after 30 retries, here is the unexpected result !
+  debug:
+    var: result
+  when: (result.status != 302)
 
 - name: Fail when fully started A4C is not reachable at {{ alien_url }}
   fail:
@@ -42,7 +46,7 @@
     body:
     - [ username, "{{ a4c_admin_usr }}" ]
     - [ password, "{{ a4c_admin_pwd }}" ]
-    - [ submit, Login ]    
+    - [ submit, Login ]
     return_content: yes
     validate_certs: no
     status_code: 302
@@ -78,6 +82,11 @@
   retries: 30
   delay: 30
   ignore_errors: yes
+
+- name: Not able to get application list using rest API call, here is the unexpected result
+  debug:
+    var: result
+  when: (result.status != 200)
 
 - name: Not able to get application list using rest API call
   fail:
