@@ -17,7 +17,7 @@ server {
         location / {
 {% endif %}
 {% if dns_resolver is defined %}
-                resolver: {{ dns_resolver }};
+                resolver {{ dns_resolver }};
 {% endif %}
                 proxy_pass {{ a4c_protocol }}://{{ '{{' }} key "service/a4c/leader" {{ '}}' }}{{ '/$1$is_args$args' if (a4c_front_location_path is defined and a4c_front_location_path != "") else '' }};
                 proxy_set_header Host {{ a4c_front_server_name if (a4c_front_server_name is defined) else inventory_hostname }};
