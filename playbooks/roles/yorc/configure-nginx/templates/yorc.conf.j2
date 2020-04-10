@@ -20,7 +20,7 @@
 
         location / {
 {% if dns_resolver is defined %}
-            resolver: {{ dns_resolver }};
+            resolver {{ dns_resolver }};
 {% endif %}
             proxy_pass {{ 'https' if yorc_tls else 'http' }}://yorc;
             # the A4C/Yorc plugin make long polling request to Yorc server

@@ -23,7 +23,7 @@ server {
         location / {
 {% endif %}
 {% if dns_resolver is defined %}
-                resolver: {{ dns_resolver }};
+                resolver {{ dns_resolver }};
 {% endif %}
                 try_files $uri $uri/ =404;
 
