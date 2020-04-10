@@ -3,8 +3,16 @@
   become: true
   become_user: "{{ yorc_user }}"
   file:
-    path: "{{ yorc_working_dir }}"
+    path: "{{ yorc_working_dir }}/tmp"
     state: directory
+
+- name: Create symbolic link to temp dir
+  become: true
+  become_user: "{{ yorc_user }}"
+  file:
+    src: "{{ yorc_working_dir }}/tmp"
+    dest: "~/tmp"
+    state: link
 
 - name: Ensure the yorc_remote_ansible_tmp directory exists
   become: true
