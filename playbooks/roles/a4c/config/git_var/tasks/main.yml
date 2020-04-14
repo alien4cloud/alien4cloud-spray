@@ -21,7 +21,7 @@
       repositoryUrl: "{{ item.repositoryUrl }}"
       username: "{{ item.repositoryUsername }}"
       password: "{{ item.repositoryPassword }}"
-      storedLocally: true
+      storedLocally: false
       importLocations:
         - branchId: "{{ item.branchId }}"
           subPath: "{{ item.subPath }}"
