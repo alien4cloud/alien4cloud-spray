@@ -281,6 +281,13 @@
   debug:
     var: upgradePluginMap
 
+- name: Ensure init/plugins directory exists
+  become: true
+  file:
+    path: "{{ a4c_install_dir }}/alien4cloud/init/plugins"
+    state: directory
+    owner: "{{ a4c_user }}"
+
 - name: Find inplace plugins
   become: true
   become_user: "{{ a4c_user }}"
@@ -367,6 +374,13 @@
     line: "{{ ansible_date_time.iso8601 }} : Install new plugin {{ upgradePluginMap[item].upgrade }} in {{ a4c_install_dir }}/alien4cloud/init/plugins/"
   with_items: "{{ upgradePluginMap.keys() }}"
   when: (upgradePluginMap[item].inplace is not defined) and (upgradePluginMap|length > 0)
+
+- name: Ensure init/archives directory exists
+  become: true
+  file:
+    path: "{{ a4c_install_dir }}/alien4cloud/init/archives"
+    state: directory
+    owner: "{{ a4c_user }}"
 
 - name: List all archives in place
   become: true
