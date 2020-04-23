@@ -40,13 +40,13 @@
 
 - name: Ensure a4c_config_added variable exists
   set_fact:
-    a4c_config_added: ""
+    a4c_config_addons: {}
   when: (a4c_config_addons is not defined)
 
-- name: Feed a4c_config_added variable
-  set_fact:
-    a4c_config_added: "{{ a4c_config_addons | to_nice_yaml(indent=2) }}"
-  when: (a4c_config_addons is defined)
+# - name: Feed a4c_config_added variable
+#   set_fact:
+#     a4c_config_added: "{{ a4c_config_addons | to_nice_yaml(indent=2) }}"
+#   when: (a4c_config_addons is defined)
 
 
 - name: Define consul agent address
@@ -76,6 +76,28 @@
     src: alien4cloud-config.yml.j2
     dest: "{{ a4c_install_dir }}/alien4cloud/config/alien4cloud-config.yml"
     force: yes
+  become: true
+  become_user: "{{ a4c_user }}"
+
+- name: Slurp the a4c config file
+  slurp:
+    src: "{{ a4c_install_dir }}/alien4cloud/config/alien4cloud-config.yml"
+  become: true
+  become_user: "{{ a4c_user }}"
+  register: a4c_config_slurped
+
+- name: Decode a4c config
+  set_fact:
+    a4c_config_slurped: "{{ a4c_config_slurped['content'] | b64decode | from_yaml }}"
+
+- name: Add 'a4c_config_addons' to A4C config
+  set_fact:
+    a4c_config_slurped: "{{ a4c_config_slurped|combine(a4c_config_addons, recursive=True) }}"
+
+- name: Serialize a4c config
+  copy:
+    content: "{{ a4c_config_slurped | to_nice_yaml(indent=2) }}"
+    dest: "{{ a4c_install_dir }}/alien4cloud/config/alien4cloud-config.yml"
   become: true
   become_user: "{{ a4c_user }}"
 
