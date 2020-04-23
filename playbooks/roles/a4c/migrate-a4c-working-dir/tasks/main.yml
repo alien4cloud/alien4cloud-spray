@@ -123,7 +123,7 @@
 
 - name: Ask for user confirmation before migrating working dir
   pause:
-    prompt: "Do you want to copy actual working directory content '{{ actual_a4c_working_dir }}' to expected one '{{ a4c_working_dir }}' ? (type 'yes I do !' to confirm)?"
+    prompt: "Do you want to copy actual working directory content '{{ actual_a4c_working_dir }}' to expected one '{{ a4c_working_dir }}'  (type 'yes I do !' to confirm) ?"
   register: ask_for_cp_confirmation
   delegate_to: localhost
   when: >
@@ -151,7 +151,7 @@
 
 - name: Ask for user confirmation before cleaning actual working dir
   pause:
-    prompt: "Do you want to clean the actual working directory content '{{ actual_a4c_working_dir }}' ? (type 'yes I do !' to confirm)?"
+    prompt: "Do you want to clean the actual working directory content '{{ actual_a4c_working_dir }}'  (type 'yes I do !' to confirm) ?"
   register: ask_for_clean_confirmation
   delegate_to: localhost
   when: >

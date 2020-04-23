@@ -1,6 +1,6 @@
 #
 # - pause:
-#     prompt: "Do you want to remove all a4c files on {{ a4c_ip }} ? (type 'yes I do !' to confirm)?"
+#     prompt: "Do you want to remove all a4c files on {{ a4c_ip }}  (type 'yes I do !' to confirm) ?"
 #   register: ask_for_confirmation
 #   delegate_to: localhost
 #
