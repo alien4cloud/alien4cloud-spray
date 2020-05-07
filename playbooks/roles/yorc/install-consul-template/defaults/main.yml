@@ -1,0 +1,2 @@
+# need for a sudo user (the user that launch consul-template needs to restart nginx)
+consul_template_user: centos

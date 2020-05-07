@@ -1,44 +1,50 @@
 
+- name: Define context vars based on component name
+  include_role:
+    name: rsync/define_context_vars
+  vars:
+    component_name: "{{ component_name }}"
+
 - name: Ensure .ssh directory exists
   become: true
-  become_user: "{{ a4c_user }}"
+  become_user: "{{ component_user }}"
   file:
     path: "~/.ssh"
     state: directory
-    owner: "{{ a4c_user }}"
-  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+    owner: "{{ component_user }}"
+  when: (component_ha_enabled) and (should_use_rsync_for_component_ha)
 
 - name: Ensure no private key is present
   become: true
-  become_user: "{{ a4c_user }}"
+  become_user: "{{ component_user }}"
   file:
     path: "~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}"
     state: absent
-  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+  when: (component_ha_enabled) and (should_use_rsync_for_component_ha)
 
 - name: Ensure no public key is present
   become: true
-  become_user: "{{ a4c_user }}"
+  become_user: "{{ component_user }}"
   file:
     path: "~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}.pub"
     state: absent
-  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+  when: (component_ha_enabled) and (should_use_rsync_for_component_ha)
 
 - name: Generate keypair
   become: true
-  become_user: "{{ a4c_user }}"
+  become_user: "{{ component_user }}"
   shell: "ssh-keygen -f ~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }} -P \"\""
-  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+  when: (component_ha_enabled) and (should_use_rsync_for_component_ha)
   # openssh_keypair:
   #   path: "~/.ssh/{{ inventory_hostname }}"
   #   force: True
 
 - name: Copy public key in a local file
   become: true
-  become_user: "{{ a4c_user }}"
+  become_user: "{{ component_user }}"
   fetch:
     src: "~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}.pub"
     dest: "{{ inventory_dir }}/certificates/pub/{{ inventory_hostname }}{{ appendable_private_domain_name }}.pub"
     flat: yes
     validate_checksum: no
-  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+  when: (component_ha_enabled) and (should_use_rsync_for_component_ha)

@@ -41,6 +41,25 @@
     - spark/install-spark
     - { role: spark/define-spark-home, spark_user_var: 'yorc_user' }
     - consul/start-consul
+
+- hosts: yorc
+  name: Setup rsync for Yorc.
+  roles:
+    - commons/define_commons_vars
+    - { role: rsync/stop-consul-template, component_name: 'yorc' }
+    - { role: rsync/install-rsync, component_name: 'yorc' }
+    - { role: rsync/generate_keypair, component_name: 'yorc' }
+    - { role: rsync/add_public_keys, component_name: 'yorc' }
+    - { role: rsync/install-consul-template, component_name: 'yorc' }
+    - { role: rsync/configure-consul-template, component_name: 'yorc' }
+    - { role: rsync/schedule-sync, component_name: 'yorc' }
+    - { role: consul/start-consul, component_name: 'yorc' }
+    - { role: rsync/start-consul-template, component_name: 'yorc' }
+
+- hosts: yorc
+  name: Install configure and start Yorc.
+  roles:
+    - commons/define_commons_vars
     - yorc/start-yorc
     - yorc/configure-hp
 
@@ -49,10 +68,18 @@
   gather_facts: no
   roles:
     - commons/define_commons_vars
+    - yorc/stop-consul-template
+    - consul/stop-consul
     - nginx/stop-nginx
     - nginx/install-nginx
     - yorc/configure-nginx
     - nginx/start-nginx
+    - consul/install-consul
+    - { role: consul/configure-consul, consul_mode: 'client', consul_agent_for: 'yorcfront' }
+    - consul/start-consul
+    - yorc/install-consul-template
+    - yorc/configure-consul-template
+    - yorc/start-consul-template
 
 - hosts: elasticsearch
   name: Install configure and start Elasticsearch.
@@ -112,16 +139,18 @@
 - hosts: a4c
   name: Setup rsync for A4C.
   roles:
-    - rsync/stop-consul-template
+    - { role: rsync/stop-consul-template, component_name: 'a4c' }
     - commons/define_commons_vars
-    - rsync/install-rsync
-    - rsync/generate_keypair
-    - rsync/add_public_keys
-    - rsync/install-consul-template
-    - rsync/configure-consul-template
-    - rsync/schedule-sync
-    - consul/start-consul
-    - rsync/start-consul-template
+    - { role: rsync/install-rsync, component_name: 'a4c' }
+    - { role: rsync/generate_keypair, component_name: 'a4c' }
+    - { role: rsync/add_public_keys, component_name: 'a4c' }
+    - { role: rsync/install-consul-template, component_name: 'a4c' }
+    - { role: rsync/configure-consul-template, component_name: 'a4c' }
+    - { role: rsync/schedule-sync, component_name: 'a4c' }
+    - { role: consul/start-consul, component_name: 'a4c' }
+    - { role: rsync/start-consul-template, component_name: 'a4c' }
+
+
 
 - hosts: a4c
   name: Start A4C

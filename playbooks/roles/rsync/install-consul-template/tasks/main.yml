@@ -1,36 +1,48 @@
 
-
+- name: Define context vars based on component name
+  include_role:
+    name: rsync/define_context_vars
+  vars:
+    component_name: "{{ component_name }}"
 
 - name: Ensure /etc/consul_template directory exists
   become: true
   file:
-    path: "/etc/consul_template"
+    path: "/etc/consul_template/{{ component_name }}"
     state: directory
-    owner: "{{ a4c_user }}"
-  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+    mode: 0777
+    owner: "{{ component_user }}"
+  when: (component_ha_enabled) and (should_use_rsync_for_component_ha)
 
 - name: Ensure /var/lib/consul_template/ directory exists
   become: true
   file:
     path: "/var/lib/consul_template/"
     state: directory
-    owner: "{{ a4c_user }}"
-  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+  when: (component_ha_enabled) and (should_use_rsync_for_component_ha)
+
+- name: "Ensure /var/lib/consul_template/{{ component_name }} directory exists"
+  become: true
+  file:
+    path: "/var/lib/consul_template/{{ component_name }}"
+    state: directory
+    owner: "{{ component_user }}"
+  when: (component_ha_enabled) and (should_use_rsync_for_component_ha)
 
 - name: Ensure /var/log/consul_template/ directory exists
   become: true
   file:
     path: "/var/log/consul_template/"
     state: directory
-    owner: "{{ a4c_user }}"
-  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+    mode: 0777
+  when: (component_ha_enabled) and (should_use_rsync_for_component_ha)
 
 - name: Check if consul_template is installed
   shell: "/var/lib/consul_template/consul-template --version"
   register: is_consul_template_exist_command
   ignore_errors: yes
   become: true
-  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+  when: (component_ha_enabled) and (should_use_rsync_for_component_ha)
 
 - name: Init a boolean indicating if consul_template is already installed
   set_fact:
@@ -39,49 +51,47 @@
 - name: Register a boolean indicating if consul_template is already installed
   set_fact:
     consul_template_installed: "{{ is_consul_template_exist_command.rc == 0 }}"
-  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+  when: (component_ha_enabled) and (should_use_rsync_for_component_ha)
 
 - name: Is consul_template installed ?
   debug:
     var: consul_template_installed
-  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+  when: (component_ha_enabled) and (should_use_rsync_for_component_ha)
 
 - name: Extract consul_template archive from remote source
   unarchive:
     src: "{{ CONSUL_TEMPLATE_DL_URL }}"
     dest: "/var/lib/consul_template"
-    mode: 0755
+    mode: 0777
     remote_src: yes
   become: true
-  become_user: "{{ a4c_user }}"
-  when: (not offline) and (not consul_template_installed) and (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+  when: (not offline) and (not consul_template_installed) and (component_ha_enabled) and (should_use_rsync_for_component_ha)
 
 - name: Extract consul_template archive from local source
   unarchive:
     src: "{{ CONSUL_TEMPLATE_DL_URL }}"
     dest: "/var/lib/consul_template"
-    mode: 0755
+    mode: 0777
     remote_src: no
   become: true
-  become_user: "{{ a4c_user }}"
-  when: (offline) and (not consul_template_installed) and (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+  when: (offline) and (not consul_template_installed) and (component_ha_enabled) and (should_use_rsync_for_component_ha)
 
-- name: Usage of a4c-sync-service jinja2 template for service creation
+- name: Usage of component-sync-service.j2 jinja2 template for service creation
   template:
-    src: a4c-sync-service.j2
-    dest: /etc/systemd/system/a4c-sync.service
+    src: component-sync-service.j2
+    dest: "/etc/systemd/system/{{ component_name }}-sync.service"
     mode: 0444
     force: yes
   become: true
-  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+  when: (component_ha_enabled) and (should_use_rsync_for_component_ha)
 
 - name: Reload the deamon
   systemd:
     daemon_reload: yes
   become: true
-  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+  when: (component_ha_enabled) and (should_use_rsync_for_component_ha)
 
-- name: Enable a4c-sync service
-  command: systemctl enable a4c-sync.service
+- name: "Enable {{ component_name }}-sync service"
+  command: "systemctl enable {{ component_name }}-sync.service"
   become: true
-  when: (not consul_template_installed) and (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+  when: (not consul_template_installed) and (component_ha_enabled) and (should_use_rsync_for_component_ha)

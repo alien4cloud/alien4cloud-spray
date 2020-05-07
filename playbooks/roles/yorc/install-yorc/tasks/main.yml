@@ -149,6 +149,25 @@
   become_user: "{{ yorc_user }}"
   when: (offline) and (not yorc_installed or (yorc_upgrade is defined and yorc_upgrade))
 
+- name: Define consul agent address
+  set_fact:
+    consulAgentIp: "{{ inventory_hostname }}{{ appendable_private_domain_name }}"
+
+- name: Use localhost for consul agent address
+  set_fact:
+    consulAgentIp: "localhost"
+  when: (use_localhost_for_local_connections)
+
+- name: Define consul agent address
+  set_fact:
+    consul_agent_address: "{{ consulAgentIp }}:{{ consul_https_port }}"
+  when: (_consul_tls)
+
+- name: Define consul agent address
+  set_fact:
+    consul_agent_address: "{{ consulAgentIp }}:{{ consul_http_port }}"
+  when: (not _consul_tls)
+
 - name: Usage of yorc jinja2 template for service creation
   template:
     src: yorc-service.j2
@@ -157,7 +176,16 @@
     force: yes
   become: true
 
-- name: Reload the deamon before starting the service
+- name: Reload systemd
   systemd:
+    name: yorc
+    masked: yes
     daemon_reload: yes
+  become: true
+
+- name: Set service masked (will be unmasked at startup)
+  systemd:
+    name: yorc
+    masked: yes
+    enabled: no
   become: true

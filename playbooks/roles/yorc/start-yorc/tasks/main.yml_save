@@ -1,9 +1,0 @@
-
-- name: Start Yorc
-  shell:
-    chdir: ~/yorc
-    cmd: nohup ./yorc server > yorc.log 2>&1 & echo $! > yorc.pid
-
-- name: Ensure Yorc is running
-  shell:
-    cmd: ps -ef |grep yorc |grep -v grep

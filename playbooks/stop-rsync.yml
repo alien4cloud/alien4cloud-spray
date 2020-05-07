@@ -1,0 +1,13 @@
+---
+
+- hosts: a4c
+  name: Stop Consul & A4C.
+  gather_facts: no
+  roles:
+    - commons/define_commons_vars    
+    - { role: rsync/stop-sync,
+        component_name: 'a4c'
+      }
+    - { role: rsync/stop-consul-template,
+        component_name: 'a4c'
+      }

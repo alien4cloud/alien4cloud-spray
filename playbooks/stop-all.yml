@@ -26,8 +26,12 @@
     - commons/define_commons_vars
     - consul/stop-consul
     - a4c/stop-a4c
-    - rsync/stop-sync
-    - rsync/stop-consul-template
+    - { role: rsync/stop-sync,
+        component_name: 'a4c'
+      }
+    - { role: rsync/stop-consul-template,
+        component_name: 'a4c'
+      }
 
 - hosts: yorc
   name: Stop Yorc.
@@ -47,4 +51,3 @@
   gather_facts: no
   roles:
     - elasticsearch/stop-elasticsearch
-

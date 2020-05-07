@@ -1,0 +1,164 @@
+
+- name: Start service Yorc
+  service:
+    name: yorc
+    masked: no
+    state: started
+    enabled: yes
+  become: true
+
+- name: Ensure Yorc is running
+  command: systemctl status yorc
+  ignore_errors: false
+
+- name: Ensure a crontab is initialized
+  cron:
+    name: "InitCrontab"
+    minute: "0"
+    hour: "0"
+    job: "ls -alh > /dev/null"
+
+- name: Remove init job from crontab
+  cron:
+    name: "InitCrontab"
+    state: absent
+
+# curl -k -H "Accept: application/json" https://localhost:8800/health
+
+- name: Ensure yorc_tls variable is defined
+  set_fact:
+    yorc_tls: false
+  when: yorc_tls is not defined
+
+- name: The 'yorc_tls' variable defines if yorc should be secured
+  debug:
+    var: yorc_tls
+
+- name: Define yorc scheme to 'http'
+  set_fact:
+    yorc_scheme: 'http'
+  when: (not yorc_tls)
+
+- name: Define yorc scheme to 'https'
+  set_fact:
+    yorc_scheme: 'https'
+  when: (yorc_tls)
+
+- set_fact:
+    yorc_health_url: "{{ yorc_scheme }}://localhost:8800/server/health"
+
+- name: "Wait for Yorc to be reachable at {{ yorc_health_url }}"
+  uri:
+    url: "{{ yorc_health_url }}"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Accept: "application/json"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 30
+  delay: 10
+  ignore_errors: yes
+  when: (not yorc_tls)
+
+- name: Fail when Yorc is not reachable at {{ yorc_health_url }}
+  fail:
+    msg: "Not able to reach Yorc at {{ yorc_health_url }} after 30 retries ! Response was : {{ result.status }} "
+  when: (not yorc_tls) and (result.status != 200)
+
+- name: Parse Yorc health response
+  set_fact:
+    yorc_health_response: "{{ result.content | from_json }}"
+  when: (not yorc_tls)
+
+- name: Fail when Yorc response is not 'passing'
+  fail:
+    msg: "Yorc health response doesn't sounds good : '{{ yorc_health_response.value }}' instead of 'passing' !"
+  when: (not yorc_tls) and (yorc_health_response.value != "passing")
+
+- name: Define host cert file path
+  set_fact:
+    hostcert_file_path: "{{ yorc_install_dir }}/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+  when: (yorc_tls)
+
+- name: Define host key file path
+  set_fact:
+    hostkey_file_path: "{{ yorc_install_dir }}/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+  when: (yorc_tls)
+
+- name: "Wait for Yorc to be reachable at {{ yorc_health_url }}"
+  become: true
+  become_user: "{{ yorc_user }}"
+  uri:
+    url: "{{ yorc_health_url }}"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    client_cert: "{{ hostcert_file_path }}"
+    client_key: "{{ hostkey_file_path }}"
+    headers:
+      Accept: "application/json"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 30
+  delay: 10
+  ignore_errors: yes
+  when: (yorc_tls)
+
+- name: "Fail when Yorc is not reachable at {{ yorc_health_url }}"
+  fail:
+    msg: "Not able to reach Yorc at {{ yorc_health_url }} after 30 retries ! Response was : {{ result.status }} "
+  when: (yorc_tls) and (result.status != 200)
+
+- name: Parse Yorc health response
+  set_fact:
+    yorc_health_response: "{{ result.content | from_json }}"
+  when: (yorc_tls)
+
+- name: Fail when Yorc response is not 'passing'
+  fail:
+    msg: "Yorc health response doesn't sounds good : '{{ yorc_health_response.value }}' instead of 'passing' !"
+  when: (yorc_tls) and (yorc_health_response.value != "passing")
+
+- name: "Get Yorc server info"
+  uri:
+    url: "{{ yorc_scheme }}://localhost:8800/server/info"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    headers:
+      Accept: "application/json"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  when: (not yorc_tls)
+
+- name: Here is the Yorc version
+  debug:
+    var: result.content
+  when: (not yorc_tls)
+
+- name: "Get Yorc server info"
+  become: true
+  become_user: "{{ yorc_user }}"
+  uri:
+    url: "{{ yorc_scheme }}://localhost:8800/server/info"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    client_cert: "{{ hostcert_file_path }}"
+    client_key: "{{ hostkey_file_path }}"
+    headers:
+      Accept: "application/json"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  when: (yorc_tls)
+
+- name: Here is the Yorc version
+  debug:
+    var: result.content
+  when: (yorc_tls)

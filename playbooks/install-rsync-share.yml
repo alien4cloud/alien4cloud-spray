@@ -3,13 +3,27 @@
 - hosts: a4c
   name: Setup rsync for A4C.
   roles:
-    - rsync/stop-consul-template
+    - { role: rsync/stop-consul-template, component_name: 'a4c' }
     - commons/define_commons_vars
-    - rsync/install-rsync
-    - rsync/generate_keypair
-    - rsync/add_public_keys
-    - rsync/install-consul-template
-    - rsync/configure-consul-template
-    - rsync/schedule-sync
-    - consul/start-consul    
-    - rsync/start-consul-template
+    - { role: rsync/install-rsync, component_name: 'a4c' }
+    - { role: rsync/generate_keypair, component_name: 'a4c' }
+    - { role: rsync/add_public_keys, component_name: 'a4c' }
+    - { role: rsync/install-consul-template, component_name: 'a4c' }
+    - { role: rsync/configure-consul-template, component_name: 'a4c' }
+    - { role: rsync/schedule-sync, component_name: 'a4c' }
+    - consul/start-consul
+    - { role: rsync/start-consul-template, component_name: 'a4c' }
+
+- hosts: yorc
+  name: Setup rsync for A4C.
+  roles:
+    - { role: rsync/stop-consul-template, component_name: 'yorc' }
+    - commons/define_commons_vars
+    - { role: rsync/install-rsync, component_name: 'yorc' }
+    - { role: rsync/generate_keypair, component_name: 'yorc' }
+    - { role: rsync/add_public_keys, component_name: 'yorc' }
+    - { role: rsync/install-consul-template, component_name: 'yorc' }
+    - { role: rsync/configure-consul-template, component_name: 'yorc' }
+    - { role: rsync/schedule-sync, component_name: 'yorc' }
+    - consul/start-consul
+    - { role: rsync/start-consul-template, component_name: 'yorc' }

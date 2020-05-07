@@ -40,7 +40,9 @@
     - commons/define_commons_vars
     - a4c/delete-a4c
     - consul/delete-consul
-    - rsync/delete-sync
+    - { role: rsync/delete-sync,
+        component_name: 'a4c'
+      }
 
 - hosts: yorcfront
   gather_facts: no

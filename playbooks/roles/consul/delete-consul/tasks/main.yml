@@ -3,6 +3,7 @@
     prompt: "Do you want to remove all consul files on {{ inventory_hostname }}  (type 'yes I do !' to confirm) ?"
   register: ask_for_confirmation
   delegate_to: localhost
+  when: force_delete_files is not defined and not force_delete_files
 
 # - fail:
 #     msg: "Aborted by user."
@@ -16,4 +17,4 @@
   with_items:
     - "{{ consul_install_dir }}"
     - /etc/systemd/system/consul.service
-  when: ask_for_confirmation is defined and ask_for_confirmation.user_input == "yes I do !"
+  when: (force_delete_files is defined and force_delete_files) or (ask_for_confirmation is defined and ask_for_confirmation.user_input == "yes I do !")

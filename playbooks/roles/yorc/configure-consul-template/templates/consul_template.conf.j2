@@ -1,0 +1,21 @@
+consul {
+  address = "{{ inventory_hostname }}{{ appendable_private_domain_name }}:{{ consul_https_port if _consul_tls else consul_http_port }}"
+  retry {
+    enabled = true
+    attempts = 12
+    backoff = "250ms"
+  }
+  ssl {
+    enabled = {{ 'true' if _consul_tls else 'false' }}
+    verify = true
+    cert = "/etc/yorc-front/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+    key = "/etc/yorc-front/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+    ca_cert = "/etc/yorc-front/ssl/{{ ssl_ca_cert_name }}"
+  }
+}
+
+template {
+  source = "/etc/yorc-front/yorc.conf.ctpl"
+  destination = "/etc/nginx/conf.d/yorc.conf"
+  command = "sudo systemctl reload nginx"
+}

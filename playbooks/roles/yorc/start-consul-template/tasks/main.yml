@@ -1,0 +1,9 @@
+
+
+- name: Start yorc-front service
+  service:
+    name: yorc-front
+    state: started
+    enabled: yes
+  become: true
+  when: (yorc_ha_enabled and should_use_rsync_for_yorc_ha)

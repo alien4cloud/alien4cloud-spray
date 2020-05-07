@@ -1,1 +1,2 @@
 a4c_log_dir: /var/log/alien4cloud
+yorc_log_dir: /var/log/yorc

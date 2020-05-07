@@ -82,6 +82,43 @@
   become_user: "{{ a4c_user }}"
   when: (offline) and (not a4c_installed)
 
+- name: Define a4c_jvm_jmx_options as empty
+  set_fact:
+    a4c_jvm_jmx_options: ""
+  when: not a4c_jvm_jmx_remote_enabled
+
+- name: Create temporary folder to store JMX JVM options
+  tempfile:
+    state: file
+  register: temp_dir4jmx_options
+  when: a4c_jvm_jmx_remote_enabled
+
+- name: Usage of a4c jinja2 template for JMX JVM options temp file
+  template:
+    src: jmx_options.j2
+    dest: "{{ temp_dir4jmx_options.path }}"
+    mode: 0444
+    force: yes
+  when: a4c_jvm_jmx_remote_enabled
+
+- name: Slurp JMX JVM options temp file
+  slurp:
+    src: "{{ temp_dir4jmx_options.path }}"
+  register: a4c_jvm_jmx_options_file
+  when: a4c_jvm_jmx_remote_enabled
+
+- name: Define a4c_jvm_jmx_options with file content
+  set_fact:
+    a4c_jvm_jmx_options: "{{ a4c_jvm_jmx_options_file['content'] | b64decode }}"
+  when: a4c_jvm_jmx_remote_enabled
+
+- name: Finally remove JMX JVM options temp file
+  become: true
+  file:
+    path: "{{ temp_dir4jmx_options.path }}"
+    state: absent
+  when: a4c_jvm_jmx_remote_enabled
+
 - name: Usage of a4c jinja2 template for env file creation
   template:
     src: a4c.env.j2

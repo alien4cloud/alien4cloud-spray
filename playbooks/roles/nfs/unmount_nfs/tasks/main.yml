@@ -1,4 +1,10 @@
 
+- name: Define context vars based on component name
+  include_role:
+    name: rsync/define_context_vars
+  vars:
+    component_name: "{{ ha_group }}"
+
 - name: Ensure ha_enabled variable is defined
   set_fact:
     ha_enabled: "{{ groups[ha_group] | length > 1 }}"
@@ -9,48 +15,48 @@
 
 - name: Is the HA enabled ?
   debug:
-    var: ha_enabled
+    var: ha_enabled and not should_use_rsync_for_component_ha
 
 - name: Ensure working_directory variable is defined
   set_fact:
     working_directory: "{{ lookup('vars', '{{ ha_group }}_working_dir') }}"
-  when: (ha_enabled)
+  when: (ha_enabled and not should_use_rsync_for_component_ha)
 
 - name: Here is the working directory
   debug:
     var: working_directory
-  when: (ha_enabled)
+  when: (ha_enabled and not should_use_rsync_for_component_ha)
 
 - name: Ensure working_user variable is defined
   set_fact:
     working_user: "{{ lookup('vars', '{{ ha_group }}_user') }}"
-  when: (ha_enabled)
+  when: (ha_enabled and not should_use_rsync_for_component_ha)
 
 - name: Here is the working user
   debug:
     var: working_user
-  when: (ha_enabled)
+  when: (ha_enabled and not should_use_rsync_for_component_ha)
 
 - name: Get the parent dir of the working directory
   shell: "echo $(dirname \"{{ working_directory }}\")"
   register: dirname_command_output
-  when: (ha_enabled)
+  when: (ha_enabled and not should_use_rsync_for_component_ha)
 
 - name:
   set_fact:
     mount_directory: "{{ dirname_command_output.stdout }}"
-  when: (ha_enabled)
+  when: (ha_enabled and not should_use_rsync_for_component_ha)
 
 - name: Here is the mount directory
   debug:
     var: mount_directory
-  when: (ha_enabled)
+  when: (ha_enabled and not should_use_rsync_for_component_ha)
 
 - name: UnMount NFS share
   become: true
   ignore_errors: yes
   shell: "umount {{ mount_directory }}"
-  when: (ha_enabled)
+  when: (ha_enabled and not should_use_rsync_for_component_ha)
 
 - name: Remove NFS mount in /etc/fstab
   become: true
@@ -59,4 +65,4 @@
     regexp: "{{ nfs_share }}"
     state: absent
     # line: "{{ nfs_share }} {{ mount_directory }} nfs4 rw,user,exec,rsize=65536,wsize=65536 0 0"
-  when: (ha_enabled)
+  when: (ha_enabled and not should_use_rsync_for_component_ha)

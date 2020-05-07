@@ -1,7 +1,13 @@
 
+- name: Define context vars based on component name
+  include_role:
+    name: rsync/define_context_vars
+  vars:
+    component_name: "{{ component_name }}"
+
 - name: Install rsync
   yum:
     name: rsync
     state: latest
   become: true
-  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+  when: (component_ha_enabled) and (should_use_rsync_for_component_ha)

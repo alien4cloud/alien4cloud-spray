@@ -7,7 +7,7 @@ User={{ yorc_user }}
 Restart=on-failure
 WorkingDirectory={{ yorc_install_dir }}
 Environment=YORC_LOG={{ yorc_debug }}
-ExecStartPre=/bin/sleep 30
+ExecStartPre=/bin/bash -c "sleep 20 && curl -k -X PUT http{{ 's' if _consul_tls else '' }}://{{ consul_agent_address }}/v1/kv/service/yorc/leader --data '{{ inventory_hostname }}{{ appendable_private_domain_name }}' && sleep 10"
 ExecStart={{ yorc_install_dir }}/yorc server 2>&1
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGTERM
