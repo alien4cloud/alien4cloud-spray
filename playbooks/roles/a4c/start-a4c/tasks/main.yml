@@ -50,13 +50,13 @@
     msg: "Not able to reach A4C at {{ alien_health_url }} after 10 retries !"
   when: (result.status != 200)
 
-- name: Check if init directory exists
-  stat:
-    path: "{{ a4c_install_dir }}/alien4cloud/init"
-  register: a4c_init_stat_result
+##- name: Check if init directory exists
+##  stat:
+##    path: "{{ a4c_install_dir }}/alien4cloud/init"
+##  register: a4c_init_stat_result
 
-- name: Rename the init directory
-  command: "mv {{ a4c_install_dir }}/alien4cloud/init {{ a4c_install_dir }}/alien4cloud/init_{{ ansible_date_time.iso8601 | replace(':', '') }}"
-  when: "{{ a4c_init_stat_result.stat.exists }}"
-  become: true
-  become_user: "{{ a4c_user }}"
+##- name: Rename the init directory
+##  command: "mv {{ a4c_install_dir }}/alien4cloud/init {{ a4c_install_dir }}/alien4cloud/init_{{ ansible_date_time.iso8601 | replace(':', '') }}"
+##  when: "{{ a4c_init_stat_result.stat.exists }}"
+##  become: true
+##  become_user: "{{ a4c_user }}"
