@@ -8,13 +8,19 @@
 #     msg: "Aborted by user."
 #   when: ask_for_confirmation.user_input != "yes I do !"
 
+- name: Define context vars based on component name
+  include_role:
+    name: rsync/define_context_vars
+  vars:
+    component_name: "{{ component_name }}"
+
 - name: Remove sync files
   become: true
   file:
     path: "{{ item }}"
     state: absent
   with_items:
-    - /etc/consul_template
-    - /var/lib/consul_template/
+    - "/etc/consul_template/{{ component_name }}"
+    - "/var/lib/consul_template/{{ component_name }}"
     - /var/log/consul_template/
-    - /etc/systemd/system/a4c-sync.service
+    - "/etc/systemd/system/{{ component_name }}-sync.service"

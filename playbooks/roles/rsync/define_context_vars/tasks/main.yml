@@ -1,0 +1,16 @@
+
+- name: Defining component_ha_enabled
+  set_fact:
+    component_ha_enabled: "{{ lookup('vars', '{{ component_name }}_ha_enabled') }}"
+
+- name: Defining should_use_rsync_for_component_ha
+  set_fact:
+    should_use_rsync_for_component_ha: "{{ lookup('vars', 'should_use_rsync_for_{{ component_name }}_ha') }}"
+
+- name: Defining component_user
+  set_fact:
+    component_user: "{{ lookup('vars', '{{ component_name }}_user') }}"
+
+- name: Defining component_log_dir
+  set_fact:
+    component_log_dir: "{{ lookup('vars', '{{ component_name }}_log_dir') }}"

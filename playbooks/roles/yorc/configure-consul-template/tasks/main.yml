@@ -1,0 +1,109 @@
+
+- name: Get the current user
+  set_fact :
+    consul_template_user: "{{ ansible_user }}"
+  when: consul_template_user is not defined
+
+- name: The '_consul_tls' variable defines if consul http connections should be secured
+  debug:
+    var: _consul_tls
+
+- name: Ensure securize_nginx variable is defined
+  set_fact:
+    securize_nginx: false
+
+- name: We will securise nginx when yorc is in https
+  set_fact:
+    securize_nginx: true
+  when: (yorc_tls)
+
+- name: The 'securize_nginx' variable defines if nginx should be secured
+  debug:
+    var: securize_nginx
+
+- name: Setup consul template configuration
+  template:
+    src: consul_template.conf.j2
+    dest: /etc/yorc-front/consul_template.conf
+    mode: 0444
+    force: yes
+  become: true
+  become_user: "{{ consul_template_user }}"
+  when: (yorc_ha_enabled and should_use_rsync_for_yorc_ha)
+
+- name: Setup nginx template configuration for consul template
+  template:
+    src: yorc.conf.ctpl.j2
+    dest: /etc/yorc-front/yorc.conf.ctpl
+    mode: 0444
+    force: yes
+  become: true
+  become_user: "{{ consul_template_user }}"
+  when: (yorc_ha_enabled and should_use_rsync_for_yorc_ha)
+
+- name: Locally Check for CA file
+  local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
+  register: stat_cacert_path
+  when: (_consul_tls) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha)
+
+- fail:
+    msg: "The consul http communication should be secured by no CA file found in {{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }} ! Please provide CA certificate file."
+  when: (_consul_tls) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha) and (not stat_cacert_path.stat.exists)
+
+- name: Locally Check for Host key file
+  local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+  register: stat_hostkey_path
+  when: (_consul_tls) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha)
+
+- fail:
+    msg: "The consul http communication should be secured by no host key file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }} ! Please provide host key file."
+  when: (_consul_tls) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha) and (not stat_hostkey_path.stat.exists)
+
+- name: Locally Check for Host cert file
+  local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+  register: stat_hostcert_path
+  when: (_consul_tls) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha)
+
+- fail:
+    msg: "The consul http communication should be secured by no host certificate file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }} ! Please provide host certificate file."
+  when: (_consul_tls) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha) and (not stat_hostcert_path.stat.exists)
+
+- name: Creates consul-template ssl directory
+  file:
+    path: "/etc/yorc-front/ssl"
+    state: directory
+  become: true
+  become_user: "{{ consul_template_user }}"
+  when: (_consul_tls) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha)
+
+- name: Copy CA cert file
+  copy:
+    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
+    dest: "/etc/yorc-front/ssl/{{ ssl_ca_cert_name }}"
+  become: true
+  become_user: "{{ consul_template_user }}"
+  when: (_consul_tls) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha)
+
+- name: Copy host key file
+  copy:
+    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+    dest: "/etc/yorc-front/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+  become: true
+  become_user: "{{ consul_template_user }}"
+  when: (_consul_tls) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha)
+
+- name: Copy host cert file
+  copy:
+    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+    dest: "/etc/yorc-front/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+  become: true
+  become_user: "{{ consul_template_user }}"
+  when: (_consul_tls) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha)
+
+- name: Ensure we can write into /etc/nginx/conf.d/
+  file:
+    path: /etc/nginx/conf.d/
+    mode: '0777'
+    recurse: yes
+  become: true
+  when: (yorc_ha_enabled and should_use_rsync_for_yorc_ha)

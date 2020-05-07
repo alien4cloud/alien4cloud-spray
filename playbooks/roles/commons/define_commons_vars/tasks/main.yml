@@ -51,9 +51,17 @@
   set_fact:
     a4c_ha_enabled: "{{ groups['a4c'] | length > 1 }}"
 
-- name: Is the HA enabled ?
+- name: Is the HA enabled for A4C ?
   debug:
     var: a4c_ha_enabled
+
+- name: Ensure yorc_ha_enabled variable is defined
+  set_fact:
+    yorc_ha_enabled: "{{ groups['yorc'] | length > 1 }}"
+
+- name: Is the HA enabled for Yorc ?
+  debug:
+    var: yorc_ha_enabled
 
 - name: Ensure the 'offline' variable is defined
   set_fact :

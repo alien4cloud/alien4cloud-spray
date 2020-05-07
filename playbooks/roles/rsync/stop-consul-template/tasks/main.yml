@@ -1,7 +1,13 @@
 
-- name: Stop a4c-sync service
+- name: Define context vars based on component name
+  include_role:
+    name: rsync/define_context_vars
+  vars:
+    component_name: "{{ component_name }}"
+    
+- name: "Stop {{ component_name }}-sync service"
   service:
-    name: a4c-sync
+    name: "{{ component_name }}-sync"
     state: stopped
     enabled: yes
   become: true

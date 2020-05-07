@@ -1,0 +1,10 @@
+---
+
+- hosts: a4c
+  gather_facts: no
+  name: Delete A4C
+  roles:
+    - commons/define_commons_vars
+    - { role: rsync/delete-sync,
+        component_name: 'a4c'
+      }

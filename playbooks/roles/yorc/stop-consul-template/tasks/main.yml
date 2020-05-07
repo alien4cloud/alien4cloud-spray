@@ -1,0 +1,8 @@
+
+- name: Stop yorc-front service
+  service:
+    name: yorc-front
+    state: stopped
+    enabled: yes
+  become: true
+  ignore_errors: yes

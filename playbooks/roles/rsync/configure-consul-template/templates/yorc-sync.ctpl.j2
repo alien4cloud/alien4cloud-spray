@@ -1,0 +1,26 @@
+#!/bin/bash
+
+{{ '{{' }} if key "service/yorc/leader" {{ '}}' }}
+
+leader="{{ '{{' }} key "service/yorc/leader" {{ '}}' }}"
+me="{{ inventory_hostname }}{{ appendable_private_domain_name }}"
+leaderName="$( cut -d ':' -f 1 <<< $leader )"
+echo "- $(date) : leader is $leaderName"
+
+if [ "$me" = "$leaderName" ]; then
+    if [ "$1" = "-f" ]; then
+      echo "Syncing files before becoming leader $leaderName"
+      rsync -Pavzh -e "ssh -o 'StrictHostKeyChecking no' -i ~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}" $leaderName:{{ yorc_working_dir }}/ {{ yorc_working_dir }}
+    else
+      echo "I am the leader, do nothing"
+    fi
+else
+    echo "Syncing files from $leaderName"
+    rsync -Pavzh -e "ssh -o 'StrictHostKeyChecking no' -i ~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}" $leaderName:{{ yorc_working_dir }}/ {{ yorc_working_dir }}
+fi
+
+{{ '{{' }} else {{ '}}' }}
+
+echo "- $(date) : no leader is elected yet"
+
+{{ '{{' }} end {{ '}}' }}

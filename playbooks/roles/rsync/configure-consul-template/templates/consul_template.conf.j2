@@ -8,15 +8,15 @@ consul {
   ssl {
     enabled = {{ 'true' if _consul_tls else 'false' }}
     verify = true
-    cert = "/etc/consul_template/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
-    key = "/etc/consul_template/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
-    ca_cert = "/etc/consul_template/ssl/{{ ssl_ca_cert_name }}"
+    cert = "/etc/consul_template/{{ component_name }}/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+    key = "/etc/consul_template/{{ component_name }}/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+    ca_cert = "/etc/consul_template/{{ component_name }}/ssl/{{ ssl_ca_cert_name }}"
   }
 }
 
 template {
-  source = "/etc/consul_template/a4c-sync.ctpl"
-  destination = "/var/lib/consul_template/a4c-sync.sh"
+  source = "/etc/consul_template/{{ component_name }}/{{ component_name }}-sync.ctpl"
+  destination = "/var/lib/consul_template/{{ component_name }}/{{ component_name }}-sync.sh"
   perms = 0700
-  command = "bash -c '/var/lib/consul_template/a4c-sync.sh -f >> {{ a4c_log_dir }}/sync.log 2>&1'"
+  command = "bash -c '/var/lib/consul_template/{{ component_name }}/{{ component_name }}-sync.sh -f >> {{ component_log_dir }}/sync.log 2>&1'"
 }

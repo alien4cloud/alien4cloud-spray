@@ -45,23 +45,23 @@
         repositoryUrl: 'https://github.com/alien4cloud/tosca-normative-types.git',
         repositoryUsername: '',
         repositoryPassword: '',
-        branchId: '3.0.0-SNAPSHOT',
+        branchId: '3.0.0-M3',
         subPath: ''
       }
     - { role: a4c/config/git,
         repositoryUrl: 'https://github.com/alien4cloud/alien4cloud-extended-types.git',
         repositoryUsername: '',
         repositoryPassword: '',
-        branchId: '3.0.0-SNAPSHOT',
-        subPath: 'alien-base-types'
+        branchId: '3.0.0',
+        subPath: ''
       }
-    - { role: a4c/config/git,
-        repositoryUrl: 'https://github.com/alien4cloud/docker-tosca-types.git',
-        repositoryUsername: '',
-        repositoryPassword: '',
-        branchId: '3.0.0-SNAPSHOT',
-        subPath: 'docker-types'
-      }
+    # - { role: a4c/config/git,
+    #     repositoryUrl: 'https://github.com/alien4cloud/docker-tosca-types.git',
+    #     repositoryUsername: '',
+    #     repositoryPassword: '',
+    #     branchId: '3.0.0-SNAPSHOT',
+    #     subPath: 'docker-types'
+    #   }
     - a4c/config/upload_csars
     # - { role: roles/git,
     #     repositoryUrl: 'https://git.artemis.public/artemis_use_cases/service_applicatif.git',

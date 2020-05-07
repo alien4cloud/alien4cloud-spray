@@ -1,0 +1,81 @@
+
+- name: Ensure /var/lib/yorc-front directory exists
+  become: true
+  file:
+    path: "/var/lib/yorc-front"
+    state: directory
+    owner: "{{ consul_template_user }}"
+  when: yorc_ha_enabled and should_use_rsync_for_yorc_ha
+
+- name: Ensure /etc/yorc-front directory exists
+  become: true
+  file:
+    path: "/etc/yorc-front"
+    state: directory
+    owner: "{{ consul_template_user }}"
+  when: yorc_ha_enabled and should_use_rsync_for_yorc_ha
+
+- name: Ensure /var/log/yorc-front directory exists
+  become: true
+  file:
+    path: "/var/log/yorc-front"
+    state: directory
+    owner: "{{ consul_template_user }}"
+  when: yorc_ha_enabled and should_use_rsync_for_yorc_ha
+
+- name: Check if consul_template is installed
+  shell: "/var/lib/yorc-front/consul-template --version"
+  register: is_consul_template_exist_command
+  ignore_errors: yes
+  become: true
+  when: yorc_ha_enabled and should_use_rsync_for_yorc_ha
+
+- name: Register a boolean indicating if consul_template is already installed
+  set_fact:
+    consul_template_installed: "{{ is_consul_template_exist_command.rc == 0 }}"
+  when: yorc_ha_enabled and should_use_rsync_for_yorc_ha
+
+- name: Is consul_template installed ?
+  debug:
+    var: consul_template_installed
+  when: yorc_ha_enabled and should_use_rsync_for_yorc_ha
+
+- name: Extract consul_template archive from remote source
+  unarchive:
+    src: "{{ CONSUL_TEMPLATE_DL_URL }}"
+    dest: "/var/lib/yorc-front"
+    mode: 0755
+    remote_src: yes
+  become: true
+  become_user: "{{ consul_template_user }}"
+  when: (not offline) and (not consul_template_installed) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha)
+
+- name: Extract consul_template archive from local source
+  unarchive:
+    src: "{{ CONSUL_TEMPLATE_DL_URL }}"
+    dest: "/var/lib/yorc-front"
+    mode: 0755
+    remote_src: no
+  become: true
+  become_user: "{{ consul_template_user }}"
+  when: (offline) and (not consul_template_installed) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha)
+
+- name: Usage of a4c-front-service jinja2 template for service creation
+  template:
+    src: yorc-front-service.j2
+    dest: /etc/systemd/system/yorc-front.service
+    mode: 0444
+    force: yes
+  become: true
+  when: (yorc_ha_enabled and should_use_rsync_for_yorc_ha)
+
+- name: Reload the deamon
+  systemd:
+    daemon_reload: yes
+  become: true
+  when: yorc_ha_enabled and should_use_rsync_for_yorc_ha
+
+- name: Enable a4c-front service
+  command: systemctl enable yorc-front.service
+  become: true
+  when: (not consul_template_installed) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha)

@@ -245,5 +245,5 @@ It needs that all plugins projects are localized in the same directory and built
 Just fill the [inputs-dev.yml](inputs-dev.yml) input file in order to fit your needs.
 
 ```
-ansible-playbook -i hosts --extra-vars "@inputs-dev.yml" playbooks/setup-dev.yml
+ansible-playbook --extra-vars "@inputs-dev.yml" playbooks/setup-dev.yml
 ```

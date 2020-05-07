@@ -1,10 +1,16 @@
 
+- name: Define context vars based on component name
+  include_role:
+    name: rsync/define_context_vars
+  vars:
+    component_name: "{{ component_name }}"
+
 - name: Schedule working directory sync each minute
   become: true
-  become_user: "{{ a4c_user }}"
+  become_user: "{{ component_user }}"
   cron:
-    name: "Sync working directory"
+    name: "Sync4{{ component_name }}"
     minute: "*"
     hour: "*"
-    job: "/var/lib/consul_template/a4c-sync.sh >> {{ a4c_log_dir }}/sync.log 2>&1"
-  when: (a4c_ha_enabled) and (should_use_rsync_for_a4c_ha)
+    job: "/var/lib/consul_template/{{ component_name }}/{{ component_name }}-sync.sh >> {{ component_log_dir }}/sync.log 2>&1"
+  when: (component_ha_enabled) and (should_use_rsync_for_component_ha)
