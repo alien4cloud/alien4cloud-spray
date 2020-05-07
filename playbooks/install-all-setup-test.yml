@@ -203,6 +203,13 @@
         resources_file_artifact: 'resources/services.yaml'
       }
 
+- hosts: a4c
+  name: Rename init directory
+  gather_facts: yes
+  become: false
+  roles:
+    - a4c/rename-init
+
 - hosts: a4cconfig
   name: Test the setup deploying an application based on mocks.
   gather_facts: yes
