@@ -1,7 +1,7 @@
 services:
 
   - nodeType: "org.alien4cloud.kubernetes.api.types.nodes.KubeCluster"
-    nodeTypeVersion: "3.1.0-SNAPSHOT"
+    nodeTypeVersion: "3.1.0"
     name: "KubeCluster"
     version: "1.0-SNAPSHOT"
     nodeInstance:

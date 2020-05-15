@@ -9,8 +9,10 @@ services:
 {% if service.nodeInstance.nodeTemplate.properties | length > 0 %}
       properties:
 {% for propertyEntry in service.nodeInstance.nodeTemplate.properties %}
+{% if propertyEntry.value %}
 {% set propertyYaml = { propertyEntry.key : propertyEntry.value.value } %}
 {{ propertyYaml | to_nice_yaml | indent( width=8, indentfirst=True) }}
+{% endif %}
 {% endfor %}
 {% endif %}
 {% set capabilityHasPropertyValue = {'almostOne': False, 'capabilitiesWithPropertyValue': {}} %}

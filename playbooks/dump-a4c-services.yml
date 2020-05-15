@@ -1,0 +1,9 @@
+---
+- hosts: a4cconfig
+  name: Dump service configuration.
+  become: false
+
+  roles:
+    - commons/define_commons_vars
+    - a4c/config/define_a4c_url
+    - a4c/config/dump_services

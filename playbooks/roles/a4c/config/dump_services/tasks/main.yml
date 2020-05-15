@@ -21,9 +21,9 @@
   set_fact:
     services: "{{ search_services_result.content | from_json }}"
 
-# - name: Here is the dumped services array
-#   debug:
-#     var: services
+- name: Here is the dumped services array
+  debug:
+    var: services
 
 - name: Create temporary file
   tempfile:
@@ -41,10 +41,14 @@
   debug:
     var: temp_file.path
 
+- name: Define dump file name
+  set_fact:
+    dump_file_path: "{{ inventory_dir }}/resources/services-{{ alien_url | replace('.', '-') | replace(':', '-') | replace('/', '-') }}-{{ ansible_date_time.iso8601 | replace(':', '') }}.yml"
+
 - name: Store services file in a local file
   fetch:
     src: "{{ temp_file.path }}"
-    dest: "{{ inventory_dir }}/resources/services-{{ alien_url | replace('.', '-') | replace(':', '-') | replace('/', '-') }}-{{ ansible_date_time.iso8601 | replace(':', '') }}.yml"
+    dest: "{{ dump_file_path }}"
     flat: yes
     validate_checksum: no
 
@@ -52,3 +56,7 @@
   file:
     path: "{{ temp_file.path }}"
     state: absent
+
+- name: Echo dump file path
+  debug:
+    msg: "Dump service file can be found in {{ dump_file_path }}"
