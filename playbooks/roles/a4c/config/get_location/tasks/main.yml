@@ -36,3 +36,7 @@
   fail:
     msg: "The location {{ location_name }} can not be found"
   when: (locationId is not defined)
+
+- name: Populate locationIds
+  set_fact:
+    locationIds: "{{locationIds|default([])}}  + ['{{locationId}}']"  
