@@ -151,10 +151,11 @@
 #     var: identifiedResourcesMap
 #   when: (services_to_create is defined)
 
-# - debug:
-#     var: identifiedResourcesMap[item]['nodeInstance']['capabilities']
-#   with_items: "{{ identifiedResourcesMap }}"
-#   when: (services_to_create is defined)
+- name: "Will patch service {{ item }} using following JSON patch"
+  debug:
+    msg: "{{ identifiedResourcesMap[item] | to_json }}"
+  with_items: "{{ identifiedResourcesMap }}"
+  when: (services_to_create is defined)
 
 - name: "Patch service #{{ item }}"
   uri:
