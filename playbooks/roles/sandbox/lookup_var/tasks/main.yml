@@ -1,0 +1,7 @@
+- name: Look up var 'toto' in var 'toto_lookup'
+  set_fact:
+    toto_lookup: "{{ lookup('vars', 'toto') }}"
+
+- name: Here is the value of var 'toto_lookup'
+  debug:
+    var: toto_lookup

@@ -1,0 +1,8 @@
+
+- name: Defining component_ha_enabled
+  set_fact:
+    component_ha_enabled: "{{ lookup('vars', '{{ component_name }}_ha_enabled') }}"
+
+- name: "Here is the value of var 'component_ha_enabled' (component_name is {{ component_name }})"
+  debug:
+    var: component_ha_enabled

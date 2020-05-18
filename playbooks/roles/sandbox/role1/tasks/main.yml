@@ -1,0 +1,6 @@
+
+- name: Define context vars based on component name
+  include_role:
+    name: sandbox/role2
+  vars:
+    component_name: "{{ ha_group }}"

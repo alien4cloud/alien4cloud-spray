@@ -1,0 +1,4 @@
+
+- name: Ensure a4c_ha_enabled variable is defined
+  set_fact:
+    a4c_ha_enabled: "{{ groups['a4c'] | length > 1 }}"

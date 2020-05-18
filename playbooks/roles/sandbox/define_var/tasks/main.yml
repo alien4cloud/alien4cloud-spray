@@ -1,0 +1,3 @@
+- name: Defining a var named toto with value tutu
+  set_fact:
+    toto: "tutu"

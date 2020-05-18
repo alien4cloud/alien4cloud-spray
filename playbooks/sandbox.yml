@@ -4,17 +4,24 @@
   name: Sandbox, play with plays !
   become: false
   roles:
-    - commons/define_commons_vars
-    - a4c/config/define_a4c_url
-    - { role: 'a4c/config/get_orchectrator',
-        orchestratorName: 'Yorc'
+    - sandbox/define_var
+    - sandbox/lookup_var
+    - sandbox/define_var_using_extra_vars
+    - { role: sandbox/role1,
+        ha_group: 'a4c'
       }
-    - { role: 'a4c/config/get_location',
-        location_name: 'Default'
-      }    
-    - { role: 'a4c/config/create_services',
-        resources_file_artifact: 'resources/services.yaml'
-      }
+
+    # - commons/define_commons_vars
+    # - a4c/config/define_a4c_url
+    # - { role: 'a4c/config/get_orchectrator',
+    #     orchestratorName: 'Yorc'
+    #   }
+    # - { role: 'a4c/config/get_location',
+    #     location_name: 'Default'
+    #   }
+    # - { role: 'a4c/config/create_services',
+    #     resources_file_artifact: 'resources/services.yaml'
+    #   }
 
     # - { role: 'keypass/fetch_keypass_ca_certificate',
     #     keypass_key: 'Plateforme/Securite/pki/Autorite de Certification Principale',
