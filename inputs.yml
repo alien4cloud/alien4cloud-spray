@@ -16,15 +16,15 @@ a4c_working_dir: /opt/a4c/workdir
 a4c_tls: false
 a4c_port: 8088
 a4c_front_protocol: http
-a4c_front_location_path: /covid19
-a4c_url_path: /covid19
+# a4c_front_location_path: /a4c
+# a4c_url_path: /a4c
 # WARNING : use 80 for http and 443 for SSL
 # We have issues running correctly A4C behind a proxy
 a4c_front_port: 80
 a4c_admin_usr: admin
 a4c_admin_pwd: admin
 a4c_saml_enabled: false
-a4c_jvm_jmx_remote_enabled: true
+a4c_jvm_jmx_remote_enabled: false
 # a4c_saml_config_url: https://keycloak/auth/realms/artemis/protocol/saml/descriptor
 inventory_dir: "../"
 
