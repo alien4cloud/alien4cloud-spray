@@ -21,6 +21,19 @@
   become: true
   when: (not offline)
 
+- name: Instal python
+  yum:
+    pkg: python-pip
+    state: present
+    update_cache: true
+  become: true
+  when: (not offline)
+
+- name: Install ansible
+  command: pip install ansible==2.7.2
+  become: true
+  when: (not offline)
+
 # - name: Instal the needed package
 #   yum:
 #     pkg: python-pip
@@ -47,12 +60,12 @@
     suffix: rpm
   register: temp_rpm_dir
 
-- name: Download RMPs into {{ temp_rpm_dir.path }}
-  get_url:
-    url: "{{ item }}"
-    dest: "{{ temp_rpm_dir.path }}"
-  with_items: "{{ yorc_dependencies_rpm_urls }}"
-  when: (not offline)
+# - name: Download RMPs into {{ temp_rpm_dir.path }}
+#   get_url:
+#     url: "{{ item }}"
+#     dest: "{{ temp_rpm_dir.path }}"
+#   with_items: "{{ yorc_dependencies_rpm_urls }}"
+#   when: (not offline)
 
 - name: Copy RPMs
   copy:
@@ -65,6 +78,7 @@
   args:
     chdir: "{{ temp_rpm_dir.path }}"
   become: true
+  when: (offline)
 
 - name: Remove RMPs folder
   file:
