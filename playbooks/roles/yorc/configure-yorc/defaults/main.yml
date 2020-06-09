@@ -5,3 +5,7 @@ yorc_local_ansible_tmp: ~/.ansible/tmp
 #yorc_working_dir: /home/yorc/work
 consul_http_port: 8500
 consul_https_port: 8501
+# Should be overriden if we want to use an alternative storage configuration
+# Alternatives templates for storage configuration are found in templates/config.yorc-storage-${yorc_storage_type}.json.j2
+# default is the yorc default config
+yorc_storage_type: default
