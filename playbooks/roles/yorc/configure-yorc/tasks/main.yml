@@ -227,6 +227,65 @@
     yorc_config: "{{ yorc_config|combine({'consul': yorc_consul_config}) }}"
   # when: (_consul_tls)
 
+
+# This part is just for elastic storage (WIP) >
+- name: Init elasticsearch cluster host list
+  set_fact :
+    es_node_list: []
+
+- name: Define if ES is embeded or not
+  set_fact:
+    es_embedded: "{{ groups['elasticsearch'] | length == 0 }}"
+
+- name: Loop over the a4c group (ES is embeded)
+  set_fact:
+    es_node_list: "{{ es_node_list + [ 'http://' + item + appendable_private_domain_name + ':9200' ] }}"
+  with_items: "{{ groups['a4c'] }}"
+  when: es_embedded
+
+# TODO: manage https ?
+- name: Loop over the elasticsearch group
+  set_fact:
+    es_node_list: "{{ es_node_list + [ 'http://' + item + appendable_private_domain_name + ':9200' ] }}"
+  with_items: "{{ groups['elasticsearch'] }}"
+  when: not es_embedded
+# This part is just for elastic storage (WIP) <
+
+
+- name: Create temporary folder for yorc storage config
+  tempfile:
+    state: directory
+  register: temp_dir_yorc_storage
+  when: yorc_storage_type != "consul"
+
+- name: Render Yorc storage config
+  template:
+    src: "config.yorc-storage-{{ yorc_storage_type }}.json.j2"
+    dest: "{{ temp_dir_yorc_storage.path }}/config.yorc-storage.json"
+  when: yorc_storage_type != "consul"
+
+- name: Slurp the Yorc storage config file
+  slurp:
+    src: "{{ temp_dir_yorc_storage.path }}/config.yorc-storage.json"
+  register: yorc_config_storage
+  when: yorc_storage_type != "consul"
+
+- name: Extract Yorc storage config
+  set_fact:
+    yorc_config_storage: "{{ yorc_config_storage['content'] | b64decode }}"
+  when: yorc_storage_type != "consul"
+
+- name: Add 'storage' to yorc config
+  set_fact:
+    yorc_config: "{{ yorc_config|combine(yorc_config_storage) }}"
+  when: yorc_storage_type != "consul"
+
+- name: Finally remove temporary folder
+  file:
+    path: "{{ temp_dir_yorc_storage.path }}"
+    state: absent
+  when: yorc_storage_type != "consul"
+
 - name: Debug the Yorc config before serializing it to file system
   debug:
     var: yorc_config
