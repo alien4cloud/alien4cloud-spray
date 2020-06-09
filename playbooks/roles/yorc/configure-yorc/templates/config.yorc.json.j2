@@ -1,4 +1,5 @@
 {
+  "cluster_id": "MYC",
   "resources_prefix": "YORC_",
   "workers_number": 20,
   "working_directory": "{{ yorc_working_dir }}",
@@ -15,13 +16,5 @@
   },
   "terraform": {
     "plugins_dir": "/var/terraform/plugins"
-  },
-  "storage":{
-    "stores": [{
-       "name": "fileStore",
-       "implementation": "fileCache",
-       "migrate_data_from_consul": true,
-       "types": ["Deployment", "Log", "Event"]
-     }]
-   }
+  }
 }
