@@ -256,35 +256,35 @@
   tempfile:
     state: directory
   register: temp_dir_yorc_storage
-  when: yorc_storage_type != "consul"
+  when: yorc_storage_type != "default"
 
 - name: Render Yorc storage config
   template:
     src: "config.yorc-storage-{{ yorc_storage_type }}.json.j2"
     dest: "{{ temp_dir_yorc_storage.path }}/config.yorc-storage.json"
-  when: yorc_storage_type != "consul"
+  when: yorc_storage_type != "default"
 
 - name: Slurp the Yorc storage config file
   slurp:
     src: "{{ temp_dir_yorc_storage.path }}/config.yorc-storage.json"
   register: yorc_config_storage
-  when: yorc_storage_type != "consul"
+  when: yorc_storage_type != "default"
 
 - name: Extract Yorc storage config
   set_fact:
     yorc_config_storage: "{{ yorc_config_storage['content'] | b64decode }}"
-  when: yorc_storage_type != "consul"
+  when: yorc_storage_type != "default"
 
 - name: Add 'storage' to yorc config
   set_fact:
     yorc_config: "{{ yorc_config|combine(yorc_config_storage) }}"
-  when: yorc_storage_type != "consul"
+  when: yorc_storage_type != "default"
 
 - name: Finally remove temporary folder
   file:
     path: "{{ temp_dir_yorc_storage.path }}"
     state: absent
-  when: yorc_storage_type != "consul"
+  when: yorc_storage_type != "default"
 
 - name: Debug the Yorc config before serializing it to file system
   debug:
