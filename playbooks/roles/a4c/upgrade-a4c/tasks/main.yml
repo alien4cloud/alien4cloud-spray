@@ -355,6 +355,10 @@
   with_items: "{{ upgradePluginMap.keys() }}"
   when: (upgradePluginMap[item].inplace is defined)
 
+- name: Here are the plugins to install/upgrade
+  debug:
+    var: upgradePluginMap
+
 - name: Install new plugins
   become: true
   become_user: "{{ a4c_user }}"
