@@ -30,7 +30,7 @@
   when: (not offline)
 
 - name: Install ansible
-  command: pip install ansible==2.7.2
+  command: "pip install ansible=={{ yorc_ansible_version }}"
   become: true
   when: (not offline)
 
