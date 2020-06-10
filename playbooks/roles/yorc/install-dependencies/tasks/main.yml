@@ -68,12 +68,12 @@
     suffix: rpm
   register: temp_rpm_dir
 
-# - name: Download RMPs into {{ temp_rpm_dir.path }}
-#   get_url:
-#     url: "{{ item }}"
-#     dest: "{{ temp_rpm_dir.path }}"
-#   with_items: "{{ yorc_dependencies_rpm_urls }}"
-#   when: (not offline)
+- name: Download RMPs into {{ temp_rpm_dir.path }}
+  get_url:
+    url: "{{ item }}"
+    dest: "{{ temp_rpm_dir.path }}"
+  with_items: "{{ yorc_dependencies_rpm_urls }}"
+  when: (not offline)
 
 - name: Copy RPMs
   copy:
@@ -86,7 +86,6 @@
   args:
     chdir: "{{ temp_rpm_dir.path }}"
   become: true
-  when: (offline)
 
 - name: Remove RMPs folder
   file:

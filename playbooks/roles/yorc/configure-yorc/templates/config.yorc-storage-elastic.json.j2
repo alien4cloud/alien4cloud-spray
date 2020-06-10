@@ -21,9 +21,9 @@
           "es_urls": "{{ es_node_list | list | join (',') }}",
           "ca_cert_path": "",
           "es_query_period": "5s",
-          "es_force_refresh": false,
+          "es_force_refresh": true,
           "es_refresh_wait_timeout": "5s",
-          "max_bulk_size": 1000,
+          "max_bulk_size": 4000,
           "max_bulk_count": 1000,
           "index_prefix": "yorc_"
         }
