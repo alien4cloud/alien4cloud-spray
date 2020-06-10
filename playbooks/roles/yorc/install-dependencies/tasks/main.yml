@@ -29,6 +29,14 @@
   become: true
   when: (not offline)
 
+- name: Change pip config
+  template:
+    src: pip.conf.j2
+    dest: /etc/pip.conf
+    mode: 0444
+    force: yes
+  become: true
+
 - name: Install ansible
   command: "pip install ansible=={{ yorc_ansible_version }}"
   become: true
