@@ -41,10 +41,23 @@
     state: directory
     owner: "{{ a4c_user }}"
 
+- name: Get the a4c backup directory
+  set_fact :
+    a4c_backup_dir: "{{ a4c_install_dir }}"
+  when: a4c_backup_dir is not defined
+
+- name: Ensure a4c backup directory exit
+  become: true
+  file:
+    path: "{{ a4c_backup_dir }}"
+    state: directory
+    owner: "{{ a4c_user }}"
+  when: (a4c_update_backup)
+
 - name: Ensure a4c init_backup directory exit
   become: true
   file:
-    path: "{{ a4c_install_dir }}/alien4cloud/init_backup"
+    path: "{{ a4c_backup_dir }}/init_backup"
     state: directory
     owner: "{{ a4c_user }}"
   when: (a4c_update_backup)
@@ -93,14 +106,6 @@
     msg: "A4C does'nt seem te be installed, you cant' upgrade it !"
   when: (not a4c_installed)
 
-# - name: Create temporary folder
-#   become: true
-#   become_user: "{{ a4c_user }}"
-#   file:
-#     path: "/tmp/upgradeA4C"
-#     state: directory
-#     owner: "{{ a4c_user }}"
-#   register: temp_dir
 - name: Create temporary folder
   become: true
   become_user: "{{ a4c_user }}"
@@ -152,16 +157,16 @@
 - name: Backup old war files
   become: true
   become_user: "{{ a4c_user }}"
-  command: "mv {{ inplace_war_files.files[0].path }} {{ inplace_war_files.files[0].path }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
+  command: "mv {{ inplace_war_files.files[0].path }} {{ a4c_backup_dir }}/{{ inplace_war_files.files[0].path | basename }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
   when: (a4c_update_backup)
 
-- name: Add lines in changes.log
+- name: Add lines in changes.log about backuped war
   become: true
   become_user: "{{ a4c_user }}"
   lineinfile:
     create: yes
     path: "{{ a4c_log_dir }}/changes.log"
-    line: "{{ ansible_date_time.iso8601 }} : Backuped {{ inplace_war_files.files[0].path }} to {{ inplace_war_files.files[0].path }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
+    line: "{{ ansible_date_time.iso8601 }} : Backuped {{ inplace_war_files.files[0].path }} to {{ a4c_backup_dir }}/{{ inplace_war_files.files[0].path | basename }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
   when: (a4c_update_backup)
 
 - name: Replace inplace war file
@@ -172,71 +177,13 @@
   become: true
   become_user: "{{ a4c_user }}"
 
-- name: Add lines in changes.log
+- name: Add lines in changes.log about replaced war
   lineinfile:
     create: yes
     path: "{{ a4c_log_dir }}/changes.log"
     line: "{{ ansible_date_time.iso8601 }} : Replaced {{ inplace_war_files.files[0].path }} by {{ upgrade_war_files.files[0].path }}"
   become: true
   become_user: "{{ a4c_user }}"
-
-# - name: Find upgrade A4C wars (ssl)
-#   become: true
-#   become_user: "{{ a4c_user }}"
-#   find:
-#     paths: "{{ temp_dir.path }}/alien4cloud/"
-#     patterns: "^(.*\\-\\d\\.\\d\\.\\d-[A-Z\\d\\-]+)\\-ssl\\.war$"
-#     use_regex: yes
-#   register: upgrade_war_files
-
-# - name: Find inplace A4C wars (ssl)
-#   become: true
-#   become_user: "{{ a4c_user }}"
-#   find:
-#     paths: "{{ a4c_install_dir }}/alien4cloud/"
-#     patterns: "^(.*\\-\\d\\.\\d\\.\\d-[A-Z\\d\\-]+)\\-ssl\\.war$"
-#     use_regex: yes
-#   register: inplace_war_files
-
-# - name: Fail if not only 1 war has been found (should not occur !) (ssl)
-#   fail:
-#     msg: "Not one and only on war has been found ({{ upgrade_war_files.files | length }} upgrade_war_files found, {{ inplace_war_files.files | length }} inplace_war_files found)"
-#   when: (upgrade_war_files.files | length != 1) or (inplace_war_files.files | length != 1)
-#
-# - name: Here are the upgrade war files (ssl)
-#   debug:
-#     var: upgrade_war_files.files[0].path
-#
-# - name: Backup old war files (ssl)
-#   become: true
-#   become_user: "{{ a4c_user }}"
-#   command: "mv {{ inplace_war_files.files[0].path }} {{ inplace_war_files.files[0].path }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
-#   when: (a4c_update_backup)
-#
-# - name: Add lines in changes.log
-#   become: true
-#   become_user: "{{ a4c_user }}"
-#   lineinfile:
-#     create: yes
-#     path: "{{ a4c_log_dir }}/changes.log"
-#     line: "{{ ansible_date_time.iso8601 }} : Backuped {{ inplace_war_files.files[0].path }} to {{ inplace_war_files.files[0].path }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
-#   when: (a4c_update_backup)
-#
-# - name: Replace inplace war file (ssl)
-#   copy:
-#     src: "{{ upgrade_war_files.files[0].path }}"
-#     remote_src: yes
-#     dest: "{{ inplace_war_files.files[0].path }}"
-#   become: true
-#   become_user: "{{ a4c_user }}"
-#
-# - name: Add lines in changes.log
-#   lineinfile:
-#     create: yes
-#     path: "{{ a4c_log_dir }}/changes.log"
-#     line: "{{ ansible_date_time.iso8601 }} : Replaced {{ inplace_war_files.files[0].path }} by {{ upgrade_war_files.files[0].path }}"
-#   become: true
-#   become_user: "{{ a4c_user }}"
 
 - name: Find upgrade plugins
   become: true
@@ -321,39 +268,39 @@
 - name: Backup existing plugins when found
   become: true
   become_user: "{{ a4c_user }}"
-  command: "mv {{ upgradePluginMap[item].inplace }} {{ a4c_install_dir }}/alien4cloud/init_backup/{{ upgradePluginMap[item].inplace | basename }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
-  with_items: "{{ upgradePluginMap.keys() }}"
-  when: (a4c_update_backup) and (upgradePluginMap[item].inplace is defined)
+  command: "mv {{ item.value.inplace }} {{ a4c_backup_dir }}/{{ item.value.inplace | basename }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
+  loop: "{{ upgradePluginMap|dict2items }}"
+  when: (a4c_update_backup) and (item.value.inplace is defined)
 
-- name: Add lines in changes.log
+- name: Add lines in changes.log about backuped plugins
   become: true
   become_user: "{{ a4c_user }}"
   lineinfile:
     create: yes
     path: "{{ a4c_log_dir }}/changes.log"
-    line: "{{ ansible_date_time.iso8601 }} : Backuped {{ upgradePluginMap[item].inplace }} to {{ a4c_install_dir }}/alien4cloud/init_backup/{{ upgradePluginMap[item].inplace | basename }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
-  with_items: "{{ upgradePluginMap.keys() }}"
-  when: (a4c_update_backup) and (upgradePluginMap[item].inplace is defined)
+    line: "{{ ansible_date_time.iso8601 }} : Backuped {{ item.value.inplace }} to {{ a4c_backup_dir }}/{{ item.value.inplace | basename }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
+  loop: "{{ upgradePluginMap|dict2items }}"
+  when: (a4c_update_backup) and (item.value.inplace is defined)
 
 - name: Upgrade plugins in init directory
   become: true
   become_user: "{{ a4c_user }}"
   copy:
-    src: "{{ upgradePluginMap[item].upgrade }}"
+    src: "{{ item.value.upgrade }}"
     remote_src: yes
-    dest: "{{ upgradePluginMap[item].inplace }}"
-  with_items: "{{ upgradePluginMap.keys() }}"
-  when: (upgradePluginMap[item].inplace is defined)
+    dest: "{{ item.value.inplace }}"
+  loop: "{{ upgradePluginMap|dict2items }}"
+  when: (item.value.inplace is defined)
 
-- name: Add lines in changes.log
+- name: Add lines in changes.log for upgraded plugins
   become: true
   become_user: "{{ a4c_user }}"
   lineinfile:
     create: yes
     path: "{{ a4c_log_dir }}/changes.log"
-    line: "{{ ansible_date_time.iso8601 }} : Replaced {{ upgradePluginMap[item].inplace }} by {{ upgradePluginMap[item].upgrade }}"
-  with_items: "{{ upgradePluginMap.keys() }}"
-  when: (upgradePluginMap[item].inplace is defined)
+    line: "{{ ansible_date_time.iso8601 }} : Replaced {{ item.value.inplace }} by {{ item.value.upgrade }}"
+  loop: "{{ upgradePluginMap|dict2items }}"
+  when: (item.value.inplace is defined)
 
 - name: Here are the plugins to install/upgrade
   debug:
@@ -363,21 +310,21 @@
   become: true
   become_user: "{{ a4c_user }}"
   copy:
-    src: "{{ upgradePluginMap[item].upgrade }}"
+    src: "{{ item.value.upgrade }}"
     remote_src: yes
     dest: "{{ a4c_install_dir }}/alien4cloud/init/plugins/"
-  with_items: "{{ upgradePluginMap.keys() }}"
-  when: (upgradePluginMap[item].inplace is not defined) and (upgradePluginMap|length > 0)
+  loop: "{{ upgradePluginMap|dict2items }}"
+  when: (item.value.inplace is not defined) and (upgradePluginMap|length > 0)
 
-- name: Add lines in changes.log
+- name: Add lines in changes.log for new installed plugins
   become: true
   become_user: "{{ a4c_user }}"
   lineinfile:
     create: yes
     path: "{{ a4c_log_dir }}/changes.log"
-    line: "{{ ansible_date_time.iso8601 }} : Install new plugin {{ upgradePluginMap[item].upgrade }} in {{ a4c_install_dir }}/alien4cloud/init/plugins/"
-  with_items: "{{ upgradePluginMap.keys() }}"
-  when: (upgradePluginMap[item].inplace is not defined) and (upgradePluginMap|length > 0)
+    line: "{{ ansible_date_time.iso8601 }} : Install new plugin {{ item.value.upgrade }} in {{ a4c_install_dir }}/alien4cloud/init/plugins/"
+  loop: "{{ upgradePluginMap|dict2items }}"
+  when: (item.value.inplace is not defined) and (upgradePluginMap|length > 0)
 
 - name: Ensure init/archives directory exists
   become: true
