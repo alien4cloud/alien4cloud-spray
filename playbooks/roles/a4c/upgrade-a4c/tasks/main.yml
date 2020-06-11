@@ -43,13 +43,13 @@
 
 - name: Get the a4c backup directory
   set_fact :
-    a4c_backup_path: "{{ a4c_install_dir }}"
-  when: a4c_backup_path is not defined
+    a4c_backup_dir: "{{ a4c_install_dir }}"
+  when: a4c_backup_dir is not defined
 
 - name: Ensure a4c backup directory exit
   become: true
   file:
-    path: "{{ a4c_backup_path }}"
+    path: "{{ a4c_backup_dir }}"
     state: directory
     owner: "{{ a4c_user }}"
   when: (a4c_update_backup)
@@ -57,7 +57,7 @@
 - name: Ensure a4c init_backup directory exit
   become: true
   file:
-    path: "{{ a4c_backup_path }}/init_backup"
+    path: "{{ a4c_backup_dir }}/init_backup"
     state: directory
     owner: "{{ a4c_user }}"
   when: (a4c_update_backup)
@@ -157,7 +157,7 @@
 - name: Backup old war files
   become: true
   become_user: "{{ a4c_user }}"
-  command: "mv {{ inplace_war_files.files[0].path }} {{ a4c_backup_path }}/{{ inplace_war_files.files[0].path | basename }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
+  command: "mv {{ inplace_war_files.files[0].path }} {{ a4c_backup_dir }}/{{ inplace_war_files.files[0].path | basename }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
   when: (a4c_update_backup)
 
 - name: Add lines in changes.log about backuped war
@@ -166,7 +166,7 @@
   lineinfile:
     create: yes
     path: "{{ a4c_log_dir }}/changes.log"
-    line: "{{ ansible_date_time.iso8601 }} : Backuped {{ inplace_war_files.files[0].path }} to {{ a4c_backup_path }}/{{ inplace_war_files.files[0].path | basename }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
+    line: "{{ ansible_date_time.iso8601 }} : Backuped {{ inplace_war_files.files[0].path }} to {{ a4c_backup_dir }}/{{ inplace_war_files.files[0].path | basename }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
   when: (a4c_update_backup)
 
 - name: Replace inplace war file
@@ -268,7 +268,7 @@
 - name: Backup existing plugins when found
   become: true
   become_user: "{{ a4c_user }}"
-  command: "mv {{ item.value.inplace }} {{ a4c_backup_path }}/{{ item.value.inplace | basename }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
+  command: "mv {{ item.value.inplace }} {{ a4c_backup_dir }}/{{ item.value.inplace | basename }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
   loop: "{{ upgradePluginMap|dict2items }}"
   when: (a4c_update_backup) and (item.value.inplace is defined)
 
@@ -278,7 +278,7 @@
   lineinfile:
     create: yes
     path: "{{ a4c_log_dir }}/changes.log"
-    line: "{{ ansible_date_time.iso8601 }} : Backuped {{ item.value.inplace }} to {{ a4c_backup_path }}/{{ item.value.inplace | basename }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
+    line: "{{ ansible_date_time.iso8601 }} : Backuped {{ item.value.inplace }} to {{ a4c_backup_dir }}/{{ item.value.inplace | basename }}.bck{{ ansible_date_time.iso8601 | replace(':', '') }}"
   loop: "{{ upgradePluginMap|dict2items }}"
   when: (a4c_update_backup) and (item.value.inplace is defined)
 
