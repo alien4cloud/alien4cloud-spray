@@ -29,18 +29,26 @@
   become: true
   when: (not offline)
 
-- name: Change pip config
-  template:
-    src: pip.conf.j2
-    dest: /etc/pip.conf
-    mode: 0444
-    force: yes
-  become: true
+# - name: Change pip config
+#   template:
+#     src: pip.conf.j2
+#     dest: /etc/pip.conf
+#     mode: 0444
+#     force: yes
+#   become: true
 
-- name: Install ansible
-  command: "pip install ansible=={{ yorc_ansible_version }}"
+- name: Install ansible using pip
+  pip:
+    name: "ansible{{ yorc_ansible_version }}"
   become: true
-  when: (not offline)
+  when: (not offline and pip_extra_args is not defined)
+
+- name: Install ansible using pip (with extra args)
+  pip:
+    name: "ansible{{ yorc_ansible_version }}"
+    extra_args: "{{ pip_extra_args }}"
+  become: true
+  when: (not offline and pip_extra_args is defined)
 
 # - name: Instal the needed package
 #   yum:
