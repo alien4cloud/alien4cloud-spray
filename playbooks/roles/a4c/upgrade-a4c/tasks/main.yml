@@ -359,6 +359,11 @@
   debug:
     var: upgradePluginMap
 
+- name: Loop over plugins
+  debug:
+    msg: "key is : {{ item.key }}, value is : {{ item.value }}"
+  loop: "{{ upgradePluginMap|dict2items }}"
+
 - name: Install new plugins
   become: true
   become_user: "{{ a4c_user }}"
