@@ -98,9 +98,21 @@
     path: "{{ a4c_install_dir }}/alien4cloud/init"
   register: a4c_init_stat_result
 
+- name: Get the a4c backup directory
+  set_fact :
+    a4c_backup_path: "{{ a4c_install_dir }}"
+  when: a4c_backup_path is not defined
+
+- name: Ensure a4c backup directory exit
+  become: true
+  file:
+    path: "{{ a4c_backup_path }}"
+    state: directory
+    owner: "{{ a4c_user }}"
+  when: a4c_init_stat_result.stat.exists
+
 - name: Rename the init directory
-  command: "mv {{ a4c_install_dir }}/alien4cloud/init {{ a4c_install_dir }}/alien4cloud/init_{{ ansible_date_time.iso8601 | replace(':', '') }}"
+  command: "mv {{ a4c_install_dir }}/alien4cloud/init {{ a4c_backup_path }}/init_{{ ansible_date_time.iso8601 | replace(':', '') }}"
   when: a4c_init_stat_result.stat.exists
   become: true
   become_user: "{{ a4c_user }}"
-  
