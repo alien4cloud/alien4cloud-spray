@@ -6,7 +6,7 @@ a4c_install_dir: /opt/a4c
 # When set to true, old wars and plugins are backuped before beeing replaced
 a4c_update_backup: true
 
-# When not set, will use the a4c_install_dir, when defined will use this
+# When not set, will use the {{a4c_install_dir}}/spraybackups, when defined will use this
 #a4c_backup_dir:
 
 # The list of pluginId to upgrade / install:
