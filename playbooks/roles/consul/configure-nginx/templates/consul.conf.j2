@@ -1,6 +1,6 @@
 upstream consul {
 {% for host in groups['consul'] %}
-        server {{host}}:{{ consul_https_port if _consul_tls else consul_http_port }};
+        server {{host}}{{ appendable_private_domain_name }}:{{ consul_https_port if _consul_tls else consul_http_port }};
 {% endfor %}
 }
 
