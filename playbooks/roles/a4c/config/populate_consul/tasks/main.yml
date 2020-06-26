@@ -31,5 +31,19 @@
   become: true
   become_user: "{{ a4c_user }}"
   debug:
-    msg: "{{ item.key }} : {{ item.value.Key }} : {{ item.value.Value | b64decode }}"
+    msg: "{{ item.Key }} : {{ item.Value | b64decode }}"
   loop: "{{ services_resources_yaml }}"
+
+
+# - name: Search for existing metaproperties
+#   uri:
+#     url: "http://localhost:8500/v1/kv/{{ item.Key }}"
+#     method: PUT
+#     return_content: yes
+#     validate_certs: no
+#     headers:
+#       Content-Type: "application/json"
+#     body: "{{ item.Value | b64decode | to_json }}"
+#     body_format: json
+#     timeout: 120
+#   loop: "{{ services_resources_yaml }}"
