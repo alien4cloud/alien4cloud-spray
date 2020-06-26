@@ -1,6 +1,4 @@
 ---
-- set_fact:
-    alien_url: "{{ a4c_protocol }}://{{ a4c_ip }}:{{ a4c_port }}"
 
 - name: Create temporary folder
   tempfile:
