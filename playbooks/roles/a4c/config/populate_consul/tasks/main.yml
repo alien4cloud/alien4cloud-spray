@@ -32,4 +32,4 @@
   become_user: "{{ a4c_user }}"
   debug:
     msg: "{{ item.key }} : {{ item.value.Key }} : {{ item.value.Value | b64decode }}"
-  loop: "{{ services_resources_yaml | dict2items }}"
+  loop: "{{ services_resources_yaml }}"
