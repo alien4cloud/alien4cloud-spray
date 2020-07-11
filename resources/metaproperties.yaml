@@ -1,5 +1,3 @@
-# CAUTION: No parameters default are possible for target:application type of metaproperties
-
 metaproperties:
   - name: "K8S_PREFIX"
     description: "This prefix will be used to prefix all name of resources created in Kubernetes for this application"
@@ -54,7 +52,7 @@ metaproperties:
     filtered: true
     required: false
     constraints:
-      - validValues: [rens, labs, ana, con, res, san, mco]
+      - validValues: [rens, labs, mp, lid, psc, ssa, mco]
   - name: "Cas d'usage"
     description: ""
     target: application
@@ -63,7 +61,7 @@ metaproperties:
     filtered: true
     required: false
     constraints:
-      - validValues: [rens, labs, ana, con, res, san, mco]
+      - validValues: [rens, labs, mp, lid, psc, ssa, mco]
   - name: "Catégorie application"
     description: ""
     target: application
@@ -126,7 +124,7 @@ metaproperties:
     filtered: true
     required: false
     constraints:
-      - validValues: [rens, labs, ana, con, res, san, mco]
+      - validValues: [rens, labs, mp, lid, psc, ssa, mco]
   - name: "Format données"
     description: ""
     target: service
