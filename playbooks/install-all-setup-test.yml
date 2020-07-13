@@ -15,6 +15,17 @@
     - { role: consul/configure-consul, consul_mode: 'server' }
     - consul/start-consul
 
+- hosts: elasticsearch
+  name: Install configure and start Elasticsearch.
+  gather_facts: no
+  roles:
+    - commons/define_commons_vars
+    - elasticsearch/stop-elasticsearch
+    - install-java
+    - elasticsearch/install-elasticsearch
+    - elasticsearch/configure-elasticsearch
+    - elasticsearch/start-elasticsearch
+
 - hosts: consulfront
   name: Install consul front (Nginx).
   gather_facts: no
@@ -81,16 +92,6 @@
     - yorc/configure-consul-template
     - yorc/start-consul-template
 
-- hosts: elasticsearch
-  name: Install configure and start Elasticsearch.
-  gather_facts: no
-  roles:
-    - commons/define_commons_vars
-    - elasticsearch/stop-elasticsearch
-    - install-java
-    - elasticsearch/install-elasticsearch
-    - elasticsearch/configure-elasticsearch
-    - elasticsearch/start-elasticsearch
 
 - hosts: a4c
   name: Eventually migrate a4c working directory
@@ -190,18 +191,18 @@
         location_name: 'Default'
       }
     - a4c/config/order_location_modifiers_it
-    - { role: 'a4c/config/create_metaproperties',
-        resources_file_artifact: 'resources/metaproperties.yaml'
-      }
+    # - { role: 'a4c/config/create_metaproperties',
+    #     resources_file_artifact: 'resources/metaproperties.yaml'
+    #   }
     - a4c/config/git_var
     - a4c/config/download_upload_csars
     - a4c/config/upload_csars
-    - { role: 'commons/parse_kubeconfig',
-        resources_file_artifact: 'resources/kubeconfig'
-      }
-    - { role: 'a4c/config/create_services',
-        resources_file_artifact: 'resources/services.yaml'
-      }
+    # - { role: 'commons/parse_kubeconfig',
+    #     resources_file_artifact: 'resources/kubeconfig'
+    #   }
+    # - { role: 'a4c/config/create_services',
+    #     resources_file_artifact: 'resources/services.yaml'
+    #   }
 
 - hosts: a4c
   name: Rename init directory
@@ -210,24 +211,24 @@
   roles:
     - a4c/rename-init
 
-- hosts: a4cconfig
-  name: Test the setup deploying an application based on mocks.
-  gather_facts: yes
-  become: false
-  roles:
-    - commons/define_commons_vars
-    - a4c/config/define_a4c_url
-    - { role: 'a4c/config/get_orchectrator',
-        orchestratorName: 'Yorc'
-      }
-    - { role: 'a4c/config/get_location',
-        location_name: 'Default'
-      }
-    - a4c/config/test_application_deployment
-    # - { role: 'a4c/config/test_application_deployment',
-    #     topologyTemplateVersionId: '1TinyMock:2.1.0-SNAPSHOT',
-    #     applicationName: 'SetupTestApp'
-    #   }
+# - hosts: a4cconfig
+#   name: Test the setup deploying an application based on mocks.
+#   gather_facts: yes
+#   become: false
+#   roles:
+#     - commons/define_commons_vars
+#     - a4c/config/define_a4c_url
+#     - { role: 'a4c/config/get_orchectrator',
+#         orchestratorName: 'Yorc'
+#       }
+#     - { role: 'a4c/config/get_location',
+#         location_name: 'Default'
+#       }
+#     - a4c/config/test_application_deployment
+#     # - { role: 'a4c/config/test_application_deployment',
+#     #     topologyTemplateVersionId: '1TinyMock:2.1.0-SNAPSHOT',
+#     #     applicationName: 'SetupTestApp'
+#     #   }
 
 - hosts: jmeter
   name: Install loadtests
