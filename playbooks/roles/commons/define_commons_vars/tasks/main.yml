@@ -144,3 +144,13 @@
   set_fact :
     consul_install_dir: "{{ ansible_env.HOME }}/consul"
   when: consul_install_dir is not defined
+
+- name: Ensure elasticsearch_http_port variable is defined
+  set_fact:
+    elasticsearch_http_port: 9200
+  when: elasticsearch_http_port is not defined
+
+- name: Ensure elasticsearch_transport_port variable is defined
+  set_fact:
+    elasticsearch_transport_port: 9300
+  when: elasticsearch_transport_port is not defined
