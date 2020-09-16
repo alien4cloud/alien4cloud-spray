@@ -133,6 +133,9 @@ a4c_version: 3.0.0-M5
 #topologyTemplateVersionId: "3MockWithRel:2.1.0-SNAPSHOT"
 #applicationName: SetupTest
 
+# orchestrator_to_be_upgraded: Yorc
+# location_to_be_upgraded: Default
+
 # a4c_upgrade_plugins: []
 #   - alien4cloud-kubernetes-plugin
 #   - alien4cloud-ssi-network_policy-plugin

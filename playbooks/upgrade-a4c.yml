@@ -19,3 +19,19 @@
     - { role: a4c/config/define_a4c_url, should_login: false }
     - a4c/start-a4c
     - a4c/config/wait_a4c_fullstart
+
+- hosts: a4cconfig
+  name: Update A4C modifiers.
+  roles:
+    - commons/define_commons_vars
+    - a4c/config/define_a4c_url
+    - { role: 'a4c/config/get_orchectrator',
+        orchestratorName: "{{ orchestrator_to_be_upgraded|default('Yorc') }}"
+      }
+    - { role: 'a4c/config/get_location',
+        location_name: "{{ location_to_be_upgraded|default('Default') }}"
+      }
+    - { role: 'a4c/config/create_location_modifiers',
+        orchestratorName: "{{ orchestrator_to_be_upgraded|default('Yorc') }}",
+        location_name: "{{ location_to_be_upgraded|default('Default') }}"
+      }
