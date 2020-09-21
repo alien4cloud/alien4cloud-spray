@@ -5,22 +5,34 @@
 leader="{{ '{{' }} key "service/yorc/leader" {{ '}}' }}"
 me="{{ inventory_hostname }}{{ appendable_private_domain_name }}"
 leaderName="$( cut -d ':' -f 1 <<< $leader )"
-echo "- $(date) : leader is $leaderName"
+echo "$(date) INFO leader is $leaderName"
 
 if [ "$me" = "$leaderName" ]; then
     if [ "$1" = "-f" ]; then
-      echo "Syncing files before becoming leader $leaderName"
+      echo "$(date) INFO Syncing files before becoming leader $leaderName"
       rsync -Pavzh -e "ssh -o 'StrictHostKeyChecking no' -i ~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}" $leaderName:{{ yorc_working_dir }}/ {{ yorc_working_dir }}
+      rc=$?
+      if [ $rc -eq 0 ]; then
+         echo "$(date) INFO Sync succeeded"
+      else
+         echo "$(date) ERROR Sync failed, rc=$rc"
+      fi
     else
-      echo "I am the leader, do nothing"
+      echo "$(date) INFO I am the leader, do nothing"
     fi
 else
-    echo "Syncing files from $leaderName"
+    echo "$(date) INFO Syncing files from $leaderName"
     rsync -Pavzh -e "ssh -o 'StrictHostKeyChecking no' -i ~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}" $leaderName:{{ yorc_working_dir }}/ {{ yorc_working_dir }}
+    rc=$?
+    if [ $rc -eq 0 ]; then
+       echo "$(date) INFO Sync succeeded"
+    else
+       echo "$(date) ERROR Sync failed, rc=$rc"
+    fi
 fi
 
 {{ '{{' }} else {{ '}}' }}
 
-echo "- $(date) : no leader is elected yet"
+echo "$(date) INFO no leader is elected yet"
 
 {{ '{{' }} end {{ '}}' }}
