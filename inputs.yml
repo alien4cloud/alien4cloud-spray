@@ -54,6 +54,8 @@ yorc_tls: false
 yorc_debug: 0
 yorc_remote_ansible_tmp: /tmp/ansible/remote
 yorc_local_ansible_tmp: /tmp/ansible/local
+# yorc_migrate_data_from_consul: true
+# yorc_use_upgrade_tool: true
 discriminator: ART_YORK_
 
 jmeter_user: jmeter
@@ -85,6 +87,7 @@ ALIEN_DIST_URL: https://www.portaildulibre.fr/nexus/repository/opensource-releas
 JAVA_DIST_URL: http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
 CONSUL_DIST_URL: https://releases.hashicorp.com/consul/1.2.3/consul_1.2.3_linux_amd64.zip
 YORC_DIST_URL: https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.0-M10%2Fyorc-4.0.0-M10.tgz
+YORC_UPGRADE_TOOL_URL: http://52.215.62.182/yorc/yorc-unoff-up.tgz
 JMETER_DIST_URL: https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-3.1.tgz
 TERRAFORM_DIST_URL: https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
 CONSUL_TEMPLATE_DL_URL: https://releases.hashicorp.com/consul-template/0.23.0/consul-template_0.23.0_linux_amd64.zip

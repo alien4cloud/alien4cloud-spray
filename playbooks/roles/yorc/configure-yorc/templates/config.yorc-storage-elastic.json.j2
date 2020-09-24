@@ -12,7 +12,7 @@
       {
         "implementation": "elastic",
         "name": "elastic",
-        "migrate_data_from_consul": false,
+        "migrate_data_from_consul": {{ yorc_migrate_data_from_consul|default(true) }},
         "types": [
           "Log",
           "Event"

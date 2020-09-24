@@ -3,7 +3,7 @@
     "stores": [{
        "name": "fileStore",
        "implementation": "fileCache",
-       "migrate_data_from_consul": true,
+       "migrate_data_from_consul": {{ yorc_migrate_data_from_consul|default(true) }},
        "types": ["Deployment", "Log", "Event"]
      }]
   }
