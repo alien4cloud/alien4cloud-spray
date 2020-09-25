@@ -24,3 +24,4 @@
     - "/var/lib/consul_template/{{ component_name }}"
     - /var/log/consul_template/
     - "/etc/systemd/system/{{ component_name }}-sync.service"
+    - "/etc/logrotate.d/{{ component_name }}"
