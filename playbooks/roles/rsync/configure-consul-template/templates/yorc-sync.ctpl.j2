@@ -10,7 +10,7 @@ echo "$(date) INFO leader is $leaderName"
 if [ "$me" = "$leaderName" ]; then
     if [ "$1" = "-f" ]; then
       echo "$(date) INFO Syncing files before becoming leader $leaderName"
-      rsync -Pavzh -e "ssh -o 'StrictHostKeyChecking no' -i ~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}" $leaderName:{{ yorc_working_dir }}/ {{ yorc_working_dir }}
+      rsync -Pavzh --delete -e "ssh -o 'StrictHostKeyChecking no' -i ~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}" $leaderName:{{ yorc_working_dir }}/ {{ yorc_working_dir }}
       rc=$?
       if [ $rc -eq 0 ]; then
          echo "$(date) INFO Sync succeeded"
@@ -22,7 +22,7 @@ if [ "$me" = "$leaderName" ]; then
     fi
 else
     echo "$(date) INFO Syncing files from $leaderName"
-    rsync -Pavzh -e "ssh -o 'StrictHostKeyChecking no' -i ~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}" $leaderName:{{ yorc_working_dir }}/ {{ yorc_working_dir }}
+    rsync -Pavzh --delete -e "ssh -o 'StrictHostKeyChecking no' -i ~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}" $leaderName:{{ yorc_working_dir }}/ {{ yorc_working_dir }}
     rc=$?
     if [ $rc -eq 0 ]; then
        echo "$(date) INFO Sync succeeded"
