@@ -248,14 +248,14 @@
 
 - name: Loop over the a4c group (ES is embeded)
   set_fact:
-    es_node_list: "{{ es_node_list + [ es_scheme + item + appendable_private_domain_name + ':9200' ] }}"
+    es_node_list: "{{ es_node_list + [ es_scheme + item + appendable_private_domain_name + ':' + elasticsearch_http_port|string ] }}"
   with_items: "{{ groups['a4c'] }}"
   when: es_embedded
 
 # TODO: manage https ?
 - name: Loop over the elasticsearch group
   set_fact:
-    es_node_list: "{{ es_node_list + [ es_scheme + item + appendable_private_domain_name + ':9200' ] }}"
+    es_node_list: "{{ es_node_list + [ es_scheme + item + appendable_private_domain_name + ':' + elasticsearch_http_port|string ] }}"
   with_items: "{{ groups['elasticsearch'] }}"
   when: not es_embedded
 # This part is just for elastic storage (WIP) <

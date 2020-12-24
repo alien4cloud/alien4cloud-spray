@@ -1,0 +1,26 @@
+
+- name: Extract Yorc upgrade tool from remote source
+  unarchive:
+    src: "{{ YORC_UPGRADE_TOOL_URL }}"
+    dest: "{{ yorc_install_dir }}"
+    mode: 0755
+    remote_src: yes
+  become: true
+  become_user: "{{ yorc_user }}"
+  when: (not offline) and yorc_use_upgrade_tool is defined and yorc_use_upgrade_tool
+
+- name: Extract Yorc upgrade tool from local source
+  unarchive:
+    src: "{{ YORC_UPGRADE_TOOL_URL }}"
+    dest: "{{ yorc_install_dir }}"
+    mode: 0755
+    remote_src: no
+  become: true
+  become_user: "{{ yorc_user }}"
+  when: (offline) and yorc_use_upgrade_tool is defined and yorc_use_upgrade_tool
+
+- name: run Yorc upgrade tool
+  shell: "{{ yorc_install_dir }}/yorc-unoff-up/yorc-unoff-up {{ yorc_working_dir }}"
+  become: true
+  become_user: "{{ yorc_user }}"
+  when: yorc_use_upgrade_tool is defined and yorc_use_upgrade_tool

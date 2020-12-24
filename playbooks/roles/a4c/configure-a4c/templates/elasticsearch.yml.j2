@@ -5,12 +5,16 @@ path:
 
 transport:
   type: mock-socket-network
+  tcp:
+    port: {{ elasticsearch_transport_port }}
 
 cluster:
   name: escluster
 
 http:
   enabled: true
+  port: {{ elasticsearch_http_port }}
+
 node:
   name: alien
 network:

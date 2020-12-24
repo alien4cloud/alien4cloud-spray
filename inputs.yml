@@ -54,6 +54,8 @@ yorc_tls: false
 yorc_debug: 0
 yorc_remote_ansible_tmp: /tmp/ansible/remote
 yorc_local_ansible_tmp: /tmp/ansible/local
+# yorc_migrate_data_from_consul: true
+# yorc_use_upgrade_tool: true
 discriminator: ART_YORK_
 
 jmeter_user: jmeter
@@ -63,6 +65,9 @@ jmeter_install_dir: /opt/jmeter
 elasticsearch_tls: false
 # ES data directory if not default
 # elasticsearch_home: /var/lib/elasticsearch
+# ES ports if not default
+# elasticsearch_http_port: 9200
+# elasticsearch_transport_port: 9300
 
 # SSL TLS
 # The local path where certificates can be found for SSL configs on nodes
@@ -82,6 +87,7 @@ ALIEN_DIST_URL: https://www.portaildulibre.fr/nexus/repository/opensource-releas
 JAVA_DIST_URL: http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
 CONSUL_DIST_URL: https://releases.hashicorp.com/consul/1.2.3/consul_1.2.3_linux_amd64.zip
 YORC_DIST_URL: https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.0-M10%2Fyorc-4.0.0-M10.tgz
+YORC_UPGRADE_TOOL_URL: http://52.215.62.182/yorc/yorc-unoff-up.tgz
 JMETER_DIST_URL: https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-3.1.tgz
 TERRAFORM_DIST_URL: https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
 CONSUL_TEMPLATE_DL_URL: https://releases.hashicorp.com/consul-template/0.23.0/consul-template_0.23.0_linux_amd64.zip
@@ -129,6 +135,9 @@ a4c_version: 3.0.0-M5
 # kube_config: toto
 #topologyTemplateVersionId: "3MockWithRel:2.1.0-SNAPSHOT"
 #applicationName: SetupTest
+
+# orchestrator_to_be_upgraded: Yorc
+# location_to_be_upgraded: Default
 
 # a4c_upgrade_plugins: []
 #   - alien4cloud-kubernetes-plugin

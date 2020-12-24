@@ -48,7 +48,7 @@
     remote_src: yes
   become: true
   become_user: "{{ consul_template_user }}"
-  when: (not offline) and (not consul_template_installed) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha)
+  when: (not offline) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha) and (not consul_template_installed) 
 
 - name: Extract consul_template archive from local source
   unarchive:
@@ -58,7 +58,7 @@
     remote_src: no
   become: true
   become_user: "{{ consul_template_user }}"
-  when: (offline) and (not consul_template_installed) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha)
+  when: (offline) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha) and (not consul_template_installed) 
 
 - name: Usage of a4c-front-service jinja2 template for service creation
   template:
@@ -78,4 +78,4 @@
 - name: Enable a4c-front service
   command: systemctl enable yorc-front.service
   become: true
-  when: (not consul_template_installed) and (yorc_ha_enabled and should_use_rsync_for_yorc_ha)
+  when: (yorc_ha_enabled and should_use_rsync_for_yorc_ha) and (not consul_template_installed) 

@@ -9,3 +9,4 @@
     - { role: yorc/install-yorc, yorc_upgrade: True }
     - yorc/configure-yorc
     - yorc/start-yorc
+    - yorc/upgrade-yorc

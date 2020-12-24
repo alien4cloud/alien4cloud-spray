@@ -144,7 +144,7 @@
   become_user: "{{ a4c_user }}"
   find:
     paths: "{{ temp_dir.path }}/alien4cloud/"
-    patterns: "^(.*\\-\\d\\.\\d\\.\\d-[A-Z\\d\\-]+)[^s]?[^s]?[^l]?\\.war$"
+    patterns: "^.*\\-\\d\\.\\d\\.\\d(-[A-Z\\d\\-]+)*[^s]?[^s]?[^l]?\\.war$"
     use_regex: yes
   register: upgrade_war_files
 
@@ -153,7 +153,7 @@
   become_user: "{{ a4c_user }}"
   find:
     paths: "{{ a4c_install_dir }}/alien4cloud/"
-    patterns: "^(.*\\-\\d\\.\\d\\.\\d-[A-Z\\d\\-]+)[^s]?[^s]?[^l]?\\.war$"
+    patterns: "^.*\\-\\d\\.\\d\\.\\d(-[A-Z\\d\\-]+)*[^s]?[^s]?[^l]?\\.war$"
     use_regex: yes
   register: inplace_war_files
 

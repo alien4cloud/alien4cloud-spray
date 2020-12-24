@@ -247,3 +247,17 @@
     line: "xpack.security.authc.anonymous.roles: superuser"
   become: true
   when: (elasticsearch_tls)
+
+- name: Setup elasticsearch http port
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?http.port:.*'
+    line: "http.port: {{ elasticsearch_http_port }}"
+  become: true
+
+- name: Setup elasticsearch transport port
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^[#]?transport.tcp.port:.*'
+    line: "transport.tcp.port: {{ elasticsearch_transport_port }}"
+  become: true
