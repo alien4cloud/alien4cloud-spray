@@ -15,7 +15,7 @@
 
 - name: Instal python
   yum:
-    pkg: python
+    pkg: python3
     state: present
     update_cache: true
   become: true
@@ -23,9 +23,17 @@
 
 - name: Instal python pip
   yum:
-    pkg: python-pip
+    pkg: python3-pip
     state: present
     update_cache: true
+  become: true
+  when: (not offline)
+
+- name: Link pip3 to pip
+  alternatives:
+    name: pip
+    link: /usr/bin/pip
+    path: /usr/bin/pip3
   become: true
   when: (not offline)
 
