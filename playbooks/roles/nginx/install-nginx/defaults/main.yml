@@ -1,2 +1,2 @@
 # set just 'nginx' if you want the latest version, otherwise specify version
-nginx_package: "nginx-1.16.1-2.el7"
+nginx_package: "nginx"
