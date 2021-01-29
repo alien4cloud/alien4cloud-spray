@@ -1,4 +1,3 @@
-
 - name: Ensure the 'offline' variable is defined
   set_fact :
     offline: false
@@ -24,6 +23,7 @@
   yum:
     name: "{{ elasticsearch_rmp_url }}"
     state: present
+    disable_gpg_check: yes
   when: (not offline)
 
 - name: Copy Elasticsearch
