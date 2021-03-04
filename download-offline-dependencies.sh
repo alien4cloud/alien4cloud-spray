@@ -46,19 +46,17 @@ download () {
 download resources/bin/java http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz jdk-8u131-linux-x64.tar.gz "-H \"Cookie: oraclelicense=a\" -kLO"
 
 # Get a4c ecosystem binaries
-download resources/bin http://52.215.62.182/alien4cloud/alien4cloud-artemis-dist/3.0.0-M6/alien4cloud-artemis-dist-3.0.0-M6-dist.tar.gz
+download resources/bin https://www.portaildulibre.fr/nexus/repository/opensource-snapshots/alien4cloud/alien4cloud-artemis-dist/3.1.0-SNAPSHOT/alien4cloud-artemis-dist-3.1.0-20210303.070921-50-dist.tar.gz
 download resources/bin https://releases.hashicorp.com/consul/1.2.3/consul_1.2.3_linux_amd64.zip
 download resources/bin https://releases.hashicorp.com/consul-template/0.23.0/consul-template_0.23.0_linux_amd64.zip
 download resources/bin https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
-download resources/bin https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.0-M10%2Fyorc-4.0.0-M10.tgz yorc-4.0.0-M10.tgz "-L"
+download resources/bin https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.4%2Fyorc-4.0.4.tgz yorc-4.0.4.tgz "-L"
 download resources/bin/elasticsearch https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.6.2.rpm
 download resources/bin https://archive.apache.org/dist/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz
 # Get rpm dependencies
 download resources/bin/rpms/ http://mirror.centos.org/centos/7/os/x86_64/Packages/unzip-6.0-21.el7.x86_64.rpm
-download resources/bin/unzip http://mirror.centos.org/centos/7/os/x86_64/Packages/unzip-6.0-21.el7.x86_64.rpm
 download resources/bin/rpms https://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jq-1.6-2.el7.x86_64.rpm
-download resources/bin/rpms https://rpmfind.net/linux/mageia/distrib/6/x86_64/media/core/release/lib64onig2-5.9.6-2.mga6.x86_64.rpm
-download resources/bin/rpms https://rpmfind.net/linux/opensuse/tumbleweed/repo/oss/x86_64/libonig5-6.9.5.1-1.2.x86_64.rpm
+download resources/bin/rpms https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/o/oniguruma-6.8.2-1.el7.x86_64.rpm 0-oniguruma-6.8.2-1.el7.x86_64.rpm
 
 # Get Terraform plugins
 download resources/bin/terraform-plugins https://releases.hashicorp.com/terraform-provider-consul/2.1.0/terraform-provider-consul_2.1.0_linux_amd64.zip
@@ -76,13 +74,13 @@ download resources/bin/python http://mirror.centos.org/centos/7/extras/x86_64/Pa
 download resources/bin/python http://mirror.centos.org/centos/7/extras/x86_64/Packages/python2-jmespath-0.9.0-3.el7.noarch.rpm
 download resources/bin/python http://mirror.centos.org/centos/7/extras/x86_64/Packages/python-passlib-1.6.5-2.el7.noarch.rpm
 download resources/bin/python http://mirror.centos.org/centos/7/os/x86_64/Packages/python2-cryptography-1.7.2-2.el7.x86_64.rpm
-download resources/bin/python http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/python-paramiko-2.1.1-9.el7.noarch.rpm
+download resources/bin/python http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/python-paramiko-2.1.1-9.el7.noarch.rpm
 download resources/bin/python http://mirror.centos.org/centos/7/extras/x86_64/Packages/python-httplib2-0.9.2-1.el7.noarch.rpm
 download resources/bin/python http://mirror.centos.org/centos/7/os/x86_64/Packages/scl-utils-20130529-19.el7.x86_64.rpm
 download resources/bin/python https://cbs.centos.org/kojifiles/packages/python27/1.1/26.1.el7/x86_64/python27-runtime-1.1-26.1.el7.x86_64.rpm
 download resources/bin/python https://cbs.centos.org/kojifiles/packages/python27-python-setuptools/0.9.8/7.el7/noarch/python27-python-setuptools-0.9.8-7.el7.noarch.rpm
 download resources/bin/python https://cbs.centos.org/kojifiles/packages/python27-python-pip/8.1.2/3.el7/noarch/python27-python-pip-8.1.2-3.el7.noarch.rpm
-download resources/bin/python ftp://ftp.pbone.net/mirror/ftp.centos.org/7.8.2003/sclo/x86_64/rh/Packages/p/python27-python-libs-2.7.16-4.el7.x86_64.rpm
+download resources/bin/python ftp://ftp.pbone.net/mirror/ftp.centos.org/7/sclo/x86_64/rh/Packages/p/python27-python-libs-2.7.16-4.el7.x86_64.rpm
 download resources/bin/python https://cbs.centos.org/kojifiles/packages/python27-python/2.7.16/4.el7/x86_64/python27-python-2.7.16-4.el7.x86_64.rpm
 download resources/bin/python http://mirror.centos.org/centos/7/os/x86_64/Packages/python-cffi-1.6.0-5.el7.x86_64.rpm
 download resources/bin/python http://mirror.centos.org/centos/7/os/x86_64/Packages/python-enum34-1.0.4-1.el7.noarch.rpm
@@ -92,58 +90,58 @@ download resources/bin/python http://mirror.centos.org/centos/7/os/x86_64/Packag
 download resources/bin/python http://mirror.centos.org/centos/7/os/x86_64/Packages/python2-pyasn1-0.1.9-7.el7.noarch.rpm
 
 # nginx
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/dejavu-fonts-common-2.33-6.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/dejavu-lgc-sans-fonts-2.33-6.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/fontconfig-2.13.0-4.3.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/fontpackages-filesystem-1.44-8.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/freetype-2.8-14.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/gd-2.0.35-26.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/gperftools-libs-2.6.1-1.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/libjpeg-turbo-1.2.90-8.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/libpng-1.5.13-7.el7_2.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/libX11-1.6.7-2.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/libX11-common-1.6.7-2.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/libXau-1.0.8-2.1.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/libxcb-1.13-1.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/libXpm-3.5.12-1.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/libxslt-1.1.28-5.el7.x86_64.rpm
-download resources/bin/nginx http://mirrors.coreix.net/fedora-epel/7/x86_64/Packages/n/nginx-1.16.1-1.el7.x86_64.rpm
-download resources/bin/nginx http://mirrors.coreix.net/fedora-epel/7/x86_64/Packages/n/nginx-all-modules-1.16.1-1.el7.noarch.rpm
-download resources/bin/nginx http://mirrors.coreix.net/fedora-epel/7/x86_64/Packages/n/nginx-mod-http-image-filter-1.16.1-1.el7.x86_64.rpm
-download resources/bin/nginx http://mirrors.coreix.net/fedora-epel/7/x86_64/Packages/n/nginx-mod-http-perl-1.16.1-1.el7.x86_64.rpm
-download resources/bin/nginx http://mirrors.coreix.net/fedora-epel/7/x86_64/Packages/n/nginx-mod-http-xslt-filter-1.16.1-1.el7.x86_64.rpm
-download resources/bin/nginx http://mirrors.coreix.net/fedora-epel/7/x86_64/Packages/n/nginx-mod-mail-1.16.1-1.el7.x86_64.rpm
-download resources/bin/nginx http://mirrors.coreix.net/fedora-epel/7/x86_64/Packages/n/nginx-mod-stream-1.16.1-1.el7.x86_64.rpm
-download resources/bin/nginx http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/n/nginx-filesystem-1.16.1-1.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/centos-indexhtml-7-9.el7.centos.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/centos-logos-70.0.6-3.el7.centos.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-5.16.3-295.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-Carp-1.26-244.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-constant-1.27-2.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-Encode-2.51-7.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-Exporter-5.68-3.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-File-Path-2.09-2.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-File-Temp-0.23.01-3.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-Filter-1.49-3.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-Getopt-Long-2.40-3.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-HTTP-Tiny-0.033-3.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-libs-5.16.3-295.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-macros-5.16.3-295.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-parent-0.225-244.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-PathTools-3.40-5.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-Pod-Escapes-1.04-295.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-podlators-2.5.1-3.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-Pod-Perldoc-3.20-4.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-Pod-Simple-3.28-4.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-Pod-Usage-1.63-3.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-Scalar-List-Utils-1.27-248.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-Socket-2.010-5.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-Storable-2.45-3.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-Text-ParseWords-3.29-4.el7.noarch.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-threads-1.87-4.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-threads-shared-1.43-6.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-Time-HiRes-1.9725-3.el7.x86_64.rpm
-download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7.8.2003/os/x86_64/Packages/perl-Time-Local-1.2300-2.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/dejavu-fonts-common-2.33-6.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/dejavu-lgc-sans-fonts-2.33-6.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/fontconfig-2.13.0-4.3.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/fontpackages-filesystem-1.44-8.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/freetype-2.8-14.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/gd-2.0.35-26.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/gperftools-libs-2.6.1-1.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/libjpeg-turbo-1.2.90-8.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/libpng-1.5.13-8.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/libX11-1.6.7-2.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/libX11-common-1.6.7-2.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/libXau-1.0.8-2.1.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/libxcb-1.13-1.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/libXpm-3.5.12-1.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/libxslt-1.1.28-6.el7.x86_64.rpm
+download resources/bin/nginx http://mirrors.coreix.net/fedora-epel/7/x86_64/Packages/n/nginx-1.16.1-3.el7.x86_64.rpm
+download resources/bin/nginx http://mirrors.coreix.net/fedora-epel/7/x86_64/Packages/n/nginx-all-modules-1.16.1-3.el7.noarch.rpm
+download resources/bin/nginx http://mirrors.coreix.net/fedora-epel/7/x86_64/Packages/n/nginx-mod-http-image-filter-1.16.1-3.el7.x86_64.rpm
+download resources/bin/nginx http://mirrors.coreix.net/fedora-epel/7/x86_64/Packages/n/nginx-mod-http-perl-1.16.1-3.el7.x86_64.rpm
+download resources/bin/nginx http://mirrors.coreix.net/fedora-epel/7/x86_64/Packages/n/nginx-mod-http-xslt-filter-1.16.1-3.el7.x86_64.rpm
+download resources/bin/nginx http://mirrors.coreix.net/fedora-epel/7/x86_64/Packages/n/nginx-mod-mail-1.16.1-3.el7.x86_64.rpm
+download resources/bin/nginx http://mirrors.coreix.net/fedora-epel/7/x86_64/Packages/n/nginx-mod-stream-1.16.1-3.el7.x86_64.rpm
+download resources/bin/nginx http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/n/nginx-filesystem-1.16.1-3.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/centos-indexhtml-7-9.el7.centos.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/centos-logos-70.0.6-3.el7.centos.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-5.16.3-297.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-Carp-1.26-244.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-constant-1.27-2.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-Encode-2.51-7.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-Exporter-5.68-3.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-File-Path-2.09-2.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-File-Temp-0.23.01-3.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-Filter-1.49-3.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-Getopt-Long-2.40-3.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-HTTP-Tiny-0.033-3.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-libs-5.16.3-297.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-macros-5.16.3-297.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-parent-0.225-244.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-PathTools-3.40-5.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-Pod-Escapes-1.04-297.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-podlators-2.5.1-3.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-Pod-Perldoc-3.20-4.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-Pod-Simple-3.28-4.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-Pod-Usage-1.63-3.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-Scalar-List-Utils-1.27-248.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-Socket-2.010-5.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-Storable-2.45-3.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-Text-ParseWords-3.29-4.el7.noarch.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-threads-1.87-4.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-threads-shared-1.43-6.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-Time-HiRes-1.9725-3.el7.x86_64.rpm
+download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-Time-Local-1.2300-2.el7.noarch.rpm
 
 echo "All resources downloaded successfully !" && \
 echo "   ____  _      _ " && \
