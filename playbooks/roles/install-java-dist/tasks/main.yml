@@ -21,17 +21,23 @@
   set_fact :
    java_installed: "{{ java_version.stdout|length > 0 and java_version.stdout is version_compare(JAVA_VERSION, '>=') }}"
     # java8_installed: false
+  when: JAVA_VERSION is defined
+
+- name: Check java version
+  set_fact :
+   java_installed: false
+  when: JAVA_VERSION is not defined
 
 - name: Is java installed ?
   debug:
     var: java_installed
 
 - debug:
-    msg: "Java {{JAVA_VERSION}} is installed"
+    msg: "Expected Java is installed"
   when: (java_installed)
 
 - debug:
-    msg: "Java {{JAVA_VERSION}} is NOT installed"
+    msg: "Expected Java is NOT installed"
   when: (not java_installed)
 
 - name: Creates java alternative directory
