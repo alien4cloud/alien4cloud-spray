@@ -158,7 +158,7 @@
   when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
 
 - name: Find the firts jre cacerts trustore
-  shell: "find / -name cacerts | grep jre | head -n 1"
+  shell: "find / -name cacerts | egrep 'jre|jdk' | head -n 1"
   become: true
   register: find_cacerts_command_output
   when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
