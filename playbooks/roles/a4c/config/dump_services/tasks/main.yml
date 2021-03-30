@@ -43,7 +43,7 @@
 
 - name: Define dump file name
   set_fact:
-    dump_file_path: "{{ inventory_dir }}/resources/services-{{ alien_url | replace('.', '-') | replace(':', '-') | replace('/', '-') }}-{{ ansible_date_time.iso8601 | replace(':', '') }}.yml"
+    dump_file_path: "{{ data_dir }}/resources/services-{{ alien_url | replace('.', '-') | replace(':', '-') | replace('/', '-') }}-{{ ansible_date_time.iso8601 | replace(':', '') }}.yml"
 
 - name: Store services file in a local file
   fetch:

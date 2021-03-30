@@ -18,7 +18,7 @@
 
 - name: Define a var containing the local file path
   set_fact:
-    local_file_path: "{{ inventory_dir }}/{{ certificates_path }}/{{ local_file_name }}"
+    local_file_path: "{{ data_dir }}/{{ certificates_path }}/{{ local_file_name }}"
 
 - name: Fetch host certif/key content
   include_role:
