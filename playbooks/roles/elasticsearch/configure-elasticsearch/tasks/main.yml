@@ -106,7 +106,7 @@
 
 - name: Copy CA cert file
   copy:
-    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
+    src: "{{ data_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
     dest: "{{ ca_file_path }}"
     owner: "{{ elasticsearch_user }}"
     group: "{{ elasticsearch_group }}"
@@ -121,7 +121,7 @@
 
 - name: Copy host key file
   copy:
-    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+    src: "{{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
     dest: "{{ hostkey_file_path }}"
     owner: "{{ elasticsearch_user }}"
     group: "{{ elasticsearch_group }}"
@@ -136,7 +136,7 @@
 
 - name: Copy host cert file
   copy:
-    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+    src: "{{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
     dest: "{{ hostcert_file_path }}"
     owner: "{{ elasticsearch_user }}"
     group: "{{ elasticsearch_group }}"

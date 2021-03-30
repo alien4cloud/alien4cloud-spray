@@ -154,3 +154,9 @@
   set_fact:
     elasticsearch_transport_port: 9300
   when: elasticsearch_transport_port is not defined
+
+- name: Ensure data_dir variable is defined
+  set_fact:
+    data_dir: ../
+  when: data_dir is not defined
+

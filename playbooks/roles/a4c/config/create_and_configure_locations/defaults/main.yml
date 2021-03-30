@@ -1,0 +1,3 @@
+a4c_locations_to_create:
+   - name: Default
+     type: HostsPool

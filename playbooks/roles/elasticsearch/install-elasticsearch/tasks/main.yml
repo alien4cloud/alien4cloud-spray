@@ -28,7 +28,7 @@
 
 - name: Copy Elasticsearch
   copy:
-    src: "{{ inventory_dir }}/resources/bin/elasticsearch/"
+    src: "{{ data_dir }}/resources/bin/elasticsearch/"
     dest: /tmp/rpms/
   when: (not elasticsearch_installed) and (offline)
 

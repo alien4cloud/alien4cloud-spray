@@ -45,30 +45,30 @@
   when: (component_ha_enabled) and (should_use_rsync_for_component_ha)
 
 - name: Locally Check for CA file
-  local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
+  local_action: "stat path={{ data_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
   register: stat_cacert_path
   when: (consul_tls) and (component_ha_enabled) and (should_use_rsync_for_component_ha)
 
 - fail:
-    msg: "The consul http communication should be secured by no CA file found in {{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }} ! Please provide CA certificate file."
+    msg: "The consul http communication should be secured by no CA file found in {{ data_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }} ! Please provide CA certificate file."
   when: (consul_tls) and (component_ha_enabled) and (not stat_cacert_path.stat.exists)
 
 - name: Locally Check for Host key file
-  local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+  local_action: "stat path={{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
   register: stat_hostkey_path
   when: (consul_tls) and (component_ha_enabled) and (should_use_rsync_for_component_ha)
 
 - fail:
-    msg: "The consul http communication should be secured by no host key file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }} ! Please provide host key file."
+    msg: "The consul http communication should be secured by no host key file found in {{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }} ! Please provide host key file."
   when: (consul_tls) and (component_ha_enabled) and (not stat_hostkey_path.stat.exists) and (should_use_rsync_for_component_ha)
 
 - name: Locally Check for Host cert file
-  local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+  local_action: "stat path={{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
   register: stat_hostcert_path
   when: (consul_tls) and (component_ha_enabled) and (should_use_rsync_for_component_ha)
 
 - fail:
-    msg: "The consul http communication should be secured by no host certificate file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }} ! Please provide host certificate file."
+    msg: "The consul http communication should be secured by no host certificate file found in {{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }} ! Please provide host certificate file."
   when: (consul_tls) and (component_ha_enabled) and (not stat_hostcert_path.stat.exists) and (should_use_rsync_for_component_ha)
 
 - name: Creates consul-template ssl directory
@@ -81,7 +81,7 @@
 
 - name: Copy CA cert file
   copy:
-    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
+    src: "{{ data_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
     dest: "/etc/consul_template/{{ component_name }}/ssl/{{ ssl_ca_cert_name }}"
   become: true
   become_user: "{{ component_user }}"
@@ -89,7 +89,7 @@
 
 - name: Copy host key file
   copy:
-    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+    src: "{{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
     dest: "/etc/consul_template/{{ component_name }}/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
   become: true
   become_user: "{{ component_user }}"
@@ -97,7 +97,7 @@
 
 - name: Copy host cert file
   copy:
-    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+    src: "{{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
     dest: "/etc/consul_template/{{ component_name }}/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
   become: true
   become_user: "{{ component_user }}"

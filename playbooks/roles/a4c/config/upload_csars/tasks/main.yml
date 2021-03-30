@@ -1,7 +1,7 @@
 ---
 
 - name: Locally Check if csars folder exists
-  local_action: "stat path={{ inventory_dir }}/resources/csars"
+  local_action: "stat path={{ data_dir }}/resources/csars"
   register: csar_folder
 
 - name: Create temporary folder
@@ -13,7 +13,7 @@
 
 - name: Copy CSAR archives
   copy:
-    src: "{{ inventory_dir }}/resources/csars/"
+    src: "{{ data_dir }}/resources/csars/"
     dest: "{{ temp_dir.path }}"
   when: csar_folder.stat.exists and csar_folder.stat.isdir
 

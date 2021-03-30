@@ -26,7 +26,7 @@ a4c_admin_pwd: admin
 a4c_saml_enabled: false
 a4c_jvm_jmx_remote_enabled: false
 # a4c_saml_config_url: https://keycloak/auth/realms/artemis/protocol/saml/descriptor
-inventory_dir: "../"
+data_dir: "../"
 
 consul_user: consul
 consul_install_dir: /opt/consul
@@ -166,6 +166,14 @@ a4c_config_addons:
 #   - alien4cloud-ssi-network_policy-plugin
 #   - kubernetes-supervision-modifier
 #   - alien4cloud-kafka-listener
+
+a4c_locations_to_create:
+   - name: Default
+     type: HostsPool
+
+yorc_locations_to_create:
+  - name: Default
+    type: HostsPool
 
 orchestrator_config:
   Yorc:

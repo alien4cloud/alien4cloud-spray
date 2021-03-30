@@ -85,20 +85,20 @@
   when: (find_front_port_semanage_cmd.rc != 0)
 
 - name: Locally Check for Host key file
-  local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+  local_action: "stat path={{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
   register: stat_hostkey_path
   when: (securize_nginx) or (securize_a4c)
 
 - fail:
-    msg: "The nginx should be secured by no host key file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }} ! Please provide host key file."
+    msg: "The nginx should be secured by no host key file found in {{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }} ! Please provide host key file."
   when: (securize_nginx or securize_a4c) and (not stat_hostkey_path.stat.exists)
 
 - name: Locally Check for Host cert file
-  local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+  local_action: "stat path={{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
   register: stat_hostcert_path
 
 - fail:
-    msg: "The nginx should be secured by no host certificate file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }} ! Please provide host certificate file."
+    msg: "The nginx should be secured by no host certificate file found in {{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }} ! Please provide host certificate file."
   when: (securize_nginx or securize_a4c) and (not stat_hostcert_path.stat.exists)
 
 - name: Creates nginx ssl directory
@@ -110,14 +110,14 @@
 
 - name: Copy host key file
   copy:
-    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+    src: "{{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
     dest: "/etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
   become: true
   when: (securize_nginx or securize_a4c)
 
 - name: Copy host cert file
   copy:
-    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+    src: "{{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
     dest: "/etc/nginx/ssl/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
   become: true
   when: (securize_nginx or securize_a4c)

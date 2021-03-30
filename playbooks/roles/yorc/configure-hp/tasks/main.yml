@@ -18,7 +18,7 @@
   become: true
   become_user: "{{ yorc_user }}"
   copy:
-    src: "{{ inventory_dir }}/{{ item.key }}"
+    src: "{{ data_dir }}/{{ item.key }}"
     dest: "{{ yorc_install_dir }}/ssl/"
   with_items: "{{ hostpool_config }}"
   when: hostpool_config is defined and hostpool_config | length > 0
@@ -28,7 +28,7 @@
   become_user: "{{ yorc_user }}"
   shell:
     chdir: "{{ yorc_install_dir }}"
-    cmd: "./yorc hp delete -l Default {{ item.alias }}"
+    cmd: "./yorc hp delete -l {{ item.location|default('Default') }} {{ item.alias }}"
   with_items: "{{ hostpool_config }}"
   when: hostpool_config is defined and hostpool_config | length > 0
 
@@ -37,7 +37,7 @@
   become_user: "{{ yorc_user }}"
   shell:
     chdir: "{{ yorc_install_dir }}"
-    cmd: "./yorc hp add -l Default {{ item.alias }} --user {{ item.user }} --host {{ item.host }} --key {{ yorc_install_dir }}/ssl/{{ item.key | basename }}"
+    cmd: "./yorc hp add -l {{ item.location|default('Default') }} {{ item.alias }} --user {{ item.user }} --host {{ item.host }} --key {{ yorc_install_dir }}/ssl/{{ item.key | basename }}"
   with_items: "{{ hostpool_config }}"
   when: hostpool_config is defined and hostpool_config | length > 0
 
@@ -46,7 +46,7 @@
   become_user: "{{ yorc_user }}"
   shell:
     chdir: "{{ yorc_install_dir }}"
-    cmd: "./yorc hp -l Default list"
+    cmd: "./yorc hp -l {{ item.location|default('Default') }} list"
   register: shell_output
   with_items: "{{ hostpool_config }}"
   when: hostpool_config is defined and hostpool_config | length > 0

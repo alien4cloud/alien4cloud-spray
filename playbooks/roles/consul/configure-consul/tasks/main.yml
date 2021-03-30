@@ -60,11 +60,11 @@
     var: consul_gossip_encrypt
 
 - name: Locally Check for consul key file
-  local_action: "stat path={{ inventory_dir }}/{{ consul_gossip_encrypt_key_path }}"
+  local_action: "stat path={{ data_dir }}/{{ consul_gossip_encrypt_key_path }}"
   register: stat_consul_gossip_encrypt_key_path
 
 - fail:
-    msg: "The consul Gossip exchange should be encrypted by no key can be found in {{ inventory_dir }}/{{ consul_gossip_encrypt_key_path }} !"
+    msg: "The consul Gossip exchange should be encrypted by no key can be found in {{ data_dir }}/{{ consul_gossip_encrypt_key_path }} !"
   when: (consul_gossip_encrypt) and (not stat_consul_gossip_encrypt_key_path.stat.exists)
 
 - name: Create temporary file to store consul key
@@ -76,7 +76,7 @@
 
 - name: Copy consul key file
   copy:
-    src: "{{ inventory_dir }}/{{ consul_gossip_encrypt_key_path }}"
+    src: "{{ data_dir }}/{{ consul_gossip_encrypt_key_path }}"
     dest: "{{ consul_key_file.path }}"
   when: (consul_gossip_encrypt)
 
@@ -113,30 +113,30 @@
   when: any_consul_tls is not defined
 
 - name: Locally Check for CA file
-  local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
+  local_action: "stat path={{ data_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
   register: stat_cacert_path
   when: (_consul_tls) or (enable_agent_tls is defined and enable_agent_tls) or any_consul_tls
 
 - fail:
-    msg: "The consul http communication should be secured by no CA file found in {{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }} ! Please provide CA certificate file."
+    msg: "The consul http communication should be secured by no CA file found in {{ data_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }} ! Please provide CA certificate file."
   when: (_consul_tls or (enable_agent_tls is defined and enable_agent_tls) or any_consul_tls) and (not stat_cacert_path.stat.exists)
 
 - name: Locally Check for Host key file
-  local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+  local_action: "stat path={{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
   register: stat_hostkey_path
   when: (_consul_tls) or (enable_agent_tls is defined and enable_agent_tls) or any_consul_tls
 
 - fail:
-    msg: "The consul http communication should be secured by no host key file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }} ! Please provide host key file."
+    msg: "The consul http communication should be secured by no host key file found in {{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }} ! Please provide host key file."
   when: (_consul_tls or (enable_agent_tls is defined and enable_agent_tls) or any_consul_tls) and (not stat_cacert_path.stat.exists)
 
 - name: Locally Check for Host cert file
-  local_action: "stat path={{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+  local_action: "stat path={{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
   register: stat_hostcert_path
   when: (_consul_tls) or (enable_agent_tls is defined and enable_agent_tls) or any_consul_tls
 
 - fail:
-    msg: "The consul http communication should be secured by no host certificate file found in {{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }} ! Please provide host certificate file."
+    msg: "The consul http communication should be secured by no host certificate file found in {{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }} ! Please provide host certificate file."
   when: (_consul_tls or (enable_agent_tls is defined and enable_agent_tls) or any_consul_tls) and (not stat_hostcert_path.stat.exists)
 
 - name: Creates consul ssl directory
@@ -154,7 +154,7 @@
 
 - name: Copy CA cert file
   copy:
-    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
+    src: "{{ data_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
     dest: "{{ ca_file_path }}"
     mode: "0600"
   become: true
@@ -168,7 +168,7 @@
 
 - name: Copy host key file
   copy:
-    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
+    src: "{{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_key_suffix }}"
     dest: "{{ hostkey_file_path }}"
     mode: "0600"
   become: true
@@ -182,7 +182,7 @@
 
 - name: Copy host cert file
   copy:
-    src: "{{ inventory_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
+    src: "{{ data_dir }}/{{ certificates_path }}/{{ inventory_hostname }}{{ ssl_host_cert_suffix }}"
     dest: "{{ hostcert_file_path }}"
     mode: "0600"
   become: true

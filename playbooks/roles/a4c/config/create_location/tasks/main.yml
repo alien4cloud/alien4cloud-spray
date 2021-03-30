@@ -17,6 +17,14 @@
   set_fact:
     query: "data[?location.name=='{{ location_name }}'].location"
 
+- name: Intialize location
+  set_fact:
+    location: ""
+
+- name: Intialize locationId
+  set_fact:
+    locationId: ""
+
 - name: Search location
   set_fact:
     # TODO: better query than doesn't fail when no location found
@@ -26,12 +34,12 @@
 - name: Get locationId
   set_fact:
     locationId: "{{ location.id }}"
-  when: (location is defined)
+  when: (location != "")
 
 - name: Location found, here is the locationId
   debug:
     var : locationId
-  when: (locationId is defined)
+  when: (locationId != "")
 
 - name: Create Location
   uri:
@@ -48,17 +56,17 @@
     timeout: 120
     status_code: 201
   register: result
-  when: (locationId is not defined)
+  when: (locationId == "")
 
 - name: Parse request content to get locationId
   set_fact:
     content: "{{ result.content }}"
-  when: (locationId is not defined)
+  when: (locationId == "")
 
 - name: Export locationId
   set_fact:
     locationId: "{{ content.data }}"
-  when: (locationId is not defined)
+  when: (locationId == "")
 
 - name: Populate locationIds
   set_fact:
