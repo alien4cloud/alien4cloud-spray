@@ -3,6 +3,7 @@ yorc_install_dir: /home/yorc
 # this role expects that a hostpool_config array var exists
 # hostpool_config:
 #   - alias: BlocExecHost
+#     location: Default
 #     user: root
 #     host: localhost
 #     # The key will be upload to yorc (PB fails if absent)

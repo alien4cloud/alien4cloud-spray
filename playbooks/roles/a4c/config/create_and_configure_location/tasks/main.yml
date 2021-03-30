@@ -1,0 +1,19 @@
+---
+
+- name: create_location
+  include_role:
+    name: a4c/config/create_location 
+
+- name: create_location_resources
+  include_role:
+    name: a4c/config/create_location_resources
+  vars:
+    resources_file_artifact: 'resources/location_resources.yaml'
+
+- name: create_location_modifiers
+  include_role:
+    name: a4c/config/create_location_modifiers
+
+- name: order_location_modifiers_it
+  include_role:
+    name: a4c/config/order_location_modifiers_it
