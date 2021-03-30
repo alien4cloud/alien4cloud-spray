@@ -1,7 +1,7 @@
 ---
 
 - name: Locally Check for consul entries resource file
-  local_action: "stat path={{ inventory_dir }}/{{ resources_file_artifact }}"
+  local_action: "stat path={{ data_dir }}/{{ resources_file_artifact }}"
   register: local_services_file_artifact_stat
 
 - name: Create temporary folder
@@ -10,9 +10,9 @@
   register: temp_dir
   when: (local_services_file_artifact_stat.stat.exists)
 
-- name: "Upload artifact {{ inventory_dir }}/{{ resources_file_artifact }} on remote in {{ temp_dir.path }}/resources.yaml"
+- name: "Upload artifact {{ data_dir }}/{{ resources_file_artifact }} on remote in {{ temp_dir.path }}/resources.yaml"
   template:
-    src: "{{ inventory_dir }}/{{ resources_file_artifact }}"
+    src: "{{ data_dir }}/{{ resources_file_artifact }}"
     dest: "{{ temp_dir.path }}/resources.yaml"
   when: (local_services_file_artifact_stat.stat.exists)
 

@@ -48,20 +48,20 @@
     - { role: 'keypass/fetch_keypass_property_to_file',
         keypass_key: 'Plateforme/Service applicatif/a4c/Compte par default - Admin A4C',
         keypass_property: 'username',
-        target_file_path: '{{ inventory_dir }}/keepass.yml',
+        target_file_path: '{{ data_dir }}/keepass.yml',
         target_field: 'a4c_admin_usr'
       }
     - { role: 'keypass/fetch_keypass_property_to_file',
         keypass_key: 'Plateforme/Service applicatif/a4c/Compte par default - Admin A4C',
         keypass_property: 'password',
-        target_file_path: '{{ inventory_dir }}/keepass.yml',
+        target_file_path: '{{ data_dir }}/keepass.yml',
         target_field: 'a4c_admin_pwd'
       }
     - { role: 'keypass/fetch_keypass_property_pair_to_file',
         keypass_key: "Plateforme/Controle d'acces et Firewall/smd/Compte Technique A4C",
         keypass_property1: 'username',
         keypass_property2: 'password',
-        target_file_path: '{{ inventory_dir }}/keepass.yml',
+        target_file_path: '{{ data_dir }}/keepass.yml',
         plugin_name: 'datagouv_mls',
         target_field: 'applicationPostCredentials'
       }
@@ -69,7 +69,7 @@
         keypass_key: "Plateforme/Controle d'acces et Firewall/smd/Compte Technique A4C",
         keypass_property1: 'username',
         keypass_property2: 'password',
-        target_file_path: '{{ inventory_dir }}/keepass.yml',
+        target_file_path: '{{ data_dir }}/keepass.yml',
         plugin_name: 'datagouv_mls',
         target_field: 'getPdsCredentials'
       }
@@ -77,7 +77,7 @@
         keypass_key: "Plateforme/Gestion de la donnee/atlas/Compte Technique a4c",
         keypass_property1: 'username',
         keypass_property2: 'password',
-        target_file_path: '{{ inventory_dir }}/keepass.yml',
+        target_file_path: '{{ data_dir }}/keepass.yml',
         plugin_name: 'datagouv_mls',
         target_field: 'applicationDeleteCredentials'
       }

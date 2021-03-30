@@ -6,7 +6,7 @@
     component_name: "{{ component_name }}"
 
 - name: Locally Check for public key files
-  local_action: "shell bash -c 'ls {{ inventory_dir }}/certificates/pub/*.pub'"
+  local_action: "shell bash -c 'ls {{ data_dir }}/certificates/pub/*.pub'"
   register: pubkeys_ls
   when: (component_ha_enabled) and (should_use_rsync_for_component_ha)
 

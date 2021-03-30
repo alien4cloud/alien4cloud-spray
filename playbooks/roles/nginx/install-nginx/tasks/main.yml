@@ -38,7 +38,7 @@
 
 - name: Copy Nginx RPMs into {{ temp_rpm_dir.path }}
   copy:
-    src: "{{ inventory_dir }}/resources/bin/nginx/"
+    src: "{{ data_dir }}/resources/bin/nginx/"
     dest: "{{ temp_rpm_dir.path }}"
   when: (not nginx_installed) and (offline)
 

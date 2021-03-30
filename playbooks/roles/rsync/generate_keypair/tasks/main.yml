@@ -44,7 +44,7 @@
   become_user: "{{ component_user }}"
   fetch:
     src: "~/.ssh/{{ inventory_hostname }}{{ appendable_private_domain_name }}.pub"
-    dest: "{{ inventory_dir }}/certificates/pub/{{ inventory_hostname }}{{ appendable_private_domain_name }}.pub"
+    dest: "{{ data_dir }}/certificates/pub/{{ inventory_hostname }}{{ appendable_private_domain_name }}.pub"
     flat: yes
     validate_checksum: no
   when: (component_ha_enabled) and (should_use_rsync_for_component_ha)

@@ -5,9 +5,9 @@
     state: directory
   register: temp_dir
 
-- name: "Upload artifact {{ inventory_dir }}/{{ resources_file_artifact }} on remote in {{ temp_dir.path }}/resources.yaml"
+- name: "Upload artifact {{ data_dir }}/{{ resources_file_artifact }} on remote in {{ temp_dir.path }}/resources.yaml"
   copy:
-    src: "{{ inventory_dir }}/{{ resources_file_artifact }}"
+    src: "{{ data_dir }}/{{ resources_file_artifact }}"
     dest: "{{ temp_dir.path }}/resources.yaml"
 
 - name: "Stat {{ temp_dir.path }}/resources.yaml"
