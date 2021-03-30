@@ -9,3 +9,6 @@ consul_https_port: 8501
 # Alternatives templates for storage configuration are found in templates/config.yorc-storage-${yorc_storage_type}.json.j2
 # default is the yorc default config
 yorc_storage_type: default
+yorc_locations_to_create:
+  - name: Default
+    type: HostsPool

@@ -1,0 +1,13 @@
+---
+
+- name: get_location
+  include_role:
+    name: a4c/config/get_location
+
+- name: create_location_modifiers
+  include_role:
+    name: a4c/config/create_location_modifiers
+
+- name: order_location_modifiers_it
+  include_role:
+    name: a4c/config/order_location_modifiers_it

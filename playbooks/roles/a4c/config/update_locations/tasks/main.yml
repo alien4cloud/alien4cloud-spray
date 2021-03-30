@@ -1,0 +1,12 @@
+---
+
+- name: update locations
+  with_items: "{{ a4c_locations_to_create }}"
+  include_role:
+    name: a4c/config/update_location
+  when: a4c_locations_to_create is defined
+  vars:
+    location_name: "{{ location_item.name }}"
+    location_type: "{{ location_item.type }}"
+  loop_control:
+    loop_var: location_item

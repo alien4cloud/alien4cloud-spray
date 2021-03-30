@@ -168,6 +168,14 @@ a4c_config_addons:
 #   - kubernetes-supervision-modifier
 #   - alien4cloud-kafka-listener
 
+a4c_locations_to_create:
+   - name: Default
+     type: HostsPool
+
+yorc_locations_to_create:
+  - name: Default
+    type: HostsPool
+
 orchestrator_config:
   Yorc:
     Default:
