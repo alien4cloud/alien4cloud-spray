@@ -88,15 +88,13 @@
 #     name: "{{ yorc_dependencies_rpm_urls }}"
 #     state: present
 #   when: (not offline) and (yorc_dependencies_rpm_urls is defined)
-
-
- - name: Instal ansible using yum
-   yum:
-     pkg: ansible
-     state: present
-     update_cache: true
-   become: true
-   when: (not offline)
+- name: Instal ansible using yum
+  yum:
+   pkg: ansible
+   state: present
+   update_cache: true
+  become: true
+  when: (not offline)
 
 - name: Create temporary RMP directory
   tempfile:
