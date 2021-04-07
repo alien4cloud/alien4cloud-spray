@@ -23,26 +23,28 @@
 
 - name: Instal python pip
   yum:
-    pkg: python-pip
+    pkg: python3-pip
     state: present
     update_cache: true
   become: true
   when: (not offline)
 
-#- name: Upgrade pip using pip
-#  pip:
-#    name: "pip"
-#    state: latest
-#  become: true
-#  when: (not offline and pip_extra_args is not defined)
+- name: Upgrade pip using pip
+  pip:
+    name: "pip"
+    executable: pip3
+    state: latest
+  become: true
+  when: (not offline and pip_extra_args is not defined)
 
-#- name: Upgrade pip using pip (with extra args)
-#  pip:
-#    name: "pip"
-#    state: latest
-#    extra_args: "{{ pip_extra_args }}"
-#  become: true
-#  when: (not offline and pip_extra_args is defined)
+- name: Upgrade pip using pip (with extra args)
+  pip:
+    name: "pip"
+    executable: pip3    
+    state: latest
+    extra_args: "{{ pip_extra_args }}"
+  become: true
+  when: (not offline and pip_extra_args is defined)
 
 # - name: Change pip config
 #   template:
@@ -55,12 +57,14 @@
 - name: Install ansible using pip
   pip:
     name: "ansible{{ yorc_ansible_version }}"
+    executable: pip3
   become: true
   when: (not offline and pip_extra_args is not defined)
 
 - name: Install ansible using pip (with extra args)
   pip:
     name: "ansible{{ yorc_ansible_version }}"
+    executable: pip3
     extra_args: "{{ pip_extra_args }}"
   become: true
   when: (not offline and pip_extra_args is defined)
