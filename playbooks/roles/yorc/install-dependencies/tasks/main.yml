@@ -23,7 +23,7 @@
 
 - name: Instal python pip
   yum:
-    pkg: python3-pip
+    pkg: python-pip
     state: present
     update_cache: true
   become: true
@@ -32,7 +32,6 @@
 - name: Upgrade pip using pip
   pip:
     name: "pip"
-    executable: pip3
     state: latest
   become: true
   when: (not offline and pip_extra_args is not defined)
@@ -40,7 +39,6 @@
 - name: Upgrade pip using pip (with extra args)
   pip:
     name: "pip"
-    executable: pip3    
     state: latest
     extra_args: "{{ pip_extra_args }}"
   become: true
