@@ -40,6 +40,7 @@
 - name: Upgrade pip using pip (with extra args)
   pip:
     name: "pip"
+    executable: pip3    
     state: latest
     extra_args: "{{ pip_extra_args }}"
   become: true
