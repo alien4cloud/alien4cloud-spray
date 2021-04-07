@@ -1,0 +1,94 @@
+
+- name: Ensure the 'offline' variable is defined
+  set_fact :
+    offline: false
+  when: offline is not defined
+
+- name: Fetch Java version
+  shell: java -version 2>&1 | grep version | awk '{print $3}' | sed 's/"//g'
+  register: java_version
+  changed_when: false
+
+- name: Here is the expected java version
+  debug:
+    var: JAVA_VERSION
+
+- name: Here is the actual java version
+  debug:
+    var: java_version
+
+- name: Check java version
+  set_fact :
+   java_installed: "{{ java_version.stdout|length > 0 and java_version.stdout is version_compare(JAVA_VERSION, '>=') }}"
+    # java8_installed: false
+  when: JAVA_VERSION is defined
+
+- name: Check java version
+  set_fact :
+   java_installed: false
+  when: JAVA_VERSION is not defined
+
+- name: Is java installed ?
+  debug:
+    var: java_installed
+
+- debug:
+    msg: "Expected Java is installed"
+  when: (java_installed)
+
+- debug:
+    msg: "Expected Java is NOT installed"
+  when: (not java_installed)
+
+- name: Creates java alternative directory
+  become: true
+  file:
+    path: /usr/local/openjdk
+    state: directory
+  when: (not java_installed)
+
+- name: Extract Java archive from remote source
+  unarchive:
+    src: "{{ JAVA_DIST_URL }}"
+    dest: /usr/local/openjdk
+    mode: 0755
+    remote_src: yes
+  become: true
+  when: (not java_installed) and (not offline)
+
+- name: Extract Java archive from local source
+  unarchive:
+    src: "{{ JAVA_DIST_URL }}"
+    dest: /usr/local/openjdk
+    mode: 0755
+    remote_src: no
+  become: true
+  when: (not java_installed) and (offline)
+
+- name: Get files in /usr/local/openjdk
+  find:
+    paths: "/usr/local/openjdk"
+    file_type: directory
+  register: found_files
+  when: (not java_installed)
+
+- name: Get latest file in /usr/local/openjdk/{{ java_dir }}
+  set_fact:
+    latest_file: "{{ found_files.files | sort(attribute='mtime',reverse=true) | first }}"
+  when: (not java_installed)
+
+- name: Change java
+  become: true
+  alternatives:
+    name: java
+    link: /usr/bin/java
+    path: "{{ latest_file.path }}/bin/java"
+  when: (not java_installed)
+
+- name: Link keytool
+  become: true
+  alternatives:
+    name: keytool
+    link: /usr/bin/keytool
+    path: "{{ latest_file.path }}/bin/keytool"
+  when: (not java_installed)

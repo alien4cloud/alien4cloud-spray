@@ -110,7 +110,7 @@
     - { role: commons/define_commons_vars, consul_agent_for: 'a4c' }
     - consul/stop-consul
     - a4c/stop-a4c
-    - install-java
+    - install-java-dist
     - a4c/install-a4c
     - consul/install-consul
     - { role: consul/configure-consul, consul_mode: 'client', consul_agent_for: 'a4c' }
@@ -192,18 +192,18 @@
     #   }
     # - a4c/config/order_location_modifiers_it
     - { role: 'a4c/config/create_metaproperties',
-         resources_file_artifact: 'resources/metaproperties.yaml'
-       }
+        resources_file_artifact: 'resources/metaproperties.yaml'
+      }
     - { role: 'a4c/config/create_and_configure_locations',
         orchestratorName: 'Yorc'
       }
     - a4c/config/git_var
     - a4c/config/download_upload_csars
     - a4c/config/upload_csars
-    #- { role: 'commons/parse_kubeconfig',
+    # - { role: 'commons/parse_kubeconfig',
     #     resources_file_artifact: 'resources/kubeconfig'
     #   }
-    #- { role: 'a4c/config/create_services',
+    # - { role: 'a4c/config/create_services',
     #     resources_file_artifact: 'resources/services.yaml'
     #   }
 
