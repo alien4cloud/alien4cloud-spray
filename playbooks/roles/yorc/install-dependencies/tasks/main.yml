@@ -1,3 +1,4 @@
+
 - name: Ensure the 'offline' variable is defined
   set_fact :
     offline: false
@@ -25,14 +26,6 @@
     pkg: python3-pip
     state: present
     update_cache: true
-  become: true
-  when: (not offline)
-
-- name: Link pip3 to pip
-  alternatives:
-    name: pip
-    link: /usr/bin/pip
-    path: /usr/local/bin/pip3
   become: true
   when: (not offline)
 
