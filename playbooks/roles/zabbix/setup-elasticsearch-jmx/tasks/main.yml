@@ -1,0 +1,30 @@
+
+- name: Enable ES Remote JMX
+  lineinfile:
+    path: "/etc/elasticsearch/jvm.options"
+    line: '-Dcom.sun.management.jmxremote'
+  become: true
+
+- name: Enable ES Remote JMX
+  lineinfile:
+    path: "/etc/elasticsearch/jvm.options"
+    line: '-Dcom.sun.management.jmxremote.port=12345'
+  become: true
+
+- name: Enable ES Remote JMX
+  lineinfile:
+    path: "/etc/elasticsearch/jvm.options"
+    line: '-Dcom.sun.management.jmxremote.authenticate=false'
+  become: true
+
+- name: Enable ES Remote JMX
+  lineinfile:
+    path: "/etc/elasticsearch/jvm.options"
+    line: '-Dcom.sun.management.jmxremote.ssl=false"'
+  become: true
+
+- name: Restart service elasticsearch
+  service:
+    name: elasticsearch
+    state: restarted
+  become: true

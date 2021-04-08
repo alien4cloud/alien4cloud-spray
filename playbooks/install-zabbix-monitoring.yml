@@ -1,0 +1,54 @@
+---
+
+# Install Zabbix server on 'zabbix' and zabbix agents on other machines.
+
+# Use all default port settings so :
+# - LAMP Web server will listen on 80
+# - Zabbix server will listen on 10050 (and 10051 for active mode, but not used)
+# - Zabbix java gateway will listen on port 10052
+# - For monitored JVM, port 12345 will be listenning
+
+- hosts: "zabbix"
+  name: Install Zabbix server
+  become: truehujkn
+  gather_facts: no
+  roles:
+    - zabbix/zabbix-commons
+    - zabbix/install-zabbix-server
+
+- hosts: "a4c,consul,yorc,elasticsearch,jmeter"
+  name: Install Zabbix Agent
+  become: true
+  gather_facts: no
+  roles:
+    - zabbix/zabbix-commons
+    - zabbix/install-zabbix-agent
+
+- hosts: "consul,yorc,jmeter"
+  name: Register Zabbix host
+  become: true
+  gather_facts: no
+  roles:
+    - zabbix/zabbix-api-auth
+    - zabbix/zabbix-api-delete-host
+    - zabbix/register-zabbix-linux-host
+
+- hosts: "a4c"
+  name: Register Zabbix host (A4C)
+  become: true
+  gather_facts: no
+  roles:
+    - zabbix/setup-a4c-jmx
+    - zabbix/zabbix-api-auth
+    - zabbix/zabbix-api-delete-host
+    - zabbix/register-zabbix-jmx-interface
+
+- hosts: "elasticsearch"
+  name: Register Zabbix host (elasticsearch)
+  become: true
+  gather_facts: no
+  roles:
+    - zabbix/setup-elasticsearch-jmx
+    - zabbix/zabbix-api-auth
+    - zabbix/zabbix-api-delete-host
+    - zabbix/register-zabbix-jmx-interface

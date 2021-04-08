@@ -1,0 +1,112 @@
+
+- name: Zabbix API Create Host
+  uri:
+    url: "{{ zabbix_api_url }}"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    body:
+      jsonrpc: "2.0"
+      method: "host.create"
+      params:
+        host: "{{ inventory_hostname }}"
+        interfaces:
+          - type: 1
+            main: 1
+            useip: 1
+            ip: "{{ inventory_hostname }}"
+            dns: ""
+            port: "10050"
+          - type: 4
+            main: 1
+            useip: 1
+            ip: "{{ inventory_hostname }}"
+            dns: ""
+            port: "12345"
+        groups:
+          # group "Linux servers"
+          - groupid: 2
+        templates:
+          # Template "Template OS Linux"
+          - templateid: "10001"
+          # Template "Template JMX Generic"
+          - templateid: "10082"
+      auth: "{{ zabbix_api_auth_token }}"
+      id: 2
+    body_format: json
+    timeout: 120
+    status_code: 200
+  register: zabbix_api_result
+
+- name: Here is the API call result
+  debug:
+    verbosity: 3
+    var: zabbix_api_result
+
+# - name: Zabbix API Get Host
+#   uri:
+#     url: "{{ zabbix_api_url }}"
+#     method: POST
+#     return_content: yes
+#     validate_certs: no
+#     body:
+#       jsonrpc: "2.0"
+#       method: "host.get"
+#       params:
+#         filter:
+#           host:
+#             - "{{ inventory_hostname }}"
+#       auth: "{{ zabbix_api_auth_token }}"
+#       id: 3
+#     body_format: json
+#     timeout: 120
+#     status_code: 200
+#   register: zabbix_api_result
+#
+# - name: Define hostId
+#   set_fact:
+#     zabbix_host_id: "{{ zabbix_api_result.json.result[0].hostid }}"
+#
+# - name: Zabbix API Update Host
+#   uri:
+#     url: "{{ zabbix_api_url }}"
+#     method: POST
+#     return_content: yes
+#     validate_certs: no
+#     body:
+#       jsonrpc: "2.0"
+#       method: "host.update"
+#       params:
+#         hostid: "{{ zabbix_host_id }}"
+#         groups:
+#           # group "Linux servers"
+#           - groupid: 2
+#         interfaces:
+#           - type: 1
+#             main: 1
+#             useip: 1
+#             ip: "{{ inventory_hostname }}"
+#             dns: ""
+#             port: "10050"
+#           - type: 4
+#             main: 1
+#             useip: 1
+#             ip: "{{ inventory_hostname }}"
+#             dns: ""
+#             port: "12345"
+#         templates:
+#           # Template "Template OS Linux"
+#           - templateid: "10001"
+#           # Template "Template JMX Generic"
+#           - templateid: "10082"
+#       auth: "{{ zabbix_api_auth_token }}"
+#       id: 4
+#     body_format: json
+#     timeout: 120
+#     status_code: 200
+#   register: zabbix_api_result
+#
+# - name: Here is the API call result
+#   debug:
+#     verbosity: 3
+#     var: zabbix_api_result

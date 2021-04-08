@@ -1,0 +1,49 @@
+
+- name: Zabbix API Get Host
+  uri:
+    url: "{{ zabbix_api_url }}"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    body:
+      jsonrpc: "2.0"
+      method: "host.get"
+      params:
+        filter:
+          host:
+            - "{{ inventory_hostname }}"
+      auth: "{{ zabbix_api_auth_token }}"
+      id: 3
+    body_format: json
+    timeout: 120
+    status_code: 200
+  register: zabbix_api_result
+
+- name: Here is the API call result
+  debug:
+    verbosity: 3
+    var: zabbix_api_result
+
+- name: Zabbix API Delete Host
+  uri:
+    url: "{{ zabbix_api_url }}"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    body:
+      jsonrpc: "2.0"
+      method: "host.delete"
+      params:
+        - "{{ zabbix_api_result.json.result[0].hostid }}"
+      auth: "{{ zabbix_api_auth_token }}"
+      id: 4
+    body_format: json
+    timeout: 120
+    status_code: 200
+  register: zabbix_api_result
+  when: zabbix_api_result.json.result | length > 0
+
+- name: Here is the API call result
+  debug:
+    verbosity: 3
+    var: zabbix_api_result

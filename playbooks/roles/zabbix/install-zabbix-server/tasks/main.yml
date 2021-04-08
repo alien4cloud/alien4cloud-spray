@@ -1,0 +1,141 @@
+
+
+
+- name: install LAMP
+  yum:
+    pkg: "{{ item }}"
+    state: present
+  with_items:
+    - httpd
+    - httpd-devel
+    - mariadb
+    - mariadb-server
+    - php
+    - php-mysql
+    - zabbix-server-mysql
+    - zabbix-web-mysql
+    - zabbix-agent
+    - zabbix-java-gateway
+
+- name: Restart service LAMP
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - httpd
+    - mariadb
+  become: true
+
+- name: Check if zabbix DB exists
+  shell: mysql -uroot -pansible -e "SHOW DATABASES LIKE 'zabbix';" |grep 'zabbix'
+  register: checkdb_result
+  ignore_errors: yes
+
+- name: Register a boolean indicating zabbix DB exists
+  set_fact:
+    zabbix_db_exists: true
+  when: checkdb_result.rc == 0
+
+- name: set mariadb password
+  shell: mysqladmin -u root password 'ansible'
+  when: zabbix_db_exists is not defined
+- name: create zabbix master databases
+  shell: mysql -uroot -pansible -e 'create database zabbix character set utf8 collate utf8_bin;'
+  when: zabbix_db_exists is not defined
+- name: set zabbix master databases grant
+  shell: mysql -uroot -pansible -e 'grant all privileges on zabbix.* to zabbix@localhost identified by "zabbix";'
+  when: zabbix_db_exists is not defined
+- name: import zabbix initial data SQL shell
+  shell: zcat /usr/share/doc/zabbix-server-mysql*/create.sql.gz | mysql -uzabbix -pzabbix zabbix
+  when: zabbix_db_exists is not defined
+
+- name: edit zabbix dbhost
+  lineinfile:
+    dest: /etc/zabbix/zabbix_server.conf
+    regexp: '# DBHost=localhost'
+    line: 'DBHost=localhost'
+- name: edit zabbix dbpasswd
+  lineinfile:
+    dest: /etc/zabbix/zabbix_server.conf
+    regexp: '# DBPassword='
+    line: 'DBPassword=zabbix'
+- name: edit zabbix JavaGateway
+  lineinfile:
+    dest: /etc/zabbix/zabbix_server.conf
+    regexp: 'JavaGateway='
+    line: 'JavaGateway=127.0.0.1'
+- name: edit zabbix StartJavaPollers
+  lineinfile:
+    dest: /etc/zabbix/zabbix_server.conf
+    regexp: 'StartJavaPollers='
+    line: 'StartJavaPollers=3'
+- name: cp zabbix web
+  shell: cp -a /usr/share/zabbix/* /var/www/html/
+- name: chmod web
+  shell: chmod 755 -R /var/www/html/*
+- name: chown web
+  shell: chown apache.apache -R /var/www/html/*
+
+- name: edit php ini timezone
+  lineinfile:
+    dest: /etc/php.ini
+    regexp: ';date.timezone'
+    line: 'date.timezone = Europe/Paris'
+
+- name: edit php ini max_execution_time
+  lineinfile:
+    dest: /etc/php.ini
+    regexp: 'max_execution_time ='
+    line: 'max_execution_time = 600'
+
+- name: edit php ini max_input_time
+  lineinfile:
+    dest: /etc/php.ini
+    regexp: 'max_input_time ='
+    line: 'max_input_time = 600'
+
+- name: edit php ini post_max_size
+  lineinfile:
+    dest: /etc/php.ini
+    regexp: 'post_max_size ='
+    line: 'post_max_size = 32M'
+
+- name: edit php ini post_max_size
+  lineinfile:
+    dest: /etc/php.ini
+    regexp: 'post_max_size ='
+    line: 'post_max_size = 32M'
+
+- name: edit php ini upload_max_filesize
+  lineinfile:
+    dest: /etc/php.ini
+    regexp: 'upload_max_filesize ='
+    line: 'upload_max_filesize = 16M'
+
+- name: set httpd_can_network_connect
+  shell: setsebool -P httpd_can_network_connect on
+  become: true
+
+- name: set httpd_can_connect_zabbix
+  shell: setsebool -P httpd_can_connect_zabbix 1
+  become: true
+
+- name: set zabbix_can_network
+  shell: setsebool -P zabbix_can_network 1
+  become: true
+
+- name: Restart service LAMP
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - httpd
+    - mariadb
+    - zabbix-server
+    - zabbix-agent
+    - zabbix-java-gateway
+  become: true
+
+- name: Wait for config finalization
+  pause:
+    prompt: "You should visit http://{{ inventory_hostname }} (Admin/zabbix) to finalise Zabbix configuration then press return to continue."
