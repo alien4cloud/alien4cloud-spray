@@ -21,7 +21,7 @@
   roles:
     - commons/define_commons_vars
     - elasticsearch/stop-elasticsearch
-    - install-java
+    - install-java-dist
     - elasticsearch/install-elasticsearch
     - elasticsearch/configure-elasticsearch
     - elasticsearch/start-elasticsearch
@@ -46,7 +46,7 @@
     - yorc/install-dependencies
     - consul/install-consul
     - { role: consul/configure-consul, consul_mode: 'client', consul_agent_for: 'yorc' }
-    - install-java
+    - install-java-dist
     - yorc/install-yorc
     - yorc/configure-yorc
     - spark/install-spark
@@ -190,10 +190,10 @@
     #     orchestratorName: 'Yorc',
     #     location_name: 'Default'
     #   }
-    # - a4c/config/order_location_modifiers_it
-    # - { role: 'a4c/config/create_metaproperties',
-    #     resources_file_artifact: 'resources/metaproperties.yaml'
-    #   }
+    - a4c/config/order_location_modifiers_it
+    - { role: 'a4c/config/create_metaproperties',
+        resources_file_artifact: 'resources/metaproperties.yaml'
+      }
     - { role: 'a4c/config/create_and_configure_locations',
         orchestratorName: 'Yorc'
       }
