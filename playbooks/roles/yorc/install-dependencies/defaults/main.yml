@@ -1,3 +1,4 @@
 yorc_ansible_version: "==2.7.2"
 # some extra args can be passed to pip
 #pip_extra_args:
+install_ansible_with_pip: true
