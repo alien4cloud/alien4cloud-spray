@@ -5,6 +5,18 @@
     - commons/install-common-dependencies
     - commons/add_dns_server
 
+- hosts: yorcfront
+  name: Stop consul template (yorc)
+  gather_facts: no
+  roles:
+    - yorc/stop-consul-template
+
+- hosts: a4cfront
+  name: Stop consul template (a4c)
+  gather_facts: yes
+  roles:
+    - a4c_front/stop-consul-template
+
 - hosts: consul
   name: Install configure and start consul.
   roles:
@@ -79,7 +91,6 @@
   gather_facts: no
   roles:
     - commons/define_commons_vars
-    - yorc/stop-consul-template
     - consul/stop-consul
     - nginx/stop-nginx
     - nginx/install-nginx
@@ -125,7 +136,6 @@
   roles:
     - { role: commons/define_commons_vars, consul_agent_for: 'a4cfront' }
     - nginx/stop-nginx
-    - a4c_front/stop-consul-template
     - consul/stop-consul
     - nginx/install-nginx
     - consul/install-consul
