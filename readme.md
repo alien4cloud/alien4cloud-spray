@@ -1,4 +1,4 @@
-These playbooks install full A4C stack components (consul, york, a4c) in the home directory of the specified user.
+These playbooks install full A4C stack components (consul, yorc, a4c) in the home directory of the specified user.
 It supports cluster mode for Elasticsearch and Consul. Comming soon: cluster mode for A4C (HA) and Yorc.
 
 > [!WARNING]
