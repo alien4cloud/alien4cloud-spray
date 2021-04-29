@@ -5,6 +5,18 @@
     - commons/install-common-dependencies
     - commons/add_dns_server
 
+- hosts: yorcfront
+  name: Stop consul template (yorc)
+  gather_facts: no
+  roles:
+    - yorc/stop-consul-template
+
+- hosts: a4cfront
+  name: Stop consul template (a4c)
+  gather_facts: yes
+  roles:
+    - a4c_front/stop-consul-template
+
 - hosts: consul
   name: Install configure and start consul.
   roles:
@@ -21,7 +33,7 @@
   roles:
     - commons/define_commons_vars
     - elasticsearch/stop-elasticsearch
-    - install-java
+    - install-java-dist
     - elasticsearch/install-elasticsearch
     - elasticsearch/configure-elasticsearch
     - elasticsearch/start-elasticsearch
@@ -46,7 +58,7 @@
     - yorc/install-dependencies
     - consul/install-consul
     - { role: consul/configure-consul, consul_mode: 'client', consul_agent_for: 'yorc' }
-    - install-java
+    - install-java-dist
     - yorc/install-yorc
     - yorc/configure-yorc
     - spark/install-spark
@@ -79,7 +91,6 @@
   gather_facts: no
   roles:
     - commons/define_commons_vars
-    - yorc/stop-consul-template
     - consul/stop-consul
     - nginx/stop-nginx
     - nginx/install-nginx
@@ -125,7 +136,6 @@
   roles:
     - { role: commons/define_commons_vars, consul_agent_for: 'a4cfront' }
     - nginx/stop-nginx
-    - a4c_front/stop-consul-template
     - consul/stop-consul
     - nginx/install-nginx
     - consul/install-consul
@@ -190,7 +200,7 @@
     #     orchestratorName: 'Yorc',
     #     location_name: 'Default'
     #   }
-    # - a4c/config/order_location_modifiers_it
+    - a4c/config/order_location_modifiers_it
     - { role: 'a4c/config/create_metaproperties',
         resources_file_artifact: 'resources/metaproperties.yaml'
       }

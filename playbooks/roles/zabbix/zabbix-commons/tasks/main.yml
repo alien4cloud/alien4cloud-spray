@@ -1,0 +1,19 @@
+
+- name: Check if Zabbix release is installed
+  shell: rpm -q zabbix-release
+  register: zabbix_release_installed_rc
+  ignore_errors: yes
+
+- name: Register a boolean indicating zabbix release is already installed
+  set_fact:
+    zabbix_release_installed: false
+
+- name: Register a boolean indicating zabbix release is already installed
+  set_fact:
+    zabbix_release_installed: true
+  when: zabbix_release_installed_rc.rc == 0
+
+- name: Download Zabbix release RPM
+  shell: "rpm -ivh {{ ZABBIX_RELEASE_RPM_URL }}"
+  become: true
+  when: not zabbix_release_installed

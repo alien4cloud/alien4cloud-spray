@@ -43,16 +43,16 @@ download () {
 
 #
 # Get Java
-download resources/bin/java http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz jdk-8u131-linux-x64.tar.gz "-H \"Cookie: oraclelicense=a\" -kLO"
+download resources/bin/java https://download.java.net/java/GA/jdk15.0.2/0d1cfde4252546c6931946de8db48ee2/7/GPL/openjdk-15.0.2_linux-x64_bin.tar.gz openjdk-15.0.2_linux-x64_bin.tar.gz
 
 # Get a4c ecosystem binaries
-download resources/bin https://www.portaildulibre.fr/nexus/repository/opensource-snapshots/alien4cloud/alien4cloud-artemis-dist/3.1.0-SNAPSHOT/alien4cloud-artemis-dist-3.1.0-20210303.070921-50-dist.tar.gz
+download resources/bin https://www.portaildulibre.fr/nexus/repository/opensource-releases/alien4cloud/alien4cloud-artemis-dist/3.2.0/alien4cloud-artemis-dist-3.2.0-dist.tar.gz
 download resources/bin https://releases.hashicorp.com/consul/1.2.3/consul_1.2.3_linux_amd64.zip
 download resources/bin https://releases.hashicorp.com/consul-template/0.23.0/consul-template_0.23.0_linux_amd64.zip
 download resources/bin https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
-download resources/bin https://bintray.com/ystia/yorc-engine/download_file?file_path=4.0.4%2Fyorc-4.0.4.tgz yorc-4.0.4.tgz "-L"
-download resources/bin/elasticsearch https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.6.2.rpm
-download resources/bin https://archive.apache.org/dist/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz
+download resources/bin https://bintray.com/ystia/yorc-engine/download_file?file_path=4.1.0%2Fyorc-4.1.0.tgz yorc-4.1.0.tgz "-L"
+download resources/bin/elasticsearch https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.8.13.rpm
+download resources/bin http://archive.apache.org/dist/spark/spark-3.0.1/spark-3.0.1-bin-hadoop2.7.tgz
 # Get rpm dependencies
 download resources/bin/rpms/ http://mirror.centos.org/centos/7/os/x86_64/Packages/unzip-6.0-21.el7.x86_64.rpm
 download resources/bin/rpms https://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jq-1.6-2.el7.x86_64.rpm
@@ -142,6 +142,7 @@ download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Package
 download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-threads-shared-1.43-6.el7.x86_64.rpm
 download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-Time-HiRes-1.9725-3.el7.x86_64.rpm
 download resources/bin/nginx http://ftp.heanet.ie/pub/centos/7/os/x86_64/Packages/perl-Time-Local-1.2300-2.el7.noarch.rpm
+download resources/bin/nginx https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/o/openssl11-libs-1.1.1g-2.el7.x86_64.rpm
 
 echo "All resources downloaded successfully !" && \
 echo "   ____  _      _ " && \

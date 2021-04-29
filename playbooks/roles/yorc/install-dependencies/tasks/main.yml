@@ -4,7 +4,7 @@
     offline: false
   when: offline is not defined
 
-- name: Instal epel-release
+- name: Install epel-release
   yum:
     pkg: epel-release
     state: present
@@ -13,7 +13,7 @@
   when: (not offline) and (not ((dont_install_epel is defined) and (dont_install_epel)))
   ignore_errors: yes
 
-- name: Instal python
+- name: Install python
   yum:
     pkg: python3
     state: present
@@ -21,80 +21,53 @@
   become: true
   when: (not offline)
 
-#- name: Instal python pip
-#  yum:
-#    pkg: python3-pip
-#    state: present
-#    update_cache: true
-#  become: true
-#  when: (not offline)
+- name: Install python pip
+  yum:
+    pkg: python3-pip
+    state: present
+    update_cache: true
+  become: true
+  when: (not offline and install_ansible_with_pip)
 
-#- name: Upgrade pip using pip
-#  pip:
-#    name: "pip"
-#    executable: pip3
-#    state: latest
-#  become: true
-#  when: (not offline and pip_extra_args is not defined)
+- name: Upgrade pip using pip
+  pip:
+    name: "pip"
+    executable: pip3
+    state: latest
+  become: true
+  when: (not offline and pip_extra_args is not defined and install_ansible_with_pip)
 
-#- name: Upgrade pip using pip (with extra args)
-#  pip:
-#    name: "pip"
-#    executable: pip3    
-#    state: latest
-#    extra_args: "{{ pip_extra_args }}"
-#  become: true
-#  when: (not offline and pip_extra_args is defined)
+- name: Upgrade pip using pip (with extra args)
+  pip:
+    name: "pip"
+    executable: pip3
+    state: latest
+    extra_args: "{{ pip_extra_args }}"
+  become: true
+  when: (not offline and pip_extra_args is defined and install_ansible_with_pip)
+  
+- name: Install ansible using pip
+  pip:
+    name: "ansible{{ yorc_ansible_version }}"
+    executable: pip3
+  become: true
+  when: (not offline and pip_extra_args is not defined and install_ansible_with_pip)
 
-# - name: Change pip config
-#   template:
-#     src: pip.conf.j2
-#     dest: /etc/pip.conf
-#     mode: 0444
-#     force: yes
-#   become: true
+- name: Install ansible using pip (with extra args)
+  pip:
+    name: "ansible{{ yorc_ansible_version }}"
+    executable: pip3
+    extra_args: "{{ pip_extra_args }}"
+  become: true
+  when: (not offline and pip_extra_args is defined and install_ansible_with_pip)
 
-#- name: Install ansible using pip
-#  pip:
-#    name: "ansible{{ yorc_ansible_version }}"
-#    executable: pip3
-#  become: true
-#  when: (not offline and pip_extra_args is not defined)
-
-#- name: Install ansible using pip (with extra args)
-#  pip:
-#    name: "ansible{{ yorc_ansible_version }}"
-#    executable: pip3
-#    extra_args: "{{ pip_extra_args }}"
-#  become: true
-#  when: (not offline and pip_extra_args is defined)
-
-# - name: Instal the needed package
-#   yum:
-#     pkg: python-pip
-#     state: present
-#     update_cache: true
-#   become: true
-#   when: (not offline)
-
-# - name: Install ansible
-#   command: pip install ansible==2.7.2
-#   become: true
-#   when: (not offline)
-
-# - name: Install ansible and all python packages
-#   become: true
-#   yum:
-#     name: "{{ yorc_dependencies_rpm_urls }}"
-#     state: present
-#   when: (not offline) and (yorc_dependencies_rpm_urls is defined)
-- name: Instal ansible using yum
+- name: Install ansible using yum
   yum:
    pkg: ansible
    state: present
    update_cache: true
   become: true
-  when: (not offline)
+  when: (not offline and not install_ansible_with_pip)
 
 - name: Create temporary RMP directory
   tempfile:

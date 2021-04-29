@@ -1,0 +1,38 @@
+
+- name: Install Zabbix-Agent
+  yum:
+    pkg: zabbix-agent
+    state: present
+    update_cache: true
+  become: true
+
+- name: Define zabbix host
+  set_fact:
+    zabbix_host: "{{ groups['zabbix'][0] }}"
+
+- name: Set Server in Zabbix agent config
+  lineinfile:
+    path: /etc/zabbix/zabbix_agentd.conf
+    regexp: '^Server=.*'
+    line: 'Server={{ zabbix_host }}'
+  become: true
+
+- name: Set ServerActive in Zabbix agent config
+  lineinfile:
+    path: /etc/zabbix/zabbix_agentd.conf
+    regexp: '^ServerActive=.*'
+    line: 'ServerActive={{ zabbix_host }}'
+  become: true
+
+- name: Set Hostname in Zabbix agent config
+  lineinfile:
+    path: /etc/zabbix/zabbix_agentd.conf
+    regexp: '^Hostname=.*'
+    line: 'Hostname={{ inventory_hostname }}'
+  become: true
+
+- name: Restart service zabbix-agent
+  service:
+    name: zabbix-agent
+    state: restarted
+  become: true

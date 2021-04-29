@@ -1,0 +1,31 @@
+
+- name: Define zabbix url
+  set_fact:
+    zabbix_api_url: "http://{{ groups['zabbix'][0] }}/zabbix/api_jsonrpc.php"
+
+- name: Zabbix API Auth
+  uri:
+    url: "{{ zabbix_api_url }}"
+    method: POST
+    return_content: yes
+    validate_certs: no
+    body:
+      jsonrpc: "2.0"
+      method: "user.login"
+      params:
+        user: "{{ zabbix_user }}"
+        password: "{{ zabbix_pwd }}"
+      id: 1
+    body_format: json
+    timeout: 120
+    status_code: 200
+  register: zabbix_api_result
+
+- name: Here is the API call result
+  debug:
+    verbosity: 3
+    var: zabbix_api_result
+
+- name: Define zabbix auth token
+  set_fact:
+    zabbix_api_auth_token: "{{ zabbix_api_result.json.result }}"
