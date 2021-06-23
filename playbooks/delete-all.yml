@@ -66,6 +66,17 @@
   roles:
     - consul/delete-consul
 
+- hosts: localhost
+  gather_facts: no
+  become: false
+  roles:
+    - commons/define_commons_vars
+    - role: k8s/commons/define_commons_vars
+      when: k8s is defined
+    - k8s/a4c/delete
+    - k8s/yorc/delete
+    - k8s/consul/delete
+
 - hosts: elasticsearch
   gather_facts: no
   name: Delete Elasticsearch

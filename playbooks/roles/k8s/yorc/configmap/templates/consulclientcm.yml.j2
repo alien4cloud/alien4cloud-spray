@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: consul-client-conf
+data:
+  consul.json: |
+    {{ consul_config | to_json }}

@@ -1,0 +1,9 @@
+---
+
+- name: delete a4c configmap
+  include_role:
+    name: k8s/commons/namespaced-resource/delete
+  when: (k8s.a4c.namespace is defined)
+  vars:
+    namespace: "{{ k8s.a4c.namespace }}"
+    file: "a4ccm.yml.j2"

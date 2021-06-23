@@ -2,6 +2,7 @@
 - name: Define a4c url (using the fist member of the a4c group)
   set_fact:
     alien_url: "{{ a4c_protocol }}://{{ groups['a4c'][0] }}:{{ a4c_port }}"
+  when: groups['a4c'] | length > 0
 
 - name: Define a4c url when A4C is behind a nginx
   set_fact:
@@ -22,6 +23,11 @@
   set_fact:
     alien_url: "{{ a4c_front_protocol }}://{{ a4c_front_server_name }}:{{ a4c_front_port }}{{ a4c_front_location_path }}"
   when: (groups['a4cfront'] | length > 0) and (a4c_front_server_name is defined) and (a4c_front_location_path is defined)
+
+- name: Define a4c url when a4c is installed on k8s
+  set_fact:
+    alien_url: "{{ k8s.a4c.external_url }}"
+  when: k8s.a4c.external_url is defined
 
 - set_fact:
     url: "{{ alien_url }}/login"

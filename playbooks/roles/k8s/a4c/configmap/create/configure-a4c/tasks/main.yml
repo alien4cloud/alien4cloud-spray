@@ -1,0 +1,90 @@
+---
+- name: Define if ES is embeded or not
+  set_fact:
+    es_embedded: "{{ groups['elasticsearch'] | length == 0 }}"
+
+- name: Init elasticsearch cluster host list
+  set_fact :
+    es_node_list: []
+
+- name: Loop over the elasticsearch group
+  set_fact:
+    es_node_list: "{{ es_node_list + [ 'localhost' ] }}"
+  when: es_embedded
+
+- name: Loop over the elasticsearch group
+  set_fact:
+    es_node_list: "{{ es_node_list + [ item + appendable_private_domain_name + ':' + elasticsearch_transport_port|string ] }}"
+  with_items: "{{ groups['elasticsearch'] }}"
+  when: >
+    not es_embedded and (
+      (inventory_hostname != item and use_localhost_for_local_connections)
+      or not use_localhost_for_local_connections
+    )
+
+- name: Loop over the elasticsearch group (only for localhost)
+  set_fact:
+    es_node_list: "{{ es_node_list + [ 'localhost:' + elasticsearch_transport_port|string ] }}"
+  with_items: "{{ groups['elasticsearch'] }}"
+  when: >
+    not es_embedded and (
+      use_localhost_for_local_connections and inventory_hostname == item
+    )
+
+- name: Ensure a4c_config_added variable exists
+  set_fact:
+    a4c_config_addons: {}
+  when: (a4c_config_addons is not defined)
+
+- name: Define consul agent address
+  set_fact:
+    ha_consulAgentIp: "{{ inventory_hostname }}{{ appendable_private_domain_name }}"
+
+- name: Use localhost for consul agent address
+  set_fact:
+    ha_consulAgentIp: "127.0.0.1"
+  when: (use_localhost_for_local_connections)
+
+- name: Define consul agent health check address
+  set_fact:
+    ha_instanceIp: "{{ inventory_hostname }}{{ appendable_private_domain_name }}"
+
+- name: Define consul agent health check address (the IP consul will use to health check A4C)
+  set_fact:
+    ha_instanceCheckIp: "{{ inventory_hostname }}{{ appendable_private_domain_name }}"
+
+- name: Use localhost for consul agent health check address
+  set_fact:
+    ha_instanceCheckIp: "localhost"
+  when: (use_localhost_for_local_connections)
+
+- name: load main conf
+  set_fact:
+    a4c_config: "{{ lookup('template', 'alien4cloud-config.yml.j2') }}"
+
+- name: Add 'a4c_config_addons' to A4C config
+  set_fact:
+    a4c_config: "{{ a4c_config | from_yaml | combine(a4c_config_addons, recursive=True) }}"
+
+- name: load log4j conf
+  set_fact:
+    a4c_log4j_config: "{{ lookup('template', 'log4j2.xml.j2') }}"
+
+- name: load embedded ES conf
+  set_fact:
+    a4c_es_config: "{{ lookup('template', 'elasticsearch.yml.j2') }}"
+
+- name: create tmp dir
+  tempfile:
+     state: directory
+  register: a4cconfdir
+
+- name: copy embedded es conf to {{ a4cconfdir.path }}
+  copy:
+     content: "{{ a4c_es_config }}"
+     dest: "{{ a4cconfdir.path }}/elasticsearch.yml"
+
+- name: copy log4j conf to {{ a4cconfdir.path }}
+  copy:
+     content: "{{ a4c_log4j_config }}"
+     dest: "{{ a4cconfdir.path }}/log4j2.xml"

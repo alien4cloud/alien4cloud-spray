@@ -1,0 +1,19 @@
+---
+- name: display action
+  debug:
+     var: action
+
+- name: init service type
+  set_fact:
+    service_type: "{{ k8s.consul.service_type | default(k8s_consul_service_type) }}"
+
+- name: init service file
+  set_fact:
+    file: "{{ k8s.consul.service_file | default('consulsvc.yml.j2') }}"
+
+- name: perform action on consul service
+  include_role:
+    name: k8s/commons/namespaced-resource/{{ action }}
+  when: (k8s.consul.namespace is defined)
+  vars:
+    namespace: "{{ k8s.consul.namespace }}"

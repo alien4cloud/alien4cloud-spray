@@ -46,6 +46,16 @@
   roles:
     - consul/stop-consul
 
+- hosts: localhost
+  name: stop k8s pods
+  roles:
+    - commons/define_commons_vars
+    - role: k8s/commons/define_commons_vars
+      when: k8s is defined
+    - k8s/a4c/stop
+    - k8s/yorc/stop
+    - k8s/consul/stop
+
 - hosts: elasticsearch
   name: Stop Elasticsearch.
   gather_facts: no

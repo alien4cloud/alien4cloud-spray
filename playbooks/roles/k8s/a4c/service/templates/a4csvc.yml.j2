@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: a4csvc
+spec:
+  ports:
+  - name: a4c-endpoint
+    port: 8088
+    protocol: TCP
+    targetPort: a4c-endpoint
+  selector:
+    app: a4c
+  type: {{ service_type }}

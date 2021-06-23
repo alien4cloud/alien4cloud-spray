@@ -20,6 +20,15 @@
     - a4c/start-a4c
     - a4c/config/wait_a4c_fullstart
 
+- hosts: localhost
+  name: upgrade A4C in k8s mode
+  roles:
+    - commons/define_commons_vars
+    - role: k8s/commons/define_commons_vars
+      when: k8s is defined
+    - k8s/a4c/stop
+    - k8s/a4c/install
+
 - hosts: a4cconfig
   name: Update A4C modifiers.
   roles:

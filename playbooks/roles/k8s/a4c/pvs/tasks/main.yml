@@ -1,0 +1,22 @@
+---
+
+- name: initialize pvsize
+  set_fact:
+     pvsize: "{{ k8s.a4c.pvsize | default(k8s_a4c_pvsize) }}"
+
+- name: initialize pvlogssize
+  set_fact:
+     pvlogssize: "{{ k8s.a4c.pvlogssize | default(k8s_a4c_pvlogssize) }}"
+
+- name: display action
+  debug:
+     var: action
+
+- name: perform action on a4c pvs
+  with_items: "{{ k8s.a4c.pvfiles }}"
+  include_role:
+    name: k8s/a4c/pv
+  when: (k8s.a4c.namespace is defined)
+  vars:
+    pvfile: "{{ item }}"
+

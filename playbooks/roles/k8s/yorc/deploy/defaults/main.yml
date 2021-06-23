@@ -1,0 +1,2 @@
+k8s_consul_replicas: 3
+k8s_yorc_image: alien4cloud/yorc:4.1.0

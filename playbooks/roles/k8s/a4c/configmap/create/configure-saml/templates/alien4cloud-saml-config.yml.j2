@@ -1,0 +1,44 @@
+saml:
+  enabled: {{ a4c_saml_enabled }}
+  maxAuthenticationAge: 7200
+  maxAssertionTime: 3000
+{{ a4c_saml_config_added }}
+  # logoutUrl: http://alien4cloud.org
+#  proxy:
+#    host: 193.56.47.20
+#    port: 8080
+{% if a4c_protocol == 'https' %}
+  ssl:
+    keystore: server-keystore.jks
+    defaultKey: alien4cloud
+    keystorepassword: {{ ssl_dest_keystore_password }}
+{% endif %}
+  metadata:
+    idp:
+      file: "/opt/a4c/alien4cloud/config/idp-metadata.xml"
+    sp:
+      entityId: "{{ a4c_saml_entityId }}"
+      entityBaseURL: "{{ a4c_saml_entityBaseURL }}"
+
+# - regexp: '(\s*)#*(\s*)(enabled)\s*:.*$'
+#   line: '\1\2\3: true'
+# - regexp: '(\s*)#*(\s*)(maxAuthenticationAge)\s*:.*$'
+#   line: '\1\2\3: 7200'
+# - regexp: '(\s*)#*(\s*)(maxAssertionTime)\s*:.*$'
+#   line: '\1\2\3: 3000'
+# - regexp: '(\s*)#*(\s*)(keystore)\s*:.*$'
+#   line: '\1\2\3: server-keystore.jks'
+# - regexp: '(\s*)#*(\s*)(defaultKey)\s*:.*$'
+#   line: '\1\2\3: server'
+# - regexp: '(\s*)#*(\s*)(keystorepassword)\s*:.*$'
+#   line: '\1\2\3: changeIt!'
+# - regexp: '(\s*)#*(\s*)(file)\s*:.*$'
+#   line: '\1\3: "./config/idp-metadata.xml"'
+# - regexp: '(\s*)#*(\s*)(entityId)\s*:.*$'
+#   line: '\1\3: "a4c"'
+# - regexp: '(\s*)#*(\s*)(entityBaseURL)\s*:.*$'
+#   line: '\1\3: https://a4c.artemis.public:8088'
+# - regexp: '(\s*)#*(logoutUrl)(.*)$'
+#   line: '\1#\2\3'
+# - regexp: '(\s*)#*(url:)(.*)$'
+#   line: '\1#\2\3'

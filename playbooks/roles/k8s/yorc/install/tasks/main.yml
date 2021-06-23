@@ -1,0 +1,31 @@
+---
+    - name: create namespace
+      include_role:
+        name: k8s/yorc/namespace
+      vars:
+        - action: create
+    - name: create pv
+      include_role:
+        name: k8s/yorc/pv
+      vars:
+        - action: create
+    - name: delete previouscreate confgmap
+      include_role: 
+        name: k8s/yorc/configmap
+      vars:
+        - action: delete
+    - name: crate configmap 
+      include_role:
+        name: k8s/yorc/configmap
+      vars:
+        - action: create
+    - name: create deployment
+      include_role:
+        name: k8s/yorc/deploy
+      vars:
+        - action: create
+    - name: create service
+      include_role:
+       name: k8s/yorc/service
+      vars:
+        - action: create

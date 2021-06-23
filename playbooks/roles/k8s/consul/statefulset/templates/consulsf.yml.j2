@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: consul
+spec:
+  serviceName: consulsvc
+  selector:
+    matchLabels:
+      app: consul
+  replicas: {{ replicas }}
+  template:
+    metadata:
+      labels:
+        app: consul
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: consul
+        image: {{ image }}
+        env:
+        - name: NB_CONSUL_SERVER
+          value: "{{ replicas }}"
+        - name: SERVERS_TO_JOIN
+          value: "{{ consul_svc_list | list | join(',') }}"
+        ports:
+        - containerPort: 8500
+          name: ui-endpoint
+        - containerPort: 8300
+          name: server-endpoint
+        - containerPort: 8301
+          name: serf-endpoint
+        volumeMounts:
+        - name: config-consul-volume
+          mountPath: /etc/consul
+        - name: data-consul-volume
+          mountPath: /data
+        readinessProbe:
+          httpGet:
+             port: ui-endpoint
+             path: /v1/status/leader
+      volumes:
+        - name: config-consul-volume
+          configMap:
+            name: consul-conf
+  volumeClaimTemplates:
+  - metadata:
+       name: data-consul-volume
+    spec:
+       accessModes: [ "ReadWriteOnce" ]
+       resources:
+          requests:
+            storage: "{{ pvsize }}"

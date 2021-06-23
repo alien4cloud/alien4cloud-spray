@@ -87,7 +87,7 @@
 - name: Define yorc host
   set_fact:
     yorc_address: "{{ groups['yorc'][0] }}{{ appendable_private_domain_name }}"
-  when: yorc_url is not defined
+  when: (yorc_url is not defined) and (groups['yorc'] | length > 0)
 
 - name: Use 'localhost' if a4c and yorc are single and co-hosted
   set_fact:
@@ -103,6 +103,11 @@
   set_fact:
     yorc_address: "{{ groups['yorcfront'][0] }}{{ appendable_private_domain_name }}"
   when: groups['yorcfront'] is defined and groups['yorcfront'] | length > 0 and yorc_url is not defined
+
+- name: case yorc is on k8s
+  set_fact:
+    yorc_address: "yorcsvc.{{ k8s.yorc.namespace }}.svc.cluster.local"
+  when: k8s.yorc.namespace is defined
 
 - name: Define yorc url
   set_fact:

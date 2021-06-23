@@ -244,3 +244,43 @@ topologyTemplateVersionId: "1TinyMock:2.1.0-SNAPSHOT"
 applicationName: "SetupTestApp"
 
 force_delete_files: true
+
+#kubeConfig: <kube config full path>
+#k8s:
+#   consul:
+#     namespace: <namespace>
+#     create_pv: false
+#     pvfiles:
+#        - "{{ data_dir}}/resources/k8s/consul/consulpv0.yml"
+#        - "{{ data_dir}}/resources/k8s/consul/consulpv1.yml"
+#        - "{{ data_dir}}/resources/k8s/consul/consulpv2.yml"
+#     # pvsize: 10Gi
+#     # image: ystia/alpine-consul:latest
+#     # replicas: 3
+#     # service_type: ClusterIP
+#     # service_file: consulsvc.yml.j2
+#     # statefulset_file: consulsf.yml.j2
+#   yorc:
+#     namespace: <namespace>
+#     create_pv: false
+#     pvfile: "{{ data_dir}}/resources/k8s/yorc/yorcpv.yml"
+#     # pvsize: 10Gi
+#     # image: alien4cloud/yorc:4.1.0
+#     # service_type: ClusterIP
+#     # service_file: yorcsvc.yml.j2
+#     # deployment_file: yorcdeploy.yml.j2
+#   a4c:
+#     namespace: <namespace>
+#     create_pv: false
+#     pvfiles:
+#        - "{{ data_dir}}/resources/k8s/a4c/a4cpv.yml"
+#        - "{{ data_dir}}/resources/k8s/a4c/a4cpvlogs.yml"
+#     # pvsize: 10Gi
+#     # pvlogssize: 10Gi
+#     # image: alien4cloud/alien4cloud:3.3.0
+#     # service_type: ClusterIP
+#     # service_file: a4csvc.yml.j2
+#     # deployment_file: a4cdeploy.yml.j2
+#     ingress_host: <host>
+#     # ingress_file: a4cingress.yml.j2
+#     external_url: <url>

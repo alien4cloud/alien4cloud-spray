@@ -1,0 +1,21 @@
+---
+    - name: delete deployment
+      include_role:
+        name: k8s/yorc/deploy
+      vars:
+        - action: delete
+    - name: delete configmap
+      include_role:
+        name: k8s/yorc/configmap
+      vars:
+        - action: delete
+    - name: delete service 
+      include_role:
+        name: k8s/yorc/service
+      vars:
+        - action: delete
+    - name: delete pv
+      include_role:
+        name: k8s/yorc/pv
+      vars:
+        - action: delete

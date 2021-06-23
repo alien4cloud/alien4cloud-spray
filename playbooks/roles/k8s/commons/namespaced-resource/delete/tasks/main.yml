@@ -1,0 +1,13 @@
+- name: show resource file
+  debug:
+    msg: "{{ lookup('template', file) }}"
+
+- name: Delete resource
+  k8s:
+    state: absent
+    namespace: "{{ namespace }}"
+    kubeconfig: "{{ kubeConfig}}"           
+    definition: "{{ lookup('template', file) }}"
+    wait: no
+  vars:
+    ansible_python_interpreter: /usr/bin/python3

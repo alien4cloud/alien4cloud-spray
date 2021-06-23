@@ -1,0 +1,20 @@
+{
+  "ansible": {
+    "connection_retries": 3,
+    "hosted_operations": {
+      "unsandboxed_operations_allowed": true
+    },
+    "inventory": {
+      "hosted_operations:vars": [ "ansible_python_interpreter=auto_silent" ]
+    },
+    "local_tmp": "/tmp/ansible/local",
+    "remote_tmp": "/tmp/ansible/remote",
+    "use_openssh": true
+  },
+  "cluster_id": "MYC",
+  "locations_file_path": "/etc/yorc/config.locations.json",
+  "resources_prefix": "YORC_",
+  "server_id": "YORC",
+  "workers_number": 20,
+  "working_directory": "/data/yorc"
+}

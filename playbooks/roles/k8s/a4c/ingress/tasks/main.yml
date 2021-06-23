@@ -1,0 +1,19 @@
+---
+- name: display action
+  debug:
+     var: action
+
+- name: init ingress host
+  set_fact:
+    ingress_host: "{{ k8s.a4c.ingress_host }}"
+
+- name: init ingress file
+  set_fact:
+     file: "{{ k8s.a4c.ingress_file | default('a4cingress.yml.j2') }}"
+
+- name: perform action on a4c service
+  include_role:
+    name: k8s/commons/namespaced-resource/{{ action }}
+  when: (k8s.a4c.namespace is defined)
+  vars:
+    namespace: "{{ k8s.a4c.namespace }}"

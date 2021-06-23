@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: consulsvc
+spec:
+  ports:
+  - name: ui-endpoint
+    port: 8500
+    protocol: TCP
+    targetPort: ui-endpoint
+  - name: server-endpoint
+    port: 8300
+    protocol: TCP
+    targetPort: consul-endpoint
+  - name: serf-endpoint
+    port: 8301
+    protocol: TCP
+    targetPort: serf-endpoint
+  selector:
+    app: consul
+  type: {{ service_type }}

@@ -1,0 +1,14 @@
+---
+
+- name: display action
+  debug:
+     var: action
+
+- name: perform action on a4c namespace
+  include_role:
+    name: k8s/commons/cluster-resource/{{ action }}
+  when: (k8s.a4c.namespace is defined)
+  vars:
+    namespace: "{{ k8s.a4c.namespace }}"
+    file: "{{ data_dir }}/resources/k8s/ns.yml"
+

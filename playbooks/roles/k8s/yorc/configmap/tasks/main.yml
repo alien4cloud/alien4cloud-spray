@@ -1,0 +1,63 @@
+- name: load main conf
+  set_fact:
+    yorc_config: "{{ lookup('template', 'config.yorc.json.j2') }}"
+
+- name: load locations conf
+  set_fact:
+    yorc_locations_config: "{{ lookup('template', 'config.locations.json.j2') }}"
+
+- name: Init elasticsearch cluster host list
+  set_fact :
+    es_node_list: []
+
+- name: Define ES scheme
+  set_fact:
+    es_scheme: "http://"
+
+- name: Define ES scheme
+  set_fact:
+    es_scheme: "https://"
+  when: elasticsearch_tls
+
+- name: Loop over the elasticsearch group
+  set_fact:
+    es_node_list: "{{ es_node_list + [ es_scheme + item + appendable_private_domain_name + ':' + elasticsearch_http_port|string ] }}"
+  with_items: "{{ groups['elasticsearch'] }}"
+
+- name: load storage conf
+  set_fact:
+    yorc_config_storage: "{{ lookup('template', 'config.yorc-storage-{{ yorc_storage_type }}.json.j2') }}"
+  when: yorc_storage_type != "default"
+
+- name: Add 'storage' to yorc config
+  set_fact:
+    yorc_config: "{{ yorc_config|combine(yorc_config_storage) }}"
+  when: yorc_storage_type != "default"
+
+- name: display yorc config
+  debug:
+    var: yorc_config
+
+- name: display action
+  debug:
+     var: action
+
+- name: perform action on yorc configmap
+  include_role:
+    name: k8s/commons/namespaced-resource/{{ action }}
+  when: (k8s.yorc.namespace is defined)
+  vars:
+    namespace: "{{ k8s.yorc.namespace }}"
+    file: "yorccm.yml.j2"
+
+- name: load consul config
+  set_fact:
+    consul_config: "{{ lookup('template', 'consul.json.j2') }}"
+
+- name: perform action on consul configmap
+  include_role:
+    name: k8s/commons/namespaced-resource/{{ action }}
+  when: (k8s.yorc.namespace is defined)
+  vars:
+    namespace: "{{ k8s.yorc.namespace }}"
+    file: "consulclientcm.yml.j2"

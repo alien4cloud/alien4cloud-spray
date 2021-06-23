@@ -1,0 +1,23 @@
+---
+- name: display action
+  debug:
+     var: action
+
+- name: delete consul pvc for {{ pvfile }}
+  include_role:
+    name: k8s/commons/namespaced-resource/delete
+  when: (k8s.consul.namespace is defined) and (action == 'delete')
+  vars:
+    namespace: "{{ k8s.consul.namespace }}"
+    file: "{{ pvfile }}.pvc"
+
+- name: perform action on consul pv {{ pvfile }}
+  include_role:
+    name: k8s/commons/cluster-resource/{{ action }}
+  when: (k8s.consul.namespace is defined) and 
+        (((k8s.consul.create_pv is defined) and (k8s.consul.create_pv))
+          or (action == 'delete'))
+  vars:
+    namespace: "{{ k8s.consul.namespace }}"
+    file: "{{ pvfile }}"
+

@@ -1,0 +1,109 @@
+- name: Create temporary folder
+  tempfile:
+    state: directory
+    suffix: saml_a4c
+  register: temp_dir
+
+- name: Locally Check for IDP metadata archive
+  local_action: "stat path={{ data_dir }}/{{ a4c_saml_config_archive_path }}"
+  register: idp_metadata_file
+  when: a4c_saml_enabled and a4c_saml_config_archive_path is defined
+
+- name: Extract IDP metadata archive
+  unarchive:
+    src: "{{ data_dir }}/{{ a4c_saml_config_archive_path }}"
+    dest: "{{ temp_dir.path }}"
+    remote_src: no
+  when: a4c_saml_enabled and a4c_saml_config_archive_path is defined and idp_metadata_file.stat.exists
+
+- name: "Download IDP metadata file"
+  get_url:
+    url: "{{ a4c_saml_config_url }}"
+    dest: "{{ temp_dir.path }}/idp-metadata.xml"
+    force: true
+  when: a4c_saml_enabled and a4c_saml_config_url is defined
+  ignore_errors: true
+
+- name: Recursively search for idp-metadata.xml file
+  find:
+    paths: "{{ temp_dir.path }}"
+    patterns: 'idp-metadata.xml'
+    recurse: yes
+  register: idp_find_result
+  when: a4c_saml_enabled
+
+- debug:
+    var: idp_find_result
+
+- name: Define the definitve var to enable SAML
+  set_fact:
+    _a4c_saml_enabled: false
+
+- name: Enable SAML when exactly 1 idp-metadata.xml found
+  set_fact:
+    _a4c_saml_enabled: true
+  when: a4c_saml_enabled and (idp_find_result.matched == 1)
+
+- name: SAML is enable by configuration but no idp file can be found, disabling SAML
+  debug:
+    msg: "SAML is enable by configuration but no idp file can be found, disabling SAML"
+  when: a4c_saml_enabled and not _a4c_saml_enabled
+  
+- name: Copy idp-metadata.xml into A4C config directory
+  copy:
+    src: "{{ idp_find_result.files[0].path }}"
+    dest: "{{ a4cconfdir.path }}/idp-metadata.xml"
+  when: _a4c_saml_enabled
+
+- name: Ensure a4c_config_added variable exists
+  set_fact:
+    a4c_saml_config_added: ""
+  when: _a4c_saml_enabled and (a4c_saml_config_addon is not defined)
+
+- name: Feed a4c_config_added variable
+  set_fact:
+    a4c_saml_config_added: "{{ a4c_saml_config_addon | to_nice_yaml | indent(width=2, indentfirst=True) }}"
+  when: _a4c_saml_enabled and (a4c_saml_config_addon is defined)
+
+- name: Render SAML config in temp directory
+  template:
+    src: alien4cloud-saml-config.yml.j2
+    dest: "{{ temp_dir.path }}/alien4cloud-saml-config.yml"
+    force: yes
+  when: _a4c_saml_enabled
+
+- name: Slurp the SAML config file
+  slurp:
+    src: "{{ temp_dir.path }}/alien4cloud-saml-config.yml"
+  register: a4c_saml_config
+  when: _a4c_saml_enabled
+
+- name: Decode SAML config
+  set_fact:
+    a4c_saml_config: "{{ a4c_saml_config['content'] | b64decode | from_yaml }}"
+  when: _a4c_saml_enabled
+
+- name: Debug the a4c_saml_config config
+  debug:
+    var: a4c_saml_config
+  when: _a4c_saml_enabled
+
+- name: Add 'saml' to A4C config
+  set_fact:
+    a4c_config: "{{ a4c_config|combine({'saml': a4c_saml_config.saml}, recursive=True) }}"
+  when: _a4c_saml_enabled
+
+- name: Add 'saml' to A4C config
+  set_fact:
+    a4c_config: "{{ a4c_config|combine({'saml': {'enabled': false}}, recursive=True) }}"
+  when: (not _a4c_saml_enabled)
+
+- name: Debug the a4c config before serializing it to file system
+  debug:
+    var: a4c_config
+
+- name: Finally remove temporary folder
+  become: true
+  file:
+    path: "{{ temp_dir.path }}"
+    state: absent

@@ -1,0 +1,17 @@
+---
+
+- name: load consul config
+  set_fact:
+    consul_config: "{{ lookup('template', 'consul.json.j2') }}"
+
+- name: display action
+  debug:
+     var: action
+  
+- name: perform action on consul servers configmap
+  include_role:
+    name: k8s/commons/namespaced-resource/{{ action }}
+  when: (k8s.consul.namespace is defined)
+  vars:
+    namespace: "{{ k8s.consul.namespace }}"
+    file: "consulservercm.yml.j2"

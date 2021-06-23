@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: a4c
+{% if a4c_protocol == 'https' %}
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+{% endif %}
+spec:
+  rules:
+  - host: {{ ingress_host }}
+    http:
+      paths:
+      - backend:
+          serviceName: a4csvc
+          servicePort: a4c-endpoint
+        path: /

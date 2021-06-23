@@ -1,0 +1,15 @@
+---
+- name: copy main conf to {{ a4cconfdir.path }}
+  copy:
+     content: "{{ a4c_config | to_nice_yaml }}"
+     dest: "{{ a4cconfdir.path }}/alien4cloud-config.yml"
+
+- name: create a4c configmap
+  shell:
+    cmd: "kubectl --kubeconfig {{ kubeConfig }} -n {{ k8s.a4c.namespace }} create cm --from-file {{ a4cconfdir.path }} a4c-conf"
+  when: (k8s.a4c.namespace is defined)
+
+- name: remove tmp dir
+  file:
+    path: "{{ a4cconfdir.path }}"
+    state: absent

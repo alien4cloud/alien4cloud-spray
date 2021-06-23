@@ -1,0 +1,22 @@
+# This file will be parsed in case of ES embedded mode when you launch a4c from your IDE
+path:
+  # You can put an absolute path here
+  home: {{ a4c_working_dir }}/eshome
+
+transport:
+  type: mock-socket-network
+  tcp:
+    port: {{ elasticsearch_transport_port }}
+
+cluster:
+  name: escluster
+
+http:
+  enabled: true
+  port: {{ elasticsearch_http_port }}
+
+node:
+  name: alien
+network:
+  host: 0.0.0.0
+

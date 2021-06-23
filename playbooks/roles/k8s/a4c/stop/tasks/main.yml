@@ -1,0 +1,6 @@
+---
+    - name: delete deployment
+      include_role:
+        name: k8s/a4c/deploy
+      vars:
+        - action: delete

@@ -1,0 +1,3 @@
+k8s_consul_replicas: 3
+k8s_consul_image: ystia/alpine-consul:latest
+k8s_consul_pvsize: 10Gi

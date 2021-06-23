@@ -1,0 +1,14 @@
+---
+
+- hosts: localhost
+  name: Sandbox, play with plays !
+  become: false
+  roles:
+    - commons/define_commons_vars
+    - role: k8s/commons/define_commons_vars
+      when: k8s is defined
+
+    - role: k8s/yorc/install
+#    - role: k8s/yorc/stop
+#    - role: k8s/yorc/delete
+      when: k8s.yorc is defined

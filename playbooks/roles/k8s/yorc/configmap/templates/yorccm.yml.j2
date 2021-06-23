@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: yorc-conf
+data:
+  config.locations.json: |
+    {{ yorc_locations_config  | to_json }}
+  config.yorc.json: |
+    {{ yorc_config | to_json }}
+
+

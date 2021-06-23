@@ -1,0 +1,6 @@
+---
+    - name: delete deployment
+      include_role:
+        name: k8s/yorc/deploy
+      vars:
+        - action: delete

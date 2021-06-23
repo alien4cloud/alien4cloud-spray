@@ -4,6 +4,8 @@
   roles:
     - commons/install-common-dependencies
     - commons/add_dns_server
+  vars:
+    - ansible_python_interpreter: /usr/bin/python2
 
 - hosts: yorcfront
   name: Stop consul template (yorc)
@@ -27,6 +29,13 @@
     - { role: consul/configure-consul, consul_mode: 'server' }
     - consul/start-consul
 
+- hosts: localhost
+  name: Install and start consul on K8S
+  roles:
+    - role: k8s/commons/define_commons_vars
+      when: k8s is defined
+    - k8s/consul/install
+
 - hosts: elasticsearch
   name: Install configure and start Elasticsearch.
   gather_facts: no
@@ -37,6 +46,8 @@
     - elasticsearch/install-elasticsearch
     - elasticsearch/configure-elasticsearch
     - elasticsearch/start-elasticsearch
+  vars:
+    - ansible_python_interpreter: /usr/bin/python2
 
 - hosts: consulfront
   name: Install consul front (Nginx).
@@ -64,6 +75,14 @@
     - spark/install-spark
     - { role: spark/define-spark-home, spark_user_var: 'yorc_user' }
     - consul/start-consul
+
+- hosts: localhost
+  name: Install and start yorc on K8S
+  roles:
+    - commons/define_commons_vars
+    - role: k8s/commons/define_commons_vars
+      when: k8s is defined
+    - k8s/yorc/install
 
 - hosts: yorc
   name: Setup rsync for Yorc.
@@ -129,6 +148,14 @@
     - { role: a4c/config/define_a4c_url, should_login: false }
     - a4c/configure-saml
     - consul/start-consul
+
+- hosts: localhost
+  name: Install and start a4c on K8S
+  roles:
+    - commons/define_commons_vars
+    - role: k8s/commons/define_commons_vars
+      when: k8s is defined
+    - k8s/a4c/install
 
 - hosts: a4cfront
   name: Install A4C front (Nginx, consul and consul-template)

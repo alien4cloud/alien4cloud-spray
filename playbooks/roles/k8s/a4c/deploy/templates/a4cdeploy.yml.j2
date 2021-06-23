@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  name: a4c
+spec:
+  selector:
+    matchLabels:
+      app: a4c
+  template:
+    metadata:
+      labels:
+        app: a4c
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: a4c
+        image: {{ image }}
+        ports:
+        - containerPort: 8088
+          name: a4c-endpoint
+        readinessProbe:
+          httpGet:
+             port: a4c-endpoint
+             path: /rest/admin/health
+             scheme: {{ a4c_protocol | upper }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /opt/a4c/alien4cloud/config
+        - name: data-a4c-volume
+          mountPath: /opt/a4c/alien4cloud/runtime
+        - name: data-a4c-logs-volume
+          mountPath: /var/log/alien4cloud/
+      volumes:
+        - name: config-volume
+          configMap:
+            name: a4c-conf
+        - name: data-a4c-volume
+          persistentVolumeClaim:
+             claimName: pvc-a4c
+        - name: data-a4c-logs-volume
+          persistentVolumeClaim:
+             claimName: pvc-a4c-logs

@@ -1,0 +1,31 @@
+---
+    - name: create namespace
+      include_role: 
+        name: k8s/consul/namespace
+      vars:
+        - action: create
+    - name: create pv
+      include_role: 
+        name: k8s/consul/pvs
+      vars:
+        - action: create
+    - name: delete previous configmap
+      include_role:
+        name: k8s/consul/configmap
+      vars:
+        - action: delete
+    - name: create configmap
+      include_role:
+       name: k8s/consul/configmap
+      vars:
+        - action: create
+    - name: create statefulset
+      include_role:
+       name: k8s/consul/statefulset
+      vars:
+        - action: create
+    - name: create service
+      include_role: 
+        name: k8s/consul/service
+      vars:
+        - action: create

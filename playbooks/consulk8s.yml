@@ -1,0 +1,14 @@
+---
+
+- hosts: localhost
+  name: Sandbox, play with plays !
+  become: false
+  roles:
+    - role: k8s/commons/define_commons_vars
+      when: k8s is defined
+
+    # install
+#    - role: k8s/consul/install
+#    - role: k8s/consul/stop
+    - role: k8s/consul/delete
+      when: k8s.consul is defined

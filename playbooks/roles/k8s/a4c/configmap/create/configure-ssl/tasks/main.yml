@@ -1,0 +1,63 @@
+---
+- name: Copy CA cert file
+  copy:
+    src: "{{ data_dir }}/{{ certificates_path }}/{{ ssl_ca_cert_name }}"
+    dest: "{{ a4cconfdir.path }}/{{ ssl_ca_cert_name }}"
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
+
+- name: Copy host key file
+  copy:
+    src: "{{ data_dir }}/{{ certificates_path }}/a4c{{ ssl_host_key_suffix }}"
+    dest: "{{ a4cconfdir.path }}/a4c{{ ssl_host_key_suffix }}"
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
+
+- name: Copy host cert file
+  copy:
+    src: "{{ data_dir }}/{{ certificates_path }}/a4c{{ ssl_host_cert_suffix }}"
+    dest: "{{ a4cconfdir.path }}/a4c{{ ssl_host_cert_suffix }}"
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
+
+- name: Find the firts jre cacerts trustore
+  shell: "find / -name cacerts | egrep 'jre|jdk' | head -n 1"
+  become: true
+  register: find_cacerts_command_output
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
+
+- name: Define the cacerts path
+  set_fact :
+    cacerts_path: "{{ find_cacerts_command_output.stdout |trim }}"
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
+
+- fail:
+    msg: "Not able to locate any cacerts truststore !"
+  when: ((elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)) and (cacerts_path == "")
+
+- name: Copy cacerts truststore
+  copy:
+    src: "{{ cacerts_path }}"
+    dest: "{{ a4cconfdir.path }}/server-truststore.jks"
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
+
+- name: Prepare CA certificate to be imported into truststore
+  shell: "openssl x509 -outform der -in {{ ssl_ca_cert_name }} -out ca-cert.der"
+  args:
+    chdir: "{{ a4cconfdir.path }}"
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
+
+- name: Import CA certificate into truststore
+  shell: "keytool -import -alias alien4cloud -keystore server-truststore.jks -file ca-cert.der -storepass changeit -noprompt"
+  args:
+    chdir: "{{ a4cconfdir.path }}"
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
+
+- name: Generate server keystore using openssl
+  shell: "openssl pkcs12 -export -name alien4cloud -in a4c{{ ssl_host_cert_suffix }} -inkey a4c{{ ssl_host_key_suffix }} -out server-keystore.p12 -chain -CAfile {{ ssl_ca_cert_name }} -caname root -password pass:changeit"
+  args:
+    chdir: "{{ a4cconfdir.path }}"
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)
+
+- name: Export server keystore using keytool
+  shell: "keytool -importkeystore -destkeystore server-keystore.jks -srckeystore server-keystore.p12 -srcstoretype pkcs12 -alias alien4cloud -deststorepass changeit -srcstorepass changeit"
+  args:
+    chdir: "{{ a4cconfdir.path }}"
+  when: (elasticsearch_tls) or (a4c_protocol == 'https') or (yorc_tls) or (_consul_tls)

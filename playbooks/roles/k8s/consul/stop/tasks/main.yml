@@ -1,0 +1,6 @@
+---
+    - name: delete statefulset
+      include_role:
+        name: k8s/consul/statefulset
+      vars:
+        - action: delete

@@ -1,0 +1,31 @@
+---
+
+- name: set kubeconfig file
+  set_fact:
+    kubeConfigPath: "{{ data_dir }}/resources/k8s/kubeconfig"
+  when: kubeConfig is not defined
+
+- name: get kubeconfig file contents
+  set_fact:
+     kubeConfigData: "{{ lookup('file', kubeConfigPath) }}"
+  when: kubeConfig is not defined
+
+- name: get tmp file
+  tempfile:
+  register: kubeConfigPath
+  when: kubeConfig is not defined
+
+- name: write kubeconfig to tmp file
+  copy:
+    content: "{{ kubeConfigData }}"  
+    dest: "{{ kubeConfigPath.path }}"
+  when: kubeConfig is not defined
+
+- name: set kubeconfig
+  set_fact:
+     kubeConfig: "{{ kubeConfigPath.path }}"
+  when: kubeConfig is not defined
+
+- name: debug
+  debug:
+     msg: "{{ kubeConfig }}"

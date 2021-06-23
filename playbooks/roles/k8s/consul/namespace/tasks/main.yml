@@ -1,0 +1,14 @@
+---
+
+- name: display action
+  debug:
+     var: action
+
+- name: perform action on consul namespace
+  include_role:
+    name: k8s/commons/cluster-resource/{{ action }}
+  when: (k8s.consul.namespace is defined)
+  vars:
+    namespace: "{{ k8s.consul.namespace }}"
+    file: "{{ data_dir }}/resources/k8s/ns.yml"
+

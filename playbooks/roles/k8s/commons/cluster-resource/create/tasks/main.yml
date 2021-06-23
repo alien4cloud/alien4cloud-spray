@@ -1,0 +1,12 @@
+- name: show resource file
+  debug:
+    msg: "{{ lookup('template', file) }}"
+
+- name: Create resource
+  k8s:
+    state: present
+    kubeconfig: "{{ kubeConfig}}"           
+    definition: "{{ lookup('template', file) }}"
+    wait: yes  
+  vars:
+    ansible_python_interpreter: /usr/bin/python3

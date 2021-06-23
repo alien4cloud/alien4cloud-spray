@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-a4c
+  labels:
+    app: a4c
+spec:
+  accessModes:
+  - ReadWriteOnce
+  awsElasticBlockStore:
+    fsType: ext4
+    volumeID: vol-0c5f3601f5ab0149a
+  capacity:
+    storage: {{ pvsize }}
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem

@@ -1,0 +1,24 @@
+---
+    - name: delete deployment
+      include_role:
+        name: k8s/a4c/deploy
+      vars:
+        - action: delete
+    - name: delete configmap
+      include_role:
+        name: k8s/a4c/configmap/delete
+    - name: delete service 
+      include_role:
+        name: k8s/a4c/service
+      vars:
+        - action: delete
+    - name: delete ingress
+      include_role:
+        name: k8s/a4c/ingress
+      vars:
+        - action: delete
+    - name: delete pv
+      include_role:
+        name: k8s/a4c/pvs
+      vars:
+        - action: delete

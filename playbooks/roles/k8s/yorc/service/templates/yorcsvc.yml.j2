@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: yorcsvc
+spec:
+  ports:
+  - name: yorc-endpoint
+    port: 8800
+    protocol: TCP
+    targetPort: yorc-endpoint
+  - name: consul-endpoint
+    port: 8500
+    protocol: TCP
+    targetPort: consul-endpoint
+  selector:
+    app: yorc
+  type: {{ service_type }}

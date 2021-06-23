@@ -1,0 +1,46 @@
+---
+    - name: create namespace
+      include_role:
+        name: k8s/a4c/namespace
+      vars:
+        - action: create
+    - name: create pv
+      include_role:
+        name: k8s/a4c/pvs
+      vars:
+        - action: create
+    - name: delete previous configmap
+      include_role: 
+        name: k8s/a4c/configmap/delete
+    - name: crate configmap 
+      include_role:
+        name: k8s/a4c/configmap/create/configure-a4c
+    - name: crate configmap 
+      include_role:
+        name: k8s/a4c/configmap/create/configure-ssl
+    - name: crate configmap 
+      include_role:
+        name: k8s/a4c/configmap/create/configure-saml
+    - name: crate configmap 
+      include_role:
+        name: k8s/a4c/configmap/create/create-configmap
+    - name: create deployment
+      include_role:
+        name: k8s/a4c/deploy
+      vars:
+        - action: create
+    - name: create service
+      include_role:
+       name: k8s/a4c/service
+      vars:
+        - action: create
+    - name: delete previous ingress
+      include_role:
+       name: k8s/a4c/ingress
+      vars:
+        - action: delete
+    - name: create ingress
+      include_role:
+       name: k8s/a4c/ingress
+      vars:
+        - action: create
