@@ -186,12 +186,12 @@ then proceed as for a standard installation, using `inputs.yml.offline.tpl` inst
 The spray allows to install consul, yorc and A4C on an existing kubernetes cluster.
 To allow this proceed as follows:
 - set all sections of the `hosts` file to empty, except `elasticsearch` set to the elasticsearch host(s) and `a4cconfig` set to `localhost`
-- provide your kubeconfig in the `resources/k8s/kubeconfig` file or set the fulle path of your kubeconfig in the `kubeConfig` parameter of the `inputs.yml` file
+- provide your kubeconfig in the `resources/k8s/kubeconfig` file or set the full path of your kubeconfig in the `kubeConfig` parameter of the `inputs.yml` file
 - enable the `k8s` section in the `inputs.yml` file
 - customize the parameters under the `k8s` section as follows
    * each sub-section contains parameters concerning respectively the installation of `consul`, `yorc`and `a4c`
    * `namespace`is the namespace where to install the component; they can be different namespaces or same namespace; the namespaces are created if they do not exist, using the template  `resources/k8s/ns.yml`
-   * `create_pv` is set to true if persistent volume(s) must be created, else set to false. In any case the volumes muste be created by a means external to the spray. If the persistent volumes are to be created, the templates given by `pvfile(s)` are used. In any case, there must be associated template files used to create or delete the persistent volume claims. The name of the PVC templates are the names of the associated PV templates, suffixed with `.pvc`. The PV files must always be present because they are used at least to delete the persistent volumes.
+   * `create_pv` is set to true if persistent volume(s) must be created, else set to false. In any case the volumes must be created by a means external to the spray. If the persistent volumes are to be created, the templates given by `pvfile(s)` are used. In any case, there must be associated template files used to create or delete the persistent volume claims. The name of the PVC templates are the names of the associated PV templates, suffixed with `.pvc`. The files must always be present because they are used at least to delete the persistent volumes and persistent volume claims.
    * `pvsize` (and `pvlogssize` for a4c) is the size of the volumes (default 10Gi)
    * `image` is the docker image to be used (default given in `ìnputs.yml`)
    * `service_type` is the K8S service type (default ClusterIP)
