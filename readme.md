@@ -182,6 +182,36 @@ On the local machine, first run the following commands to get all required binar
 ```
 then proceed as for a standard installation, using `inputs.yml.offline.tpl` instead of `inputs.yml.tpl` (or just ensure the `offline` variable is defined to `true`).
 
+# Installation on K8S
+The spray allows to install consul, yorc and A4C on an existing kubernetes cluster.
+To allow this proceed as follows:
+- set all sections of the `hosts` file to empty, except `elasticsearch` set to the elasticsearch host(s) and `a4cconfig` set to `localhost`
+- provide your kubeconfig in the `resources/k8s/kubeconfig` file or set the fulle path of your kubeconfig in the `kubeConfig` parameter of the `inputs.yml` file
+- enable the `k8s` section in the `inputs.yml` file
+- customize the parameters under the `k8s` section as follows
+   * each sub-section contains parameters concerning respectively the installation of `consul`, `yorc`and `a4c`
+   * `namespace`is the namespace where to install the component; they can be different namespaces or same namespace; the namespaces are created if they do not exist, using the template  `resources/k8s/ns.yml`
+   * `create_pv` is set to true if persistent volume(s) must be created, else set to false. In any case the volumes muste be created by a means external to the spray. If the persistent volumes are to be created, the templates given by `pvfile(s)` are used. In any case, there must be associated template files used to create or delete the persistent volume claims. The name of the PVC templates are the names of the associated PV templates, suffixed with `.pvc`. The PV files must always be present because they are used at least to delete the persistent volumes.
+   * `pvsize` (and `pvlogssize` for a4c) is the size of the volumes (default 10Gi)
+   * `image` is the docker image to be used (default given in `ìnputs.yml`)
+   * `service_type` is the K8S service type (default ClusterIP)
+   * a service file template is provided with the spray, you may use another template, if you set the name under `service_file`
+   * a statefulset template (consul) or a deployment template (yorc, a4c) is provided with the spray, you may use another template, if you set the name under `statefulset_file` (consul) or `deployment_file`(a4c and yorc)
+   * an ingress file template is provided with the spray (a4c only), you may use another template, if you set the name under `ingress_file` (a4c only)
+   * `ingress_host`: host name to set in ingress (a4c only)
+   * `external_url`: a4c url served by the ingress controller (a4c only)
+- provide the files used to create/delete persistent volumes and persistent volume claims (see upper)
+- provide any customized template you have set under the parameters `service_file`, `statefulset_file`, `deployment_file`, `ìngress_file`
+- run the `install-all-setup-test` playbook as usual
+##### Prerequisites for the ansible controller machine
+- python openshift (which requires python 3)
+- kubectl
+- openssl if you use SSL for A4C
+- java keytool if you use SSL for A4C
+- access to the k8s cluster with the configured kube config
+##### SSL
+If you want to set SSL for A4C, proceed as described above, the files associated with A4C being named `a4c-key.pem`and `a4c-cert.pem`
+
 # Configure
 Il you need some additional CSARs library, place the zip files in the `resources/csars` folder. If your dependencies need a specific order, prefix your file names so that the names represent such order.
 
