@@ -54,7 +54,7 @@ metaproperties:
     filtered: true
     required: false
     constraints:
-      - validValues: [rens, labs, ana, con, res, san, mco]
+      - validValues: [labs]
   - name: "Cas d'usage"
     description: ""
     target: application
@@ -63,7 +63,7 @@ metaproperties:
     filtered: true
     required: false
     constraints:
-      - validValues: [rens, labs, ana, con, res, san, mco]
+      - validValues: [labs]
   - name: "Catégorie application"
     description: ""
     target: application
@@ -126,7 +126,7 @@ metaproperties:
     filtered: true
     required: false
     constraints:
-      - validValues: [rens, labs, ana, con, res, san, mco]
+      - validValues: [labs]
   - name: "Format données"
     description: ""
     target: service
@@ -136,3 +136,10 @@ metaproperties:
     required: false
     constraints:
       - validValues: ["Texte_libre"]
+  - name: "Bac à sable"
+    description: ""
+    target: location
+    type: boolean
+    password: false
+    filtered: false
+    required: false      
