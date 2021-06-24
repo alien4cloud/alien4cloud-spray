@@ -1,6 +1,6 @@
 ---
 
-- hosts: a4cconfig
+- hosts: elasticsearch
   name: Sandbox, play with plays !
   become: false
   roles:
