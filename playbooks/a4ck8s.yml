@@ -8,7 +8,7 @@
     - role: k8s/commons/define_commons_vars
       when: k8s is defined
 
-#    - role: k8s/a4c/install
+    - role: k8s/a4c/install
 #    - role: k8s/a4c/stop
-    - role: k8s/a4c/delete
+#    - role: k8s/a4c/delete
       when: k8s.a4c is defined
