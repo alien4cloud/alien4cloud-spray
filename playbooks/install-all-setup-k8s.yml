@@ -1,0 +1,70 @@
+---
+- hosts: "elasticsearch"
+  name: Install all common dependencies
+  roles:
+    - commons/install-common-dependencies
+    - commons/add_dns_server
+  vars:
+    - ansible_python_interpreter: /usr/bin/python2
+
+- hosts: localhost
+  name: Install and start consul on K8S
+  roles:
+    - role: k8s/commons/define_commons_vars
+      when: k8s is defined
+    - k8s/consul/install
+
+- hosts: elasticsearch
+  name: Install configure and start Elasticsearch.
+  gather_facts: no
+  roles:
+    - commons/define_commons_vars
+    - elasticsearch/stop-elasticsearch
+    - install-java-dist
+    - elasticsearch/install-elasticsearch
+    - elasticsearch/configure-elasticsearch
+    - elasticsearch/start-elasticsearch
+  vars:
+    - ansible_python_interpreter: /usr/bin/python2
+
+- hosts: localhost
+  name: Install and start yorc on K8S
+  roles:
+    - commons/define_commons_vars
+    - role: k8s/commons/define_commons_vars
+      when: k8s is defined
+    - k8s/yorc/install
+
+- hosts: localhost
+  name: Install and start a4c on K8S
+  roles:
+    - commons/define_commons_vars
+    - role: k8s/commons/define_commons_vars
+      when: k8s is defined
+    - k8s/a4c/install
+
+- hosts: localhost
+  name: Setup A4C with a Yorc orchestrator.
+  become: false
+  roles:
+    - commons/define_commons_vars
+    - a4c/config/define_a4c_url
+    - { role: 'a4c/config/get_orchectrator',
+        orchestratorName: 'Yorc'
+      }
+    - { role: 'a4c/config/create_orchestrator',
+        orchestratorName: 'Yorc',
+        pluginId: 'alien4cloud-yorc-provider',
+        pluginBean: 'yorc-orchestrator-factory'
+      }
+    - a4c/config/disable_plugins
+    - a4c/config/order_location_modifiers_it
+    - { role: 'a4c/config/create_metaproperties',
+        resources_file_artifact: 'resources/metaproperties.yaml'
+      }
+    - { role: 'a4c/config/create_and_configure_locations',
+        orchestratorName: 'Yorc'
+      }
+    - a4c/config/git_var
+    - a4c/config/download_upload_csars
+    - a4c/config/upload_csars
