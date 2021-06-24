@@ -8,5 +8,6 @@
     kubeconfig: "{{ kubeConfig}}"           
     definition: "{{ lookup('template', file) }}"
     wait: yes  
+    validate_certs: no
   vars:
     ansible_python_interpreter: /usr/bin/python3
