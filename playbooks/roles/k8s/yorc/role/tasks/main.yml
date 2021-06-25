@@ -1,0 +1,55 @@
+---
+- name: display action
+  debug:
+     var: action
+
+- name: init account name
+  set_fact:
+    account_name: "{{ k8s.yorc.account_name | default(k8s_yorc_account_name) }}"
+
+- name: init role name
+  set_fact:
+    k8srole_name: "{{ k8s.yorc.role_name | default(k8s_yorc_role_name) }}"
+
+- name: init rb name
+  set_fact:
+    rb_name: "{{ k8s.yorc.rb_name | default(k8s_yorc_rb_name) }}"
+
+- name: init sa file
+  set_fact:
+     file: "{{ k8s.yorc.sa_file | default('yorcsa.yml.j2') }}"
+
+- name: perform action on yorc sa
+  include_role:
+    name: k8s/commons/namespaced-resource/{{ action }}
+  when: (k8s.yorc.namespace is defined) and 
+        (k8s.yorc.create_role is defined) and
+        (k8s.yorc.create_role)
+  vars:
+    namespace: "{{ k8s.yorc.namespace }}"
+
+- name: init role file
+  set_fact:
+     file: "{{ k8s.yorc.role_file | default('yorcrole.yml.j2') }}"
+
+- name: perform action on yorc role
+  include_role:
+    name: k8s/commons/namespaced-resource/{{ action }}
+  when: (k8s.yorc.namespace is defined) and 
+        (k8s.yorc.create_role is defined) and
+        (k8s.yorc.create_role)
+  vars:
+    namespace: "{{ k8s.yorc.namespace }}"
+
+- name: init rb file
+  set_fact:
+     file: "{{ k8s.yorc.rb_file | default('yorcrb.yml.j2') }}"
+
+- name: perform action on yorc rb
+  include_role:
+    name: k8s/commons/namespaced-resource/{{ action }}
+  when: (k8s.yorc.namespace is defined) and 
+        (k8s.yorc.create_role is defined) and
+        (k8s.yorc.create_role)
+  vars:
+    namespace: "{{ k8s.yorc.namespace }}"

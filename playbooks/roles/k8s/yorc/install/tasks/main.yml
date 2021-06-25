@@ -19,6 +19,11 @@
         name: k8s/yorc/configmap
       vars:
         - action: create
+    - name: create role
+      include_role:
+        name: k8s/yorc/role
+      vars:
+        - action: create
     - name: create deployment
       include_role:
         name: k8s/yorc/deploy

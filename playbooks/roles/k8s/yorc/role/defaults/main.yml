@@ -1,0 +1,3 @@
+k8s_yorc_account_name: yorc-sa
+k8s_yorc_role_name: yorc-role
+k8s_yorc_rb_name: yorc-rb
