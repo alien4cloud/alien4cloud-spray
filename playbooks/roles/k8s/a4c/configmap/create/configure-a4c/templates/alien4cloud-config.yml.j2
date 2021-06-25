@@ -163,7 +163,7 @@ ttl:
   period: 86400
 
 ha:
-  ha_enabled: {{ 'true' if a4c_ha_enabled else 'false' }}
+  ha_enabled: false
   consulAgentIp: {{ ha_consulAgentIp }}
   consulAgentPort: {{ consul_https_port if _consul_tls else consul_http_port }}
   # the ip that will be given to consul for health check (can be a private ip)
