@@ -19,3 +19,8 @@
         name: k8s/yorc/pv
       vars:
         - action: delete
+    - name: delete role
+      include_role:
+        name: k8s/yorc/role
+      vars:
+        - action: delete
