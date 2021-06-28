@@ -265,6 +265,13 @@ force_delete_files: true
 #     create_pv: false
 #     pvfile: "{{ data_dir}}/resources/k8s/yorc/yorcpv.yml"
 #     # pvsize: 10Gi
+#     # create_role: false
+#     # account_name: yorc-sa
+#     # role_name: yorc-role
+#     # rb_name: yorc-rb
+#     # sa_file: yorcsa.yml.j2
+#     # role_file: yorcrole.yml.j2
+#     # rb_file: yorcrb.yml.j2
 #     # image: alien4cloud/yorc:4.1.0
 #     # service_type: ClusterIP
 #     # service_file: yorcsvc.yml.j2
