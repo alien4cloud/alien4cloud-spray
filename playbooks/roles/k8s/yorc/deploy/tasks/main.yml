@@ -33,7 +33,7 @@
 - name: init account name (delete mode)
   set_fact:
     account_name: "not_used"
-  when: (action = 'delete')
+  when: (action == 'delete')
 
 - name: perform action on yorc deployment
   include_role:
