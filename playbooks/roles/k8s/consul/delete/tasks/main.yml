@@ -14,6 +14,11 @@
         name: k8s/consul/service
       vars:
         - action: delete
+    - name: delete ingress
+      include_role:
+        name: k8s/consul/ingress
+      vars:
+        - action: delete
     - name: delete pv
       include_role:
        name: k8s/consul/pvs

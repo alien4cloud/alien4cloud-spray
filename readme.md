@@ -197,9 +197,13 @@ To allow this proceed as follows:
    * `service_type` is the K8S service type (default ClusterIP)
    * a service file template is provided with the spray, you may use another template, if you set the name under `service_file`
    * a statefulset template (consul) or a deployment template (yorc, a4c) is provided with the spray, you may use another template, if you set the name under `statefulset_file` (consul) or `deployment_file`(a4c and yorc)
-   * an ingress file template is provided with the spray (a4c only), you may use another template, if you set the name under `ingress_file` (a4c only)
-   * `ingress_host`: host name to set in ingress (a4c only)
-   * `external_url`: a4c url served by the ingress controller (a4c only)
+   * an ingress file template is provided with the spray (a4c and optionally consul), you may use another template, if you set the name under `ingress_file` (a4c and consul). To install an ingress for consul, set `create_ingress` to true (consul only)
+   * `ingress_hosts`: list of host names to set in ingress (a4c and consul)
+   * `create_secret` is set to true if the spray needs to create a secret with SSL key and certificate for the ingress (a4c and consul), the files being named `a4c-key.pem`and `a4c-cert.pem` for a4c and `consul-key.pem`and `consul-cert.pem` for consul (a4c and consul)
+   * `external_url`: a4c url served by the ingress controller, used by the spry to configure A4C through A4C REST API (a4c only)
+   * `create_role` (yorc only): optionally create k8s role for yorc deployment
+   * `account_name`, `role_name`, `rb_name` (yorc only): names of service account, role binding, role name for K8S role for yorc, if it is to be created
+   * yorc only: template files are provided to create service_account, role binding, role name for K8S role for yorc. You can provide other templates (by setting respectively `sa_file`, `role_file` and `rb_file`)
 - provide the files used to create/delete persistent volumes and persistent volume claims (see upper)
 - provide any customized template you have set under the parameters `service_file`, `statefulset_file`, `deployment_file`, `ìngress_file`
 - run the `install-all-setup-test` playbook as usual

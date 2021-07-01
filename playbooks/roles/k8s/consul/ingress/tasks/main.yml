@@ -1,0 +1,73 @@
+---
+- name: display action
+  debug:
+     var: action
+
+- name: set key file name
+  set_fact:
+    filename: "{{ data_dir +'/'+ certificates_path +'/consul' + ssl_host_key_suffix }}"
+  when: (k8s.consul.namespace is defined) and
+        (k8s.consul.create_ingress is defined) and
+         k8s.consul.create_ingress and
+        (k8s.consul.create_secret is defined) and
+         k8s.consul.create_secret
+
+- name: load key
+  set_fact:
+    key: "{{ lookup('file', filename) }}"
+  when: (k8s.consul.namespace is defined) and
+        (k8s.consul.create_ingress is defined) and
+         k8s.consul.create_ingress and
+        (k8s.consul.create_secret is defined) and
+         k8s.consul.create_secret
+
+- name: set certificate file name
+  set_fact:
+    filename: "{{ data_dir +'/'+ certificates_path +'/consul' + ssl_host_cert_suffix }}"
+  when: (k8s.consul.namespace is defined) and
+        (k8s.consul.create_ingress is defined) and
+         k8s.consul.create_ingress and
+        (k8s.consul.create_secret is defined) and
+         k8s.consul.create_secret
+
+- name: load certificate
+  set_fact:
+    certificate: "{{ lookup('file', filename) }}"
+  when: (k8s.consul.namespace is defined) and
+        (k8s.consul.create_ingress is defined) and
+         k8s.consul.create_ingress and
+        (k8s.consul.create_secret is defined) and
+         k8s.consul.create_secret
+
+- name: init secret file
+  set_fact:
+     file: "{{ k8s.consul.secret_file | default('secret.yml.j2') }}"
+  when: (k8s.consul.namespace is defined) and
+        (k8s.consul.create_ingress is defined) and
+         k8s.consul.create_ingress and
+        (k8s.consul.create_secret is defined) and
+         k8s.consul.create_secret
+
+- name: perform action on consul secret
+  include_role:
+    name: k8s/commons/namespaced-resource/{{ action }}
+  when: (k8s.consul.namespace is defined) and
+        (k8s.consul.create_ingress is defined) and
+         k8s.consul.create_ingress and
+        (k8s.consul.create_secret is defined) and
+         k8s.consul.create_secret
+  vars:
+    namespace: "{{ k8s.consul.namespace }}"
+
+- name: init ingress file
+  set_fact:
+     file: "{{ k8s.consul.ingress_file | default('consulingress.yml.j2') }}"
+
+- name: perform action on consul ingress
+  include_role:
+    name: k8s/commons/namespaced-resource/{{ action }}
+  when: (k8s.consul.namespace is defined) and
+        (k8s.consul.create_ingress is defined) and
+         k8s.consul.create_ingress
+  vars:
+    namespace: "{{ k8s.consul.namespace }}"

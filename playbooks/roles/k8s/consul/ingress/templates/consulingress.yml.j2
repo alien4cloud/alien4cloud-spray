@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: consul
+spec:
+  rules:
+{% for host in k8s.consul.ingress_hosts %}
+  - host: {{ host }}
+    http:
+      paths:
+      - backend:
+          serviceName: consulsvc
+          servicePort: ui-endpoint
+        path: /
+        pathType: Prefix
+{% endfor %}
+{% if k8s.consul.create_secret is defined and k8s.consul.create_secret %}
+  tls:
+  - hosts:
+{% for host in k8s.consul.ingress_hosts %}
+    - {{ host }}
+{% endfor %}
+    secretName: consul-tls
+{% endif %}
