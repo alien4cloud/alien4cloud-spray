@@ -29,3 +29,13 @@
         name: k8s/consul/service
       vars:
         - action: create
+    - name: delete previous ingress
+      include_role:
+       name: k8s/consul/ingress
+      vars:
+        - action: delete
+    - name: create ingress
+      include_role:
+       name: k8s/consul/ingress
+      vars:
+        - action: create

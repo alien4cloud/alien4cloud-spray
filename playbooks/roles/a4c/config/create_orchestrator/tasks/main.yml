@@ -87,15 +87,17 @@
 - name: Define yorc host
   set_fact:
     yorc_address: "{{ groups['yorc'][0] }}{{ appendable_private_domain_name }}"
-  when: (yorc_url is not defined) and (groups['yorc'] | length > 0)
+  when: (yorc_url is not defined) and (groups['yorc'] is defined) and (groups['yorc'] | length > 0)
 
 - name: Use 'localhost' if a4c and yorc are single and co-hosted
   set_fact:
     yorc_address: "localhost"
   when: >
     yorc_url is not defined
+    and (groups['yorc'] is defined)
     and (groups['yorc'] | length == 1)
     and (groups['yorc'][0] == inventory_hostname)
+    and (groups['a4c'] is defined)
     and (groups['a4c'] | length == 1)
     and use_localhost_for_local_connections
 

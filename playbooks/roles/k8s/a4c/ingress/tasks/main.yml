@@ -3,15 +3,55 @@
   debug:
      var: action
 
-- name: init ingress host
+- name: set key file name
   set_fact:
-    ingress_host: "{{ k8s.a4c.ingress_host }}"
+    filename: "{{ data_dir +'/'+ certificates_path +'/a4c' + ssl_host_key_suffix }}"
+  when: (k8s.a4c.namespace is defined) and
+        (k8s.a4c.create_secret is defined) and
+         k8s.a4c.create_secret
+
+- name: load key
+  set_fact:
+    key: "{{ lookup('file', filename) }}"
+  when: (k8s.a4c.namespace is defined) and
+        (k8s.a4c.create_secret is defined) and
+         k8s.a4c.create_secret
+
+- name: set certificate file name
+  set_fact:
+    filename: "{{ data_dir +'/'+ certificates_path +'/a4c' + ssl_host_cert_suffix }}"
+  when: (k8s.a4c.namespace is defined) and
+        (k8s.a4c.create_secret is defined) and
+         k8s.a4c.create_secret
+
+- name: load certificate
+  set_fact:
+    certificate: "{{ lookup('file', filename) }}"
+  when: (k8s.a4c.namespace is defined) and
+        (k8s.a4c.create_secret is defined) and
+         k8s.a4c.create_secret
+
+- name: init secret file
+  set_fact:
+     file: "{{ k8s.a4c.secret_file | default('secret.yml.j2') }}"
+  when: (k8s.a4c.namespace is defined) and
+        (k8s.a4c.create_secret is defined) and
+         k8s.a4c.create_secret
+
+- name: perform action on a4c secret
+  include_role:
+    name: k8s/commons/namespaced-resource/{{ action }}
+  when: (k8s.a4c.namespace is defined) and
+        (k8s.a4c.create_secret is defined) and
+         k8s.a4c.create_secret
+  vars:
+    namespace: "{{ k8s.a4c.namespace }}"
 
 - name: init ingress file
   set_fact:
      file: "{{ k8s.a4c.ingress_file | default('a4cingress.yml.j2') }}"
 
-- name: perform action on a4c service
+- name: perform action on a4c ingress
   include_role:
     name: k8s/commons/namespaced-resource/{{ action }}
   when: (k8s.a4c.namespace is defined)

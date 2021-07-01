@@ -260,6 +260,11 @@ force_delete_files: true
 #     # service_type: ClusterIP
 #     # service_file: consulsvc.yml.j2
 #     # statefulset_file: consulsf.yml.j2
+#     # create_ingress: false
+#     # ingress_hosts:
+#     #   - <host>
+#     # ingress_file: consulingress.yml.j2
+#     # create_secret: false
 #   yorc:
 #     namespace: <namespace>
 #     create_pv: false
@@ -288,6 +293,8 @@ force_delete_files: true
 #     # service_type: ClusterIP
 #     # service_file: a4csvc.yml.j2
 #     # deployment_file: a4cdeploy.yml.j2
-#     ingress_host: <host>
+#     ingress_hosts: 
+#       - <host>
 #     # ingress_file: a4cingress.yml.j2
+#     # create_secret: false
 #     external_url: <url>
