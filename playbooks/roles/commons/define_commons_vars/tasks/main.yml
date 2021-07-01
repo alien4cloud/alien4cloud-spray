@@ -50,6 +50,7 @@
 - name: Ensure a4c_ha_enabled variable is defined
   set_fact:
     a4c_ha_enabled: "{{ groups['a4c'] | length > 1 }}"
+  when: groups['a4c'] is defined
 
 - name: Is the HA enabled for A4C ?
   debug:
@@ -58,6 +59,7 @@
 - name: Ensure yorc_ha_enabled variable is defined
   set_fact:
     yorc_ha_enabled: "{{ groups['yorc'] | length > 1 }}"
+  when: groups['yorc'] is defined
 
 - name: Is the HA enabled for Yorc ?
   debug:
