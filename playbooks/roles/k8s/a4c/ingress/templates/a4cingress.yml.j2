@@ -1,24 +1,34 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: a4c
+  name: {{ host }}
+  annotations:
+{% if ingress_class is defined and ingress_class != "" %}
+    kubernetes.io/ingress.class: {{ ingress_class }}
+{% endif %}
+{% if a4c_protocol == "https" %}
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+{% endif %}
+{% if a4c_url_path is defined and a4c_url_path != "" %}
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+{% endif %}
 spec:
   rules:
-{% for host in k8s.a4c.ingress_hosts %}
   - host: {{ host }}
     http:
       paths:
       - backend:
           serviceName: a4csvc
           servicePort: a4c-endpoint
-        path: {{ a4c_url_path }}
+{% if a4c_url_path is defined and a4c_url_path != "" %}
+        path: {{ a4c_url_path }}/(.*)
+{% else %}
+        path: /
+{% endif %}
         pathType: Prefix
-{% endfor %}
 {% if k8s.a4c.create_secret is defined and k8s.a4c.create_secret %}
   tls:
   - hosts:
-{% for host in k8s.a4c.ingress_hosts %}
     - {{ host }}
-{% endfor %}
-    secretName: a4c-tls
+    secretName: {{ host }}-tls
 {% endif %}
