@@ -1,0 +1,14 @@
+---
+- name: display ingresses
+  debug:
+    var: k8s.a4c.ingress_hosts
+
+- name: perform action on a4c ingresses
+  with_items: "{{ k8s.a4c.ingress_hosts }}"
+  include_role:
+    name: k8s/a4c/ingress
+  when: (k8s.a4c.namespace is defined)
+  vars:
+    host: "{{ item.split(':')[0] }}"
+    ingress_class: "{{ item.split(':')[1] }}"
+

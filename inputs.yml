@@ -294,7 +294,7 @@ force_delete_files: true
 #     # service_file: a4csvc.yml.j2
 #     # deployment_file: a4cdeploy.yml.j2
 #     ingress_hosts: 
-#       - <host>
+#       - <host>:<ingress class>
 #     # ingress_file: a4cingress.yml.j2
 #     # create_secret: false
 #     external_url: <url>

@@ -5,7 +5,7 @@
 
 - name: set key file name
   set_fact:
-    filename: "{{ data_dir +'/'+ certificates_path +'/a4c' + ssl_host_key_suffix }}"
+    filename: "{{ data_dir +'/'+ certificates_path + host + ssl_host_key_suffix }}"
   when: (k8s.a4c.namespace is defined) and
         (k8s.a4c.create_secret is defined) and
          k8s.a4c.create_secret
@@ -19,7 +19,7 @@
 
 - name: set certificate file name
   set_fact:
-    filename: "{{ data_dir +'/'+ certificates_path +'/a4c' + ssl_host_cert_suffix }}"
+    filename: "{{ data_dir +'/'+ certificates_path + host + ssl_host_cert_suffix }}"
   when: (k8s.a4c.namespace is defined) and
         (k8s.a4c.create_secret is defined) and
          k8s.a4c.create_secret

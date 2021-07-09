@@ -36,11 +36,11 @@
         - action: create
     - name: delete previous ingress
       include_role:
-       name: k8s/a4c/ingress
+       name: k8s/a4c/ingresses
       vars:
         - action: delete
     - name: create ingress
       include_role:
-       name: k8s/a4c/ingress
+       name: k8s/a4c/ingresses
       vars:
         - action: create

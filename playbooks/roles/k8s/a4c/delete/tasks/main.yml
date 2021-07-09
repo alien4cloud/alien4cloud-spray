@@ -14,7 +14,7 @@
         - action: delete
     - name: delete ingress
       include_role:
-        name: k8s/a4c/ingress
+        name: k8s/a4c/ingresses
       vars:
         - action: delete
     - name: delete pv

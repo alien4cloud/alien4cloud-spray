@@ -198,8 +198,8 @@ To allow this proceed as follows:
    * a service file template is provided with the spray, you may use another template, if you set the name under `service_file`
    * a statefulset template (consul) or a deployment template (yorc, a4c) is provided with the spray, you may use another template, if you set the name under `statefulset_file` (consul) or `deployment_file`(a4c and yorc)
    * an ingress file template is provided with the spray (a4c and optionally consul), you may use another template, if you set the name under `ingress_file` (a4c and consul). To install an ingress for consul, set `create_ingress` to true (consul only)
-   * `ingress_hosts`: list of host names to set in ingress (a4c and consul)
-   * `create_secret` is set to true if the spray needs to create a secret with SSL key and certificate for the ingress (a4c and consul), the files being named `a4c-key.pem`and `a4c-cert.pem` for a4c and `consul-key.pem`and `consul-cert.pem` for consul (a4c and consul)
+   * `ingress_hosts`: list of host names to set in ingress (a4c and consul). a4c ingress_hosts must be given as `host`:`ingress class`
+   * `create_secret` is set to true if the spray needs to create a secret with SSL key and certificate for the ingress (a4c and consul), the files being named `<ingress host>-key.pem`and `<ingress host>-cert.pem` for a4c and `consul-key.pem`and `consul-cert.pem` for consul (a4c and consul). Do notice that in case A4C is configured with HTTPS, you also need files named `a4c-cert.pem` and `a4c-key.pem` for A4C itself.
    * `external_url`: a4c url served by the ingress controller, used by the spray to configure A4C through A4C REST API (a4c only)
    * `create_role` (yorc only): optionally create k8s role for yorc deployment
    * `account_name`, `role_name`, `rb_name` (yorc only): names of service account, role binding, role name for K8S role for yorc, if it is to be created
