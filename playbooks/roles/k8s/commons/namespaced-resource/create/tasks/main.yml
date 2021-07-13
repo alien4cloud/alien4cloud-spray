@@ -8,6 +8,7 @@
     namespace: "{{ namespace }}"
     kubeconfig: "{{ kubeConfig}}"           
     definition: "{{ lookup('template', file) }}"
-    wait: yes  
+    wait: yes
+    wait_timeout: 240     
   vars:
     ansible_python_interpreter: /usr/bin/python3
