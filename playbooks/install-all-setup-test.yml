@@ -200,7 +200,7 @@
     - a4c/start-a4c
     - a4c/config/wait_a4c_fullstart
 
-- hosts: a4cconfig
+- hosts: localhost
   name: Setup A4C with a Yorc orchestrator.
   become: false
   roles:
