@@ -4,15 +4,15 @@
         name: k8s/a4c/namespace
       vars:
         - action: create
-    - name: create pv
-      include_role:
-        name: k8s/a4c/pvs
+#    - name: create pv
+#      include_role:
+#        name: k8s/a4c/pvs
       vars:
         - action: create
     - name: delete previous configmap
       include_role: 
         name: k8s/a4c/configmap/delete
-    - name: crate configmap 
+    - name: create configmap 
       include_role:
         name: k8s/a4c/configmap/create/configure-a4c
     - name: crate configmap 
@@ -21,12 +21,12 @@
     - name: crate configmap 
       include_role:
         name: k8s/a4c/configmap/create/configure-saml
-    - name: crate configmap 
+    - name: create configmap 
       include_role:
         name: k8s/a4c/configmap/create/create-configmap
-    - name: create deployment
+    - name: create statefulset
       include_role:
-        name: k8s/a4c/deploy
+        name: k8s/a4c/statefulset
       vars:
         - action: create
     - name: create service
