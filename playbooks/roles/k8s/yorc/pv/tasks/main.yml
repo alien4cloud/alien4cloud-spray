@@ -2,6 +2,9 @@
 - name: initialize pvsize
   set_fact:
      pvsize: "{{ k8s.yorc.pvsize | default(k8s_yorc_pvsize) }}"
+- name: initialize pvtempsize
+  set_fact:
+     pvsize: "{{ k8s.yorc.pvtempsize | default(k8s_yorc_pvtempsize) }}"
 
 - name: display action
   debug:

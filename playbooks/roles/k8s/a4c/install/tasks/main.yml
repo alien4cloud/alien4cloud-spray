@@ -4,9 +4,9 @@
         name: k8s/a4c/namespace
       vars:
         - action: create
-#    - name: create pv
-#      include_role:
-#        name: k8s/a4c/pvs
+    - name: create pv
+      include_role:
+        name: k8s/a4c/pvs
       vars:
         - action: create
     - name: delete previous configmap
