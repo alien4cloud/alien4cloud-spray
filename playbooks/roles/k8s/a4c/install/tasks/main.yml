@@ -29,6 +29,9 @@
         name: k8s/a4c/statefulset
       vars:
         - action: create
+    - name: Pause for 3 minutes to wait for a4c start
+      pause:
+        minutes: 3        
     - name: create service
       include_role:
        name: k8s/a4c/service
