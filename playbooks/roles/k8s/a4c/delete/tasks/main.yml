@@ -1,9 +1,15 @@
 ---
-    - name: delete deployment
+    - name: delete statefulset
       include_role:
-        name: k8s/a4c/deploy
+        name: k8s/a4c/statefulset
       vars:
         - action: delete
+#    - name: delete deployment
+#      include_role:
+#        name: k8s/a4c/deploy
+#      vars:
+#        - action: delete
+        
     - name: delete configmap
       include_role:
         name: k8s/a4c/configmap/delete
