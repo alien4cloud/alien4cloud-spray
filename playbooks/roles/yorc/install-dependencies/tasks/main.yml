@@ -121,6 +121,7 @@
   args:
     chdir: "{{ temp_rpm_dir.path }}"
   become: true
+  when: (offline or yorc_dependencies_rpm_urls is defined)
 
 - name: Remove RMPs folder
   file:
