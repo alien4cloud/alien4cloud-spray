@@ -14,17 +14,12 @@
         name: k8s/yorc/configmap
       vars:
         - action: delete
-    - name: crate configmap 
+    - name: create configmap 
       include_role:
         name: k8s/yorc/configmap
       vars:
         - action: create
     - name: create role
-      include_role:
-        name: k8s/yorc/role
-      vars:
-        - action: create
-    - name: create deployment
       include_role:
         name: k8s/yorc/role
       vars:
