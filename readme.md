@@ -192,11 +192,11 @@ To allow this proceed as follows:
    * each sub-section contains parameters concerning respectively the installation of `consul`, `yorc`and `a4c`
    * `namespace`is the namespace where to install the component; they can be different namespaces or same namespace; the namespaces are created if they do not exist, using the template  `resources/k8s/ns.yml`
    * `create_pv` is set to true if persistent volume(s) must be created, else set to false. In any case the volumes must be created by a means external to the spray. If the persistent volumes are to be created, the templates given by `pvfile(s)` are used. In any case, there must be associated template files used to create or delete the persistent volume claims. The name of the PVC templates are the names of the associated PV templates, suffixed with `.pvc`. The files must always be present because they are used at least to delete the persistent volumes and persistent volume claims.
-   * `pvsize` (and `pvlogssize` for a4c) is the size of the volumes (default 10Gi)
-   * `image` is the docker image to be used (default given in `�nputs.yml`)
+   * `pvsize` (and `pvlogssize` for a4c, '`pvtempsize`for yorc) is the size of the volumes (default 10Gi)
+   * `image` is the docker image to be used (default given in `ìnputs.yml`)
    * `service_type` is the K8S service type (default ClusterIP)
    * a service file template is provided with the spray, you may use another template, if you set the name under `service_file`
-   * a statefulset template (consul) or a deployment template (yorc, a4c) is provided with the spray, you may use another template, if you set the name under `statefulset_file` (consul) or `deployment_file`(a4c and yorc)
+   * a statefulset template is provided with the spray, you may use another template, if you set the name under `statefulset_file`
    * an ingress file template is provided with the spray (a4c and optionally consul), you may use another template, if you set the name under `ingress_file` (a4c and consul). To install an ingress for consul, set `create_ingress` to true (consul only)
    * `ingress_hosts`: list of host names to set in ingress (a4c and consul). a4c ingress_hosts must be given as `host`:`ingress class`
    * `create_secret` is set to true if the spray needs to create a secret with SSL key and certificate for the ingress (a4c and consul), the files being named `<ingress host>-key.pem`and `<ingress host>-cert.pem` for a4c and `consul-key.pem`and `consul-cert.pem` for consul (a4c and consul). Do notice that in case A4C is configured with HTTPS, you also need files named `a4c-cert.pem` and `a4c-key.pem` for A4C itself.
@@ -205,7 +205,7 @@ To allow this proceed as follows:
    * `account_name`, `role_name`, `rb_name` (yorc only): names of service account, role binding, role name for K8S role for yorc, if it is to be created
    * yorc only: template files are provided to create service_account, role binding, role name for K8S role for yorc. You can provide other templates (by setting respectively `sa_file`, `role_file` and `rb_file`)
 - provide the files used to create/delete persistent volumes and persistent volume claims (see upper)
-- provide any customized template you have set under the parameters `service_file`, `statefulset_file`, `deployment_file`, `�ngress_file`
+- provide any customized template you have set under the parameters `service_file`, `statefulset_file`, `deployment_file`, `ìngress_file`
 - run the `install-all-setup-test` playbook as usual
 ##### Prerequisites for the ansible controller machine
 - python openshift (which requires python 3)
@@ -238,14 +238,14 @@ ansible-playbook -i hosts --private-key $PRIVATE_KEY_PATH --user $REMOTE_USER --
 To test manually the integration between A4C and Yorc:
  1. Go to 'Application' / 'Nouvelle Application'
  2. Give a name to your app (ie. MyFirstTest)
- 3. In 'Modèle de topologie', choose '3MockWithRel' template
- 4. Click on 'Créer'
+ 3. In 'ModÃ¨le de topologie', choose '3MockWithRel' template
+ 4. Click on 'CrÃ©er'
  5. In 'Work on an environment' section, click on the line 'Environment OTHER 0.1.0-SNAPSHOT'
  6. Choose the "AWS Orchestrator: Yorc" under the 'Locations' blue button
- 7. Click on 'Vérifier & activer'
+ 7. Click on 'VÃ©rifier & activer'
  8. Click on 'Activer'
  9. You will then see a progess bar ... if all is finally green, all is OK.
- 10. Click on 'Désactiver'
+ 10. Click on 'DÃ©sactiver'
 
 
 # Upgrade
