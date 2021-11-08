@@ -1,7 +1,12 @@
 ---
-    - name: delete deployment
+#    - name: delete deployment
+#      include_role:
+#        name: k8s/yorc/deploy
+#      vars:
+#        - action: delete
+    - name: delete statefulset
       include_role:
-        name: k8s/yorc/deploy
+        name: k8s/yorc/statefulset
       vars:
         - action: delete
     - name: delete configmap

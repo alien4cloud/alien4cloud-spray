@@ -26,7 +26,12 @@
         - action: create
     - name: create deployment
       include_role:
-        name: k8s/yorc/deploy
+        name: k8s/yorc/role
+      vars:
+        - action: create
+    - name: create statefulset
+      include_role:
+        name: k8s/yorc/statefulset
       vars:
         - action: create
     - name: create service

@@ -103,7 +103,7 @@
   roles:
     - commons/define_commons_vars
     - yorc/start-yorc
-    - yorc/configure-hp
+#    - yorc/configure-hp
 
 - hosts: yorcfront
   name: Install Yorc front (Nginx).
@@ -237,12 +237,12 @@
     - a4c/config/git_var
     - a4c/config/download_upload_csars
     - a4c/config/upload_csars
-    # - { role: 'commons/parse_kubeconfig',
-    #     resources_file_artifact: 'resources/kubeconfig'
-    #   }
-    # - { role: 'a4c/config/create_services',
-    #     resources_file_artifact: 'resources/services.yaml'
-    #   }
+#    - { role: 'commons/parse_kubeconfig',
+#         resources_file_artifact: 'resources/k8s/kubeconfig'
+#      }
+    - { role: 'a4c/config/create_services',
+       resources_file_artifact: 'resources/services.yaml'
+      }
 
 - hosts: a4c
   name: Rename init directory
@@ -270,12 +270,12 @@
 #     #     applicationName: 'SetupTestApp'
 #     #   }
 
-- hosts: jmeter
-  name: Install loadtests
-  roles:
-    - commons/define_commons_vars
-    - a4c/config/define_a4c_url
-    - install-java
-    - loadtests/install-loadtests
-    - loadtests/configure-loadtests
-    - loadtests/start-loadtests
+#- hosts: jmeter
+#  name: Install loadtests
+#  roles:
+#    - commons/define_commons_vars
+#    - a4c/config/define_a4c_url
+#    - install-java
+#    - loadtests/install-loadtests
+#    - loadtests/configure-loadtests
+#    - loadtests/start-loadtests

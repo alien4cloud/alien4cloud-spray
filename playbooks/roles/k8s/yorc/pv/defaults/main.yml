@@ -1,1 +1,2 @@
 k8s_yorc_pvsize: 10Gi
+k8s_yorc_pvtempsize: 1Gi

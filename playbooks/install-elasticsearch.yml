@@ -12,7 +12,7 @@
   roles:
     - commons/define_commons_vars
     - elasticsearch/stop-elasticsearch
-    - install-java
+    - install-java-dist
     - elasticsearch/install-elasticsearch
     - elasticsearch/configure-elasticsearch
     - elasticsearch/start-elasticsearch

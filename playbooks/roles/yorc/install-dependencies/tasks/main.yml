@@ -45,15 +45,7 @@
     extra_args: "{{ pip_extra_args }}"
   become: true
   when: (not offline and pip_extra_args is defined and install_ansible_with_pip)
-
-# - name: Change pip config
-#   template:
-#     src: pip.conf.j2
-#     dest: /etc/pip.conf
-#     mode: 0444
-#     force: yes
-#   become: true
-
+  
 - name: Install ansible using pip
   pip:
     name: "ansible{{ yorc_ansible_version }}"
@@ -76,26 +68,6 @@
    update_cache: true
   become: true
   when: (not offline and not install_ansible_with_pip)
-
-# - name: Instal the needed package
-#   yum:
-#     pkg: python-pip
-#     state: present
-#     update_cache: true
-#   become: true
-#   when: (not offline)
-
-# - name: Install ansible
-#   command: pip install ansible==2.7.2
-#   become: true
-#   when: (not offline)
-
-# - name: Install ansible and all python packages
-#   become: true
-#   yum:
-#     name: "{{ yorc_dependencies_rpm_urls }}"
-#     state: present
-#   when: (not offline) and (yorc_dependencies_rpm_urls is defined)
 
 - name: Create temporary RMP directory
   tempfile:

@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  name: a4c
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: a4c
+  template:
+    metadata:
+      labels:
+        app: a4c
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: a4c
+        image: {{ image }}
+        ports:
+        - containerPort: 8088
+          name: a4c-endpoint
+        readinessProbe:
+          httpGet:
+             port: a4c-endpoint
+             path: /rest/admin/health
+             scheme: {{ a4c_protocol | upper }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /opt/a4c/alien4cloud/config
+        - name: data-a4c-volume
+          mountPath: /opt/a4c/alien4cloud/runtime
+        - name: data-a4c-logs-volume
+          mountPath: /var/log/alien4cloud/
+      volumes:
+        - name: config-volume
+          configMap:
+            name: a4c-conf
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: data-a4c-volume
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: "{{ pvsize }}"
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      name: data-a4c-logs-volume
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: "{{ pvlogssize }}"
+

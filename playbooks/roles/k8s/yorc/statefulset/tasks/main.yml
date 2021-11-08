@@ -1,0 +1,43 @@
+---
+
+- name: initialize consul-svc list
+  set_fact:
+    consul_svc_list: []
+
+- name: initialize replicas
+  set_fact:
+     replicas: "{{ k8s.consul.replicas | default(k8s_consul_replicas) }}"
+
+- name: initialize image
+  set_fact:
+     image: "{{ k8s.yorc.image | default(k8s_yorc_image) }}"
+
+- name: fill consul_svc_list
+  set_fact:
+    consul_svc_list: "{{ consul_svc_list + ['consul-' + item|string + '.consulsvc.' + k8s.consul.namespace + '.svc.cluster.local'] }}"
+  loop: "{{ range(0, replicas|int, 1) | list }}"
+  when: (k8s.consul.namespace is defined)
+
+- name: consul svc list
+  debug:
+    var: consul_svc_list
+
+- name: display action
+  debug:
+     var: action
+
+- name: init statefulset file
+  set_fact:
+    file: "{{ k8s.yorc.statefulset_file | default ('yorcdstatefulset.yml.j2') }}"
+
+- name: init account name (delete mode)
+  set_fact:
+    account_name: "not_used"
+  when: (action == 'delete')
+
+- name: perform action on yorc statefulset
+  include_role:
+    name: k8s/commons/namespaced-resource/{{ action }}
+  when: (k8s.yorc.namespace is defined)
+  vars:
+    namespace: "{{ k8s.yorc.namespace }}"

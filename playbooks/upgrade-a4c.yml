@@ -29,7 +29,7 @@
     - k8s/a4c/stop
     - k8s/a4c/install
 
-- hosts: a4cconfig
+- hosts: localhost
   name: Update A4C modifiers.
   roles:
     - commons/define_commons_vars

@@ -51,4 +51,5 @@
   file:
     path: "{{ remote_keypass_content_file.path }}"
     state: absent
+  ignore_errors: yes  
   when: not local_keypass_content_file.stat.exists

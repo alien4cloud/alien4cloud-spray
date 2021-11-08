@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: yorc
+spec:
+  selector:
+    matchLabels:
+      app: yorc
+  template:
+    metadata:
+      labels:
+        app: yorc
+    spec:
+      containers:
+      - env:
+        - name: CONSUL_MODE
+          value: client
+        - name: NB_CONSUL_SERVER
+          value: "{{ replicas }}"
+        - name: SERVERS_TO_JOIN
+          value: "{{ consul_svc_list | list | join(',') }}"
+        image: {{ image }}
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - consul leave
+        name: yorc
+        ports:
+        - containerPort: 8800
+          name: yorc-endpoint
+        - containerPort: 8500
+          name: consul-endpoint
+        readinessProbe:
+          httpGet:
+             port: yorc-endpoint
+             path: /server/health
+             httpHeaders:
+               - name: Accept
+                 value: application/json
+        volumeMounts:
+        - mountPath: /etc/yorc
+          name: config-yorc-volume
+        - mountPath: /etc/consul
+          name: config-consul-volume
+        - mountPath: /data
+          name: data-yorc-volume
+        - mountPath: /var/yorc/tmp
+          name: tmp-yorc-volume  
+      securityContext:
+        fsGroup: 1001
+      volumes:
+      - configMap:
+          name: yorc-conf
+        name: config-yorc-volume
+      - configMap:
+          name: consul-client-conf
+        name: config-consul-volume
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: data-yorc-volume
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: "{{ pvsize }}"
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      name: tmp-yorc-volume
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: "{{ pvtempsize }}"
+   
+
