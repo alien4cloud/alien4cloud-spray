@@ -28,12 +28,20 @@
 
 - name: init statefulset file
   set_fact:
-    file: "{{ k8s.yorc.statefulset_file | default ('yorcdstatefulset.yml.j2') }}"
+    file: "{{ k8s.yorc.statefulset_file | default ('yorcstatefulset.yml.j2') }}"
 
 - name: init account name (delete mode)
   set_fact:
     account_name: "not_used"
   when: (action == 'delete')
+
+- name: initialize pvsize
+  set_fact:
+     pvsize: "{{ k8s.yorc.pvsize | default(k8s_yorc_pvsize) }}"
+
+- name: initialize pvtempsize
+  set_fact:
+     pvtempsize: "{{ k8s.yorc.pvtempsize | default(k8s_yorc_pvtempsize) }}"
 
 - name: perform action on yorc statefulset
   include_role:

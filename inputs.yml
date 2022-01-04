@@ -81,7 +81,7 @@ ssl_key_password: changeit
 # ssl_host_key_suffix: ".technique.artemis.pem.txt"
 # ssl_host_cert_suffix: ".technique.artemis.crt.txt"
 
-elasticsearch_rmp_url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.6.2.rpm
+elasticsearch_rmp_url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.8.22.rpm
 ALIEN_DIST_URL: http://52.215.62.182/alien4cloud/alien4cloud-premium-dist/3.2.0-TEST-SNAPSHOT/alien4cloud-premium-dist-3.2.0-TEST-SNAPSHOT-dist.tar.gz
 #ALIEN_DIST_URL: http://34.242.40.25/dist/alien4cloud/alien4cloud-premium-dist/3.0.0-SNAPSHOT/alien4cloud-premium-dist-3.0.0-SNAPSHOT-dist.tar.gz
 JAVA_DIST_URL: https://download.java.net/java/GA/jdk15.0.2/0d1cfde4252546c6931946de8db48ee2/7/GPL/openjdk-15.0.2_linux-x64_bin.tar.gz
