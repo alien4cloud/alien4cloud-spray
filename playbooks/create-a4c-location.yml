@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  name: Create and configure a new A4C location
+  become: false
+  roles:
+    - commons/define_commons_vars
+    - a4c/config/define_a4c_url
+    - { role: 'a4c/config/get_orchectrator',
+        orchestratorName: "{{ orchestrator|default('Yorc') }}"
+      }
+    - { role: 'a4c/config/create_and_configure_locations',
+        orchestratorName: "{{ orchestrator|default('Yorc') }}"
+      }
